@@ -3,7 +3,7 @@
 from flask import Flask, request, jsonify
 import logging
 import threading
-
+from dataprocess.get_unadded_data import get_unadded_log_list  
 from main import main  as run 
 from agents import ChatMultiAgent
 # --- 初始化 ---
@@ -50,8 +50,6 @@ def run_query():
     try:
         # 调用 run 方法
         output_msg = run(query)
-        
-        # --- 结果解析 ---
         # 根据您上次的提示，我们假设结果是一个对象或字典
         if hasattr(output_msg, 'content'):
             response_content = output_msg.content
@@ -68,6 +66,21 @@ def run_query():
         return jsonify({"error": f"执行查询时发生内部错误: {str(e)}"}), 500
 
 
+
+@app.route('/api/get_log_list', methods=['POST'])
+def unadded_log_list():
+    list = request.json
+    if not list :
+        return jsonify({"error": "请求未知错误"}), 400
+    logger.info(f"收到获取未添加日志请求")
+    try:
+        unadded_log_list = get_unadded_log_list()
+        logger.info("查询成功完成。")
+        return jsonify({"result": unadded_log_list})
+
+    except Exception as e:
+        logger.exception(f"执行请求未添加日志时出错: {e}")
+        return jsonify({"error": f"执行请求未添加日志时发生内部错误: {str(e)}"}), 500
 
 
 

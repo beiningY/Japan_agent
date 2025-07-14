@@ -104,7 +104,6 @@ class PlanAgent:
 <intent_list>
 • answer_by_database。需要获取实时传感器数据， 数据包括日期时间、溶解氧饱和度、液位(mm)、PH、PH温度(°C)、浊度(NTU)、浊度温度(°C)。
 • answer_by_knowledgebase。需要获取养殖手册和日常操作日志等数据。
-• answer_by_thinking。问题需要推理分析。
 • other。无法明确归类的问题。
 </intent_list>
 
