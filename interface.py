@@ -1,0 +1,25 @@
+import gradio as gr
+from main import main  
+
+with gr.Blocks(title="南美白对虾问答助手") as demo:
+    gr.Markdown("## 🦐 南美白对虾问答助手")
+    gr.Markdown("输入你关于南美白对虾的问题，我将根据知识库为你生成专业回答。")
+
+    with gr.Row():
+        with gr.Column():
+            user_input = gr.Textbox(label="用户提问", placeholder="请输入你的问题…", lines=5)
+            submit_btn = gr.Button("Submit")
+            clear_btn = gr.Button("Clear")
+
+        with gr.Column():
+            output = gr.Textbox(label="AI 回答", lines=10, interactive=False)
+
+    submit_btn.click(fn=main, inputs=user_input, outputs=output)
+    clear_btn.click(fn=lambda: ("", ""), inputs=[], outputs=[user_input, output])
+
+demo.launch(
+    server_name="0.0.0.0", 
+    server_port=7860,
+    share=True,             
+)
+

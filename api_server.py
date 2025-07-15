@@ -1,11 +1,9 @@
-# /usr/sarah/Camel_agent/api_server.py
-
 from flask import Flask, request, jsonify
 import logging
-import threading
-from dataprocess.get_unadded_data import get_unadded_log_list  
+import threading 
 from main import main  as run 
 from agents import ChatMultiAgent
+
 # --- 初始化 ---
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -64,24 +62,6 @@ def run_query():
     except Exception as e:
         logger.exception(f"执行 chat_agent.run 时出错: {e}")
         return jsonify({"error": f"执行查询时发生内部错误: {str(e)}"}), 500
-
-
-
-@app.route('/api/get_log_list', methods=['POST'])
-def unadded_log_list():
-    list = request.json
-    if not list :
-        return jsonify({"error": "请求未知错误"}), 400
-    logger.info(f"收到获取未添加日志请求")
-    try:
-        unadded_log_list = get_unadded_log_list()
-        logger.info("查询成功完成。")
-        return jsonify({"result": unadded_log_list})
-
-    except Exception as e:
-        logger.exception(f"执行请求未添加日志时出错: {e}")
-        return jsonify({"error": f"执行请求未添加日志时发生内部错误: {str(e)}"}), 500
-
 
 
 # --- 启动服务 ---

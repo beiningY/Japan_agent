@@ -9,7 +9,11 @@ from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 from .text2sql_agent import Text2SQL
-from colorama import Fore
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("PlanAgent")
+
 class IntentResult(BaseModel):
     intent: List[str]  
     # knowledgebase_name: Optional[dict] = None
@@ -22,7 +26,6 @@ class PlanAgent:
         self.load_env()
         self.load_config()
         self.init_agent()
-        # 使用字典缓存不同的RAG实例，避免重复创建
         self.rag_instances = {}
 
     def load_env(self):
@@ -33,7 +36,6 @@ class PlanAgent:
         self.api_key = os.getenv("GPT_API_KEY")
         if not self.api_key:
             raise ValueError("API_KEY 未在 .env 文件中设置")
-            
         os.environ["OPENAI_API_KEY"] = self.api_key
 
     def load_config(self):
@@ -44,7 +46,7 @@ class PlanAgent:
     def init_agent(self):
         """初始化ChatAgent"""
         self.agent = ChatAgent(
-            system_message="你是一个语义理解和意图识别方面的专家，目的是根据用户的问题进行意图识别以及需求分析。",
+            system_message="你是一个语义理解和意图识别方面的专家,请根据用户的问题进行意图识别以及需求分析。",
             model=ModelFactory.create(
                 model_platform=ModelPlatformType.OPENAI,
                 model_type=ModelType.GPT_4O_MINI,
@@ -56,7 +58,7 @@ class PlanAgent:
     def get_rag_instance(self, collection_name: str) -> RAG:
         """获取RAG实例，使用缓存避免重复创建"""
         if collection_name not in self.rag_instances:
-            print(f"创建新的RAG实例: {collection_name}")
+            logger.info(f"创建新的RAG实例: {collection_name}")
             self.rag_instances[collection_name] = RAG(collection_name=collection_name)
         return self.rag_instances[collection_name]
 
@@ -73,7 +75,7 @@ class PlanAgent:
             
             # 检查content是否为空
             if not content or not content.strip():
-                print(f"警告: GPT返回空内容，使用默认配置")
+                logger.warning("GPT返回空内容，使用默认配置")
                 return self._get_default_plan()
                 
             # 尝试解析JSON
@@ -82,13 +84,13 @@ class PlanAgent:
             return result.dict()
             
         except json.JSONDecodeError as e:
-            print(f"JSON解析错误: {e}")
-            print(f"GPT返回内容: {content}")
-            print("使用默认配置继续...")
+            logger.error(f"JSON解析错误: {e}")
+            logger.error(f"GPT返回内容: {content}")
+            logger.error("使用默认配置继续...")
             return self._get_default_plan()
             
         except Exception as e:
-            print(f"意图识别出错: {e}")
+            logger.error(f"意图识别出错: {e}")
             return self._get_default_plan()
     
     def _get_default_plan(self) -> Dict[str, Any]:
@@ -128,9 +130,15 @@ class PlanAgent:
 问题: 连续两天亚硝酸盐在0.5–0.6mg/L波动，硝酸盐无明显上升趋势，氨氮为0.05mg/L，现有方法未改善，下一步如何优化水处理？
 答案:
 {{
-    "intent": ["answer_by_knowledgebase", "answer_by_database", "answer_by_thinking"],
+    "intent": ["answer_by_knowledgebase", "answer_by_database"],
     "knowledgebase_name": {{"book_zh": 3, "log": 2}},
     "database_query": "请查询所有六月二十四和六月二十五的数据"
+}}
+问题: 今天六月二十五号，氨氮为0.05mg/L，亚硝酸盐为0.5–0.6mg/L，硝酸盐无明显上升趋势，现有方法未改善，下一步如何优化水处理？
+答案:
+{{
+    "intent": ["answer_by_knowledgebase", "answer_by_database"],
+    "knowledgebase_name": {{"book_zh": 5}}
 }}
 </example>
 请根据以下问题，判断用户意图，提取相关信息，严格遵循JSON格式输出：
@@ -205,9 +213,8 @@ class PlanAgent:
     def process_query(self, query: str) -> str:
         plan_result = self.plan(query)
         result = self.generate_prompt(query, plan_result)
-        print("意图识别和需求分析结果是："+str(plan_result))
-        """print("="*50)
-        print("综合提示结果是："+result)"""
+        logger.info("意图识别和需求分析结果是："+str(plan_result))
+        logger.info("综合提示结果是："+result)
         return result
 
 
