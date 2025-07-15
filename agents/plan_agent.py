@@ -11,8 +11,12 @@ from datetime import datetime
 from .text2sql_agent import Text2SQL
 import logging
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("PlanAgent")
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("PlanAgrnt")
+logger.setLevel(logging.INFO)
 
 class IntentResult(BaseModel):
     intent: List[str]  

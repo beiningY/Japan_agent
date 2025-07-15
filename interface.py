@@ -1,6 +1,7 @@
 import gradio as gr
 from main import main  
 
+
 with gr.Blocks(title="南美白对虾问答助手") as demo:
     gr.Markdown("## 🦐 南美白对虾问答助手")
     gr.Markdown("输入你关于南美白对虾的问题，我将根据知识库为你生成专业回答。")
@@ -18,8 +19,8 @@ with gr.Blocks(title="南美白对虾问答助手") as demo:
     clear_btn.click(fn=lambda: ("", ""), inputs=[], outputs=[user_input, output])
 
 demo.launch(
-    server_name="0.0.0.0", 
+    server_name="localhost", 
     server_port=7860,
-    share=True,             
+    share=True,          
 )
 

@@ -5,7 +5,14 @@ from dotenv import load_dotenv
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from camel.agents import ChatAgent
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("Text2SQL")
+logger.setLevel(logging.INFO)
 
 
 class Text2SQL:
@@ -75,13 +82,14 @@ SELECT ph FROM sensor_data WHERE timestamp BETWEEN '2025-06-13 00:00:00' AND '20
         response = self.agent.step(use_msg)
         content = response.msg.content            
         SQL_query = content
-        print(SQL_query)
+        logger.info(f"生成的SQL语句是：{SQL_query}")
         return SQL_query
     
     def query_sensor_data(self, query) -> str:
         try:
             sql = self.text2sql(query)
             if not sql:
+                logger.info("无法生成有效的SQL查询")
                 return "无法生成有效的SQL查询"
 
             conn = sqlite3.connect(self.DB_PATH)
@@ -91,6 +99,7 @@ SELECT ph FROM sensor_data WHERE timestamp BETWEEN '2025-06-13 00:00:00' AND '20
             conn.close()
 
             if not results:
+                logger.info("无相关数据")
                 return "无相关数据"
 
 
@@ -115,4 +124,5 @@ SELECT ph FROM sensor_data WHERE timestamp BETWEEN '2025-06-13 00:00:00' AND '20
                 return "查询结果：\n" + "\n".join(simple_values)
 
         except Exception as e:
+            logger.error(f"查询出错: {str(e)}")
             return f"查询出错: {str(e)}"

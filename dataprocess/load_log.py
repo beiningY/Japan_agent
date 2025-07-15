@@ -57,7 +57,7 @@ def get_unadded_log_list():
 
 def fetch_logs(log_filenames: list[str]) -> list[dict]:
     """从API获取日志数据"""
-    url = "http://127.0.0.1:5001/api/"  # 服务端端口
+    url = "http://localhost:5000/api/get_files"  # 服务端端口
     try:
         response = requests.post(url, json={"filenames": log_filenames})
         response.raise_for_status()

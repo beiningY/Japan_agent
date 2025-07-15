@@ -5,7 +5,15 @@ from camel.types import ModelPlatformType, ModelType
 from dotenv import load_dotenv
 import os
 import json
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("SummarizeAgent")
+logger.setLevel(logging.INFO)
+  
 class SummarizeAgent:
     def __init__(self):
         self.plan_agent = PlanAgent()

@@ -6,7 +6,14 @@ from camel.storages import QdrantStorage
 from camel.retrievers import VectorRetriever
 import os
 from transformers import AutoTokenizer
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("VectorRetriever")
+logger.setLevel(logging.INFO)
 class ModelManager:
     """避免重复加载模型"""
     _instance = None
@@ -22,17 +29,17 @@ class ModelManager:
     def get_embedding_model(self):
         if self._embedding_model is None:
             self._load_config()
-            print("正在加载embedding模型...")
+            logger.info("正在加载embedding模型...")
             self._embedding_model = SentenceTransformerEncoder(model_name="models/multilingual-e5-large")
-            print("embedding模型加载完成")
+            logger.info("embedding模型加载完成")
         return self._embedding_model
     
     def get_tokenizer(self):
         if self._tokenizer is None:
             self._load_config()
-            print("正在加载tokenizer...")
+            logger.info("正在加载tokenizer...")
             self._tokenizer = AutoTokenizer.from_pretrained("models/multilingual-e5-large")
-            print("tokenizer加载完成")
+            logger.info("tokenizer加载完成")
         return self._tokenizer
     
     def _load_config(self):
@@ -80,18 +87,17 @@ class RAG:
         )
         start_time = time.time()
         for chunk in chunks:
-            print(chunk["chunk_id"], chunk["content"], "\n\n")
             self.vr.process(
                 content=chunk["content"],
                 should_chunk=False,
                 extra_info={"id": chunk["chunk_id"], "title": chunk["title"], "type": chunk["type"]}
             )
         end_time = time.time()
-        print(f"{data_path}embedding处理时间: {end_time - start_time:.4f} 秒")
+        logger.info(f"{data_path}的embedding处理时间: {end_time - start_time:.4f} 秒")
 
     def rag_retrieve(self, query, topk=None):
         """进行检索"""
-        print(f"RAG检索开始，检索的query是：{query}")
+        logger.info(f"RAG检索开始，检索的query是：{query}")
         results = self.vr.query(
             query=query, 
             top_k=topk if topk is not None else self.config.get("vector_top_k", 5), 
@@ -100,8 +106,8 @@ class RAG:
         retrieved = []
         for i, info in enumerate(results):
             retrieved.append(f"{i+1}. {info['text']}\n\n")  
-        print("RAG检索结果:")
-        print(retrieved)
+        logger.info("RAG检索结果:")
+        logger.info(retrieved)
         return retrieved          
     
 

@@ -5,7 +5,14 @@ from camel.types import ModelPlatformType, ModelType
 from dotenv import load_dotenv
 import os
 import json
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("MultiAgent")
+logger.setLevel(logging.INFO)
 class MainAgent:
     def __init__(self):
         self.plan_agent = PlanAgent()
@@ -41,10 +48,7 @@ class MainAgent:
 
     def reponse_agent(self, query):
         final_query = self.plan_agent.process_query(query)
-        print("="*50)
-        print("最终生成的prompt:")
-        print("="*50)
-        print(final_query)
+        logger.info(f"最终生成的prompt: {final_query}")
         response = self.agent.step(final_query)
         return response.msg.content
 
@@ -52,7 +56,4 @@ if __name__ == "__main__":
     main_agent = MainAgent()
     query = input("请输入问题：")
     result = main_agent.reponse_agent(query)
-    print("="*50)
-    print("最终的回答:")
-    print("="*50)
-    print(result)
+    logger.info(f"最终的回答: {result}")

@@ -7,7 +7,14 @@ from camel.types import ModelPlatformType, ModelType
 from camel.societies import RolePlaying 
 from agents.plan_agent import PlanAgent
 from colorama import Fore
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("ChatMultiAgent")
+logger.setLevel(logging.INFO)
 class ChatMultiAgent:
     def __init__(self):
         self.load_env()
@@ -31,7 +38,7 @@ class ChatMultiAgent:
             with open("utils/config.json", "r", encoding="utf-8") as f:
                 self.config = json.load(f)
         except FileNotFoundError:
-            print("警告: 未找到 config.json 文件，将使用默认值。")
+            logger.warning("未找到 config.json 文件，将使用默认值。")
             self.config = {}
 
 
@@ -137,12 +144,12 @@ class ChatMultiAgent:
             input_msg.content += self.rag_context(user_response.msg.content)
             #print(Fore.GREEN+ f"第{n}轮专家顾问的系统消息输入:\n{society.assistant_sys_msg.content}\n")
             if user_response.terminated:
-                print(Fore.GREEN+ ("养殖员回答终止的原因: " + f"{user_response.info['termination_reasons']}."))
+                logger.info(Fore.GREEN+ ("养殖员回答终止的原因: " + f"{user_response.info['termination_reasons']}."))
                 break
             assistant_response, user_response2 = society.step(input_msg)
             #print(Fore.BLUE + f"第{n}轮专家顾问的输出:\n{assistant_response.msg.content}\n")
             if assistant_response.terminated:
-                print(Fore.GREEN+ ("专家顾问回答终止的原因: " + f"{assistant_response.info['termination_reasons']}."))
+                logger.info(Fore.GREEN+ ("专家顾问回答终止的原因: " + f"{assistant_response.info['termination_reasons']}."))
                 break
             if "CAMEL_TASK_DONE" in user_response.msg.content:
                 break
@@ -151,7 +158,7 @@ class ChatMultiAgent:
             input_msg = assistant_response.msg
             
             output_msg += f"第{n}轮养殖员的输出:\n{user_response.msg.content}\n" + f"第{n}轮专家顾问的输出:\n{assistant_response.msg.content}\n"
-        print(f"最终的对话结果:\n{output_msg}\n")
+        logger.info(f"最终的对话结果:\n{output_msg}\n")
         return output_msg
 
 
