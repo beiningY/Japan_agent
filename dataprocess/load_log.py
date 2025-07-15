@@ -12,6 +12,8 @@ from embeddings.vr_chunking import chunk_data_for_log
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("EmbeddingLogDaily")
 
+
+#====================获取未添加的日志数据===========================
 def extract_date_from_chunk_id(chunk_id):
     """从chunk_id中提取日期，格式为2025_MM_DD.txt"""
     date_str = chunk_id.replace('.txt', '')
@@ -20,11 +22,13 @@ def extract_date_from_chunk_id(chunk_id):
 
 def sort_log_data():
     """对日志数据按日期排序"""
-    with open('data/cleand_data/data_json_log.json', 'r', encoding='utf-8') as f:
+    #data_path = "data/cleand_data/data_json_log.json"
+    data_path = "data/cleand_data/test_json_log.json"
+    with open(data_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     sorted_data = sorted(data, key=lambda x: extract_date_from_chunk_id(x['chunk_id']), reverse=True)
     
-    with open('data/cleand_data/data_json_log.json', 'w', encoding='utf-8') as f:
+    with open(data_path, 'w', encoding='utf-8') as f:
         json.dump(sorted_data, f, ensure_ascii=False, indent=2)
     
     logger.info("数据已按日期从大到小排序完成！")
@@ -55,15 +59,19 @@ def get_unadded_log_list():
     
     return unadded_log_list
 
+
+
+#====================请求文件内容===========================
 def fetch_logs(log_filenames: list[str]) -> list[dict]:
     """从API获取日志数据"""
     url = "http://localhost:5000/api/get_files"  # 服务端端口
     try:
-        response = requests.post(url, json={"filenames": log_filenames})
-        response.raise_for_status()
-        raw_data: dict = response.json()
-        result = [{"name": k, "content": v} for k, v in raw_data.items()]
-        return result
+        payload = {
+            "type": "操作日志",
+            "filenames": log_filenames
+        }
+        response = requests.post(url, json=payload)
+        return response.json()
     except Exception as e:
         logger.error(f"请求日志失败: {e}")
         return []
@@ -75,12 +83,15 @@ def download_log(log_list):
         if log['content'] != '':
             date = log['name']
             content = log['content']
-            log_path = f"data/raw_data/log/{date}"
+            log_path = f"data/raw_data/test/{date}"
             with open(log_path, 'w', encoding='utf-8') as f:
                 f.write(content)
             log_paths.append(log_path)
     return log_paths
 
+
+
+#====================更新日志json数据和embedding到知识库===========================
 def structure_log(log_list):
     """结构化日志数据"""
     logs_data = []
@@ -97,24 +108,21 @@ def structure_log(log_list):
     data = logs_data[:]
     # 读取现有数据
     try:
-        with open('data/cleand_data/data_json_log.json', 'r', encoding='utf-8') as f:
+        with open('data/cleand_data/test_json_log.json', 'r', encoding='utf-8') as f:
             existing_data = json.load(f)
             logs_data.extend(existing_data)
     except FileNotFoundError:
         logger.info("创建新的日志数据文件")
     
     # 保存更新后的数据
-    with open('data/cleand_data/data_json_log.json', 'w', encoding='utf-8') as f:
+    with open('data/cleand_data/test_json_log.json', 'w', encoding='utf-8') as f:
         json.dump(logs_data, f, ensure_ascii=False, indent=2)
-    logger.info("已将最新操作日志添加到data_json_log.json文件中")
+    logger.info("已将最新操作日志添加到test_json_log.json文件中")
     return data
 
 def embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500):
     """向量化日志数据"""
     logs_data = structure_log(log_list)
-    if not logs_data:
-        return
-    
     # 向量化到all_data库
     embedding_for_log = RAG(collection_name="all_data")
     embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
@@ -125,23 +133,26 @@ def embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500):
     embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)   
     logger.info("已将最新操作日志向量化到log库中")
 
+#====================运行定时日志获取和处理===========================
 def run_daily_log_fetch():
     """运行日常日志获取和处理"""
     missing_logs = get_unadded_log_list()  
     if not missing_logs:
-        logger.info("没有缺失日志")
+        logger.info("已更新到最新版日志")
         return
-
+    log_list = []
     logger.info(f"正在请求 {len(missing_logs)} 个日志文件...")
-    logs = fetch_logs(missing_logs)
-    
-    if logs:
-        logger.info(f"获取到 {len(logs)} 个日志文件")
-        # 处理和向量化日志
-        embedding_log(logs, chunk_type=chunk_data_for_log, max_tokens=500)
-        logger.info("日志处理完成")
-    else:
-        logger.info("没有获取到日志数据")
+    logs_data = fetch_logs(missing_logs)
+    logs_data = logs_data["data"] 
+    for filename,content in logs_data.items():
+        if isinstance(content, dict) and "error" in content:
+            logger.error(f"获取日志失败: {content['error']}")
+            del logs_data[filename]
+        else:
+            log = {"name": filename, "content": content}
+            log_list.append(log)
+    # 处理和向量化日志
+    embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500) 
 
 def scheduled_task():
     """定时任务"""
@@ -158,9 +169,9 @@ def run_scheduler(time_str="23:59"):
     logger.info("按 Ctrl+C 停止定时任务")
     # 设置定时任务
     schedule.every().day.at(time_str).do(scheduled_task)
-    # 立即执行一次
+    # 启动时立即执行一次
     scheduled_task()
-    # 循环执行
+    # 循环执行定时任务
     try:
         while True:
             schedule.run_pending()
@@ -169,7 +180,7 @@ def run_scheduler(time_str="23:59"):
         logger.info("\n定时任务已停止")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='日志处理系统')
+    parser = argparse.ArgumentParser(description='日志自动化处理系统')
     parser.add_argument('--schedule', '-s', action='store_true', help='启动定时任务模式')
     parser.add_argument('--time', '-t', type=str, default="23:59", help='定时任务执行时间（HH:MM格式，默认23:59）')
     parser.add_argument('--manual', '-m', action='store_true', help='手动执行一次日志处理')
