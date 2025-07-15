@@ -144,13 +144,15 @@ def run_daily_log_fetch():
     logger.info(f"正在请求 {len(missing_logs)} 个日志文件...")
     logs_data = fetch_logs(missing_logs)
     logs_data = logs_data["data"] 
-    for filename,content in logs_data.items():
+
+    for filename, content in list(logs_data.items()): 
         if isinstance(content, dict) and "error" in content:
             logger.error(f"获取日志失败: {content['error']}")
             del logs_data[filename]
         else:
             log = {"name": filename, "content": content}
             log_list.append(log)
+
     # 处理和向量化日志
     embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500) 
 
