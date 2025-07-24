@@ -1,6 +1,7 @@
 from agents import ChatMultiAgent
 from agents import SummarizeAgent
 from retrievers import ModelManager
+from agents import AgentWithRAG
 import logging
 
 logging.basicConfig(
@@ -16,8 +17,8 @@ def preload_models():
     model_manager.get_embedding_model()
     logger.info("模型预热完成！")
 
-def main(query: str):
-    """主函数"""
+def advanced_agents(query: str):
+    """对话场景智能体"""
     # 加载模型
     preload_models()
     # 创建多智能体聊天系统
@@ -27,9 +28,18 @@ def main(query: str):
     output = summarize_agent.reponse_agent(query, chat_result)
     return output
 
+def simple_agents(query: str):
+    """单智能体"""
+    # 加载模型
+    preload_models()
+    # 创建多智能体聊天系统
+    chat_agent = AgentWithRAG()
+    output = chat_agent.run(query)
+    return output
+
 if __name__ == "__main__":
     query = input("请输入问题:")
-    answer = main(query)
+    answer = simple_agents(query)
     print(answer)
     
  

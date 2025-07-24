@@ -47,7 +47,13 @@ class AgentWithRAG:
         return query
 
 
-
+    def run(self, query: str):
+        context = self.rag_context(query)
+        response = self.agent.step(context)
+        result = response.msg.content
+        return result
+    
+    
 if __name__ == "__main__":
     agent = AgentWithRAG()
     query = input("请输入问题：")

@@ -68,10 +68,10 @@ class ChatMultiAgent:
 
         """创建批评角色参数"""
         critic_role_kwargs = {
-            'with_critic_in_the_loop': False,
-            'critic_role_name': '南美白对虾养殖专家',
+            'with_critic_in_the_loop': True,
+            'critic_role_name': '农业专家',
             'critic_kwargs': {'model': self.model},
-            'critic_criteria': '是否符合南美白对虾养殖专家的角色'
+            'critic_criteria': '是否符合农业专家的角色'
         }        
 
         """创建细化任务参数"""

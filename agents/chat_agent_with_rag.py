@@ -6,14 +6,22 @@ from camel.types import ModelPlatformType, ModelType
 from camel.messages import BaseMessage
 from camel.societies import RolePlaying 
 from retrievers import RAG
-
+import logging
+import re
+from agents.should_retriever import ShouldRetriever
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("ChatAgentRag")
+logger.setLevel(logging.INFO)
 class ChatRAGAgent:
     def __init__(self):
         self.load_env()
         self.load_config()
         self.init_models()
         self.rag = RAG(self.config.get("collection_name"))
-          
+        self.should_retriever_agent = ShouldRetriever()
     def load_env(self):
         """加载环境变量"""
         load_dotenv(dotenv_path=".env")
@@ -45,66 +53,118 @@ class ChatRAGAgent:
 
 
     def create_society(self, query: str):
-        """创建角色扮演"""
-        task_kwargs = {
-            'task_prompt': query if query else self.config.get("query", "你是一个南美白对虾养殖专家，请根据用户的问题，给出专业的回答。"),
+
+        """创建助手角色参数"""
+        assistant_role_kwargs = {
+            'assistant_role_name': '南美白对虾养殖专家',
+            'assistant_agent_kwargs': {'model': self.model}
+        }        
+        
+        """创建用户角色参数"""
+        user_role_kwargs = {
+            'user_role_name': '南美白对虾养殖员',
+            'user_agent_kwargs': {'model': self.model}
+        } 
+
+        """创建批评角色参数"""
+        critic_role_kwargs = {
+            'with_critic_in_the_loop': True,
+            'critic_role_name': '农业专家',
+            'critic_kwargs': {'model': self.model},
+            'critic_criteria': '是否符合农业专家的角色'
+        }        
+
+        """创建细化任务参数"""
+        task_special_kwargs = {
             'with_task_specify': True,
             'task_specify_agent_kwargs': {
                 'model': self.model,
             }
+        }   
+        """创建计划任务参数"""
+        task_plan_kwargs = {
+            'with_task_planner': False,
+            'task_planner_agent_kwargs': {
+                'model': self.model,
+            }
+        }   
+        """创建任务参数"""
+        task_kwargs = {
+            'task_prompt': query if query else self.config.get("query", "南美白对虾养殖需要注意什么。"),
+            'model': self.model,
+            #'sys_msg_generator_kwargs': {
+            #},
+            #'extend_sys_msg_meta_dicts': {
+            #},
+            'output_language':'zh',
         }
-        """创建用户角色"""
-        user_role_kwargs = {
-            'user_role_name': '南美白对虾养殖助手',
-            'user_agent_kwargs': {'model': self.model}
-        }
-        """创建助手角色"""
-        assistant_role_kwargs = {
-            'assistant_role_name': '南美白对虾养殖专家',
-            'assistant_agent_kwargs': {'model': self.model}
-        }
+
         society = RolePlaying(
-            **task_kwargs,          
-            **user_role_kwargs,   
-            **assistant_role_kwargs,   
+            **assistant_role_kwargs,
+            **user_role_kwargs,          
+            **critic_role_kwargs,
+            **task_special_kwargs,   
+            **task_plan_kwargs,
+            **task_kwargs
         )
         return society
     
-    def build_query_with_context(self, query: str):
+    def rag_context(self, query: str):
         """用RAG检索并拼接上下文"""
-        contexts = self.rag.rag_retrieve(query)
-        context_str = "\n".join(contexts)
-        return (
-            f"如果提供的资料和问题有关，请根据资料回答问题，如果无关或者你没有准确的数据则说你不知道。\n\n"
-            f"问题：{query}\n\n"
-            f"参考资料：\n{context_str}"
-        )
+        input_match = re.search(r'Input:\s*(.*)', query, re.DOTALL)
+        instruction_match = re.search(r'Instruction:\s*(.*?)(?:\s*Input:|$)', query, re.DOTALL)
+        
+        if input_match and input_match.group(1).strip() != "None":
+            rag_query = input_match.group(1).strip()
+        elif instruction_match:
+            rag_query = instruction_match.group(1).strip()
+        else:
+            rag_query = query
+        rag_contexts = self.should_retriever_agent.process(rag_query)
 
-    def chat(self, query: str, round_limit=10):
+        return rag_contexts
+
+    def chat(self, query: str, round_limit: int = 10):
+        """主对话逻辑：RAG增强的多轮用户-专家角色扮演对话"""
         society = self.create_society(query)
         input_msg = society.init_chat()
-        # print(f"农业专家(AI助手)系统消息:\n{society.assistant_sys_msg}\n")
-        # print(f"AI用户系统消息:\n{society.user_sys_msg}\n")
+        output_msg = f"""任务设定：\n{query}
+用户角色: {society.user_agent.role_name}
+专家角色: {society.assistant_agent.role_name}
+"""
         for round_idx in range(1, round_limit + 1):
-            # print(f'\n===== 第{round_idx}轮 User Agent 输入 =====')
-            # print(input_msg.content)
+
+            # 用户先提问（由User Agent生成）
             _, user_response = society.step(input_msg)
-            print(f'[AI User] {user_response.msg.content}')
-            if user_response.terminated or 'CAMEL_TASK_DONE' in user_response.msg.content:
+            user_content = user_response.msg.content.strip()
+
+            if user_response.terminated or "CAMEL_TASK_DONE" in user_content:
+
                 break
-            assistant_input = self.build_query_with_context(user_response.msg.content)
-            # print(f'\n===== 第{round_idx}轮 Assistant Agent 输入 =====')
-            # print(assistant_input)
+
+            # 调用RAG补充知识后，交由专家回答
+            assistant_input = self.rag_context(user_content)
             assistant_msg = BaseMessage.make_assistant_message(
-                role_name="南美白对虾养殖专家",
-                content=assistant_input
+                role_name=society.assistant_agent.role_name,
+                content=assistant_input,
             )
+
             assistant_response, _ = society.step(assistant_msg)
-            print(f'[AI Assistant] {assistant_response.msg.content}')
+            assistant_content = assistant_response.msg.content.strip()
+
+
             if assistant_response.terminated:
                 break
+            if "CAMEL_TASK_DONE" in user_response.msg.content:
+                break
+            if "CAMEL_TASK_DONE" in assistant_response.msg.content:
+                break
+            # 准备下一轮输入
             input_msg = assistant_response.msg
-
+            output_msg += f"第{round_idx}轮养殖员的输出:\n{user_content}\n" + f"第{round_idx}轮专家顾问的输出:\n{assistant_content}\n"
+        logger.info(f"最终的对话结果:\n{output_msg}\n")
+        return output_msg
+    
 if __name__ == "__main__":
     Agent = ChatRAGAgent()
     query = input("请输入问题：")

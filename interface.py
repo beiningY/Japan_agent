@@ -1,6 +1,5 @@
 import gradio as gr
-from main import main  
-
+from main import advanced_agents, simple_agents
 
 with gr.Blocks(title="南美白对虾问答助手") as demo:
     gr.Markdown("## 🦐 南美白对虾问答助手")
@@ -9,13 +8,15 @@ with gr.Blocks(title="南美白对虾问答助手") as demo:
     with gr.Row():
         with gr.Column():
             user_input = gr.Textbox(label="用户提问", placeholder="请输入你的问题…", lines=5)
-            submit_btn = gr.Button("Submit")
+            submit_btn = gr.Button("Submit(simple)")
+            submit_btn2 = gr.Button("Submit(advanced)")
             clear_btn = gr.Button("Clear")
 
         with gr.Column():
             output = gr.Textbox(label="AI 回答", lines=10, interactive=False)
 
-    submit_btn.click(fn=main, inputs=user_input, outputs=output)
+    submit_btn.click(fn=simple_agents, inputs=user_input, outputs=output)
+    submit_btn2.click(fn=advanced_agents, inputs=user_input, outputs=output)
     clear_btn.click(fn=lambda: ("", ""), inputs=[], outputs=[user_input, output])
 
 demo.launch(

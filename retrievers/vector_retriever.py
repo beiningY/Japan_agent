@@ -95,6 +95,14 @@ class RAG:
         end_time = time.time()
         logger.info(f"{data_path}的embedding处理时间: {end_time - start_time:.4f} 秒")
 
+    def embedding_auto(self, data):
+        start_time = time.time()
+        for chunk in data:
+            self.vr.process(content=chunk, should_chunk=False)
+
+        end_time = time.time()
+        logger.info(f"embedding处理时间: {end_time - start_time:.4f} 秒")
+
     def rag_retrieve(self, query, topk=None):
         """进行检索"""
         logger.info(f"RAG检索开始，检索的query是：{query}")

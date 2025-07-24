@@ -85,7 +85,7 @@ class PlanAgent:
             # 尝试解析JSON
             result_dict = json.loads(content)
             result = IntentResult(**result_dict)
-            return result.dict()
+            return result
             
         except json.JSONDecodeError as e:
             logger.error(f"JSON解析错误: {e}")
