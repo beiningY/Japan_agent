@@ -1,7 +1,7 @@
 from pathlib import Path
 import json
 from embeddings.vr_chunking import chunk_data_for_log
-from retrievers import RAG
+from rag_pipeline.handle_rag.vector_retriever import RAG
 
 def clean_log(log):
     clean_text = log.replace('\n', '') 

@@ -5,10 +5,10 @@ from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from camel.messages import BaseMessage
 from camel.societies import RolePlaying 
-from retrievers import RAG
+from rag_pipeline.handle_rag.vector_retriever import RAG
 import logging
 import re
-from agents.should_retriever import ShouldRetriever
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -21,7 +21,7 @@ class ChatRAGAgent:
         self.load_config()
         self.init_models()
         self.rag = RAG(self.config.get("collection_name"))
-        self.should_retriever_agent = ShouldRetriever()
+
     def load_env(self):
         """加载环境变量"""
         load_dotenv(dotenv_path=".env")
@@ -34,12 +34,8 @@ class ChatRAGAgent:
    
     def load_config(self):
         """加载配置文件"""
-        try:
-            with open("utils/config.json", "r", encoding="utf-8") as f:
-                self.config = json.load(f)
-        except FileNotFoundError:
-            print("警告: 未找到 config.json 文件，将使用默认值。")
-            self.config = {}
+        with open("utils/config.json", "r", encoding="utf-8") as f:
+            self.config = json.load(f)  
 
 
     def init_models(self):
@@ -120,8 +116,9 @@ class ChatRAGAgent:
             rag_query = instruction_match.group(1).strip()
         else:
             rag_query = query
-        rag_contexts = self.should_retriever_agent.process(rag_query)
-
+        
+        context = self.rag.rag_retrieve(rag_query)
+        rag_contexts = query + "\n相关知识内容如下，请结合以下信息作答，如果信息与问题无关可忽略。：\n" + "\n".join(context)
         return rag_contexts
 
     def chat(self, query: str, round_limit: int = 10):

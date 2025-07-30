@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from camel.agents import ChatAgent
-from retrievers import RAG
+from rag_pipeline.handle_rag.vector_retriever import RAG
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from datetime import datetime
@@ -22,7 +22,7 @@ class IntentResult(BaseModel):
     intent: List[str]  
     # knowledgebase_name: Optional[dict] = None
     knowledgebase_name: Optional[dict] = {"all_data": 5}
-    database_query: Optional[str] = None
+
     
 class PlanAgent:
     def __init__(self):

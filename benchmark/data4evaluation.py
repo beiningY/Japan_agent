@@ -1,4 +1,4 @@
-from retrievers import RAG
+from rag import RAG
 from camel.agents import ChatAgent
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType

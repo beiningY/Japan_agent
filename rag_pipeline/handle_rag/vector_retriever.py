@@ -37,9 +37,9 @@ class ModelManager:
     def get_tokenizer(self):
         if self._tokenizer is None:
             self._load_config()
-            logger.info("正在加载tokenizer...")
+            logger.info("正在加载tokenizer模型...")
             self._tokenizer = AutoTokenizer.from_pretrained("models/multilingual-e5-large")
-            logger.info("tokenizer加载完成")
+            logger.info("tokenizer模型加载完成")
         return self._tokenizer
     
     def _load_config(self):
@@ -65,7 +65,7 @@ class RAG:
         embedding_model = self.model_manager.get_embedding_model()
         self.vector_storage = QdrantStorage(
             vector_dim=embedding_model.get_output_dim(),
-            path="data/knowledge_base",  
+            path="data/vector_data",  
             collection_name=self.collection_name,
         )
         self.vr = VectorRetriever(embedding_model=embedding_model, storage=self.vector_storage)

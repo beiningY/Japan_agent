@@ -56,3 +56,10 @@ class SummarizeAgent:
 """
         response = self.agent.step(input)
         return response.msg.content
+if __name__ == "__main__":
+    Agent = SummarizeAgent()
+    query = input("请输入问题：")
+    answer = input("请输入答案：")
+    chat_result = input("请输入对话：")
+    result = Agent.reponse_agent(query, answer, chat_result)
+    print(result)

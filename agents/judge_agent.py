@@ -36,8 +36,7 @@ class JudgeAgent:
         """初始化回答和判断智能体"""
         self.agent = ChatAgent(
             system_message=(
-                "你是一个善于判断回答质量的助手，你的任务是判断下面这个回答是否详细地解决了用户提出的问题。"
-                "如果回答详细解决了问题，请回复：'YES'，否则如果需要进一步深度讨论再回答请回复：'NO'。请只回答YES或NO，不要解释。"
+                "你是一个善于判断回答质量的助手，你的任务是判断下面这个回答是否全面、准确和合理地回答了用户提出的问题。"
             ),
             model=ModelFactory.create(
                 model_platform=ModelPlatformType.OPENAI,
@@ -59,15 +58,16 @@ class JudgeAgent:
         judgement_prompt = (
             f"用户的问题是：{query}\n"
             f"回答是：{answer}\n"
-            f"请判断回答是否准确、全面地回答了问题。"
+            f"如果需要再进行深度讨论和进一步检索等方法请回复：'NO'。如果答案已经非常详细并且全面准确解决了问题，请回复：'YES'.如果回答'YES'首先需要确保用户的问题非常非常简单并且回答的过程不需要推理不需要思考。否则请回答'NO'。请只回答YES或NO，不要解释。"
         )
-        response = self.agent.step(judgement_prompt)
-        result = response.msg.content.strip().upper()
+        #response = self.agent.step(judgement_prompt)
+        #result = response.msg.content.strip().upper()
+        result = "NO"
         if result == "YES":
             logger.info("判断结果：单智能体回答已满足问题需求")
             return answer
         elif result == "NO":
-            logger.info("判断结果：单智能体回答不满足问题需求")
+            logger.info("判断结果：需要多智能体进行进一步分析")
             output = self.run(query, answer)
             return output
         else:

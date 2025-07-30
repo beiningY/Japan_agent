@@ -5,9 +5,15 @@ from dotenv import load_dotenv
 import os
 import json
 import logging
-from retrievers import RAG
+from rag_pipeline.handle_rag.vector_retriever import RAG
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger("AgentWithRAG")
+logger.setLevel(logging.INFO)
 
 
 class AgentWithRAG:
@@ -43,7 +49,7 @@ class AgentWithRAG:
         )
     def rag_context(self, query: str):
         context = self.rag.rag_retrieve(query)
-        query = query + "\n相关信息有：\n" + "\n".join(context)
+        query = query + "\n相关知识内容如下，请结合以下信息作答，如果信息与问题无关可忽略。：\n" + "\n".join(context)
         return query
 
 
@@ -56,9 +62,12 @@ class AgentWithRAG:
     
 if __name__ == "__main__":
     agent = AgentWithRAG()
-    query = input("请输入问题：")
-    context = agent.rag_context(query)
-    response = agent.agent.step(context)
-    result = response.msg.content
-    print(result)
-    logger.info(result)
+    while True:
+        query = input("请输入问题：")
+        if query == "exit":
+            break
+        context = agent.rag_context(query)
+        response = agent.agent.step(context)
+        result = response.msg.content
+        print(result)
+        logger.info(result)

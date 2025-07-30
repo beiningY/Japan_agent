@@ -1,4 +1,4 @@
 from sentence_transformers import SentenceTransformer
 
-model = SentenceTransformer("BAAI/bge-large-zh-v1.5")
-model.save("models/bge-large-zh-v1.5")
+model = SentenceTransformer("intfloat/multilingual-e5-large-instruct")
+model.save("models/multilingual-e5-large-instruct")

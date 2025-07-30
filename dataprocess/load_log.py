@@ -6,7 +6,7 @@ import argparse
 import logging
 import requests
 from dataprocess.clean_log import clean_log_file
-from retrievers import RAG
+from rag_pipeline.handle_rag.vector_retriever import RAG
 from embeddings.vr_chunking import chunk_data_for_log
 
 logging.basicConfig(

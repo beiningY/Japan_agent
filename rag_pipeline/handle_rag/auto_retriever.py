@@ -1,5 +1,5 @@
 from camel.loaders import UnstructuredIO
-from retrievers import RAG
+from rag import RAG
 import os
 from camel.toolkits.excel_toolkit import ExcelToolkit
 import json
