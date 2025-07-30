@@ -9,8 +9,12 @@ from dataprocess.clean_log import clean_log_file
 from retrievers import RAG
 from embeddings.vr_chunking import chunk_data_for_log
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("EmbeddingLogDaily")
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("get_log")
+logger.setLevel(logging.INFO)
 
 
 #====================获取未添加的日志数据===========================
@@ -22,8 +26,8 @@ def extract_date_from_chunk_id(chunk_id):
 
 def sort_log_data():
     """对日志数据按日期排序"""
-    #data_path = "data/cleand_data/data_json_log.json"
-    data_path = "data/cleand_data/test_json_log.json"
+    data_path = "data/cleand_data/data_json_log.json"
+    #data_path = "data/cleand_data/test_json_log.json"
     with open(data_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     sorted_data = sorted(data, key=lambda x: extract_date_from_chunk_id(x['chunk_id']), reverse=True)
@@ -71,7 +75,7 @@ def fetch_logs(log_filenames: list[str]) -> list[dict]:
             "filenames": log_filenames
         }
         response = requests.post(url, json=payload)
-        return response.json()
+        return response.json() 
     except Exception as e:
         logger.error(f"请求日志失败: {e}")
         return []
@@ -83,7 +87,7 @@ def download_log(log_list):
         if log['content'] != '':
             date = log['name']
             content = log['content']
-            log_path = f"data/raw_data/test/{date}"
+            log_path = f"data/raw_data/log/{date}"
             with open(log_path, 'w', encoding='utf-8') as f:
                 f.write(content)
             log_paths.append(log_path)
@@ -115,15 +119,18 @@ def structure_log(log_list):
         logger.info("创建新的日志数据文件")
     
     # 保存更新后的数据
-    with open('data/cleand_data/test_json_log.json', 'w', encoding='utf-8') as f:
+    with open('data/cleand_data/data_json_log.json', 'w', encoding='utf-8') as f:
         json.dump(logs_data, f, ensure_ascii=False, indent=2)
-    logger.info("已将最新操作日志添加到test_json_log.json文件中")
+    logger.info("已将最新操作日志添加到data_json_log.json文件中")
     return data
 
 def embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500):
     """向量化日志数据"""
     logs_data = structure_log(log_list)
-    # 向量化到all_data库
+    embedding_for_log = RAG(collection_name="log")
+    embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
+    logger.info("已将最新操作日志向量化到log库中")
+    '''# 向量化到all_data库
     embedding_for_log = RAG(collection_name="all_data")
     embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
     logger.info("已将最新操作日志向量化到all_data库中")
@@ -131,18 +138,19 @@ def embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500):
     # 向量化到log库
     embedding_for_log = RAG(collection_name="log")
     embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)   
-    logger.info("已将最新操作日志向量化到log库中")
+    logger.info("已将最新操作日志向量化到log库中")'''
 
 #====================运行定时日志获取和处理===========================
 def run_daily_log_fetch():
     """运行日常日志获取和处理"""
-    missing_logs = get_unadded_log_list()  
+    missing_logs = get_unadded_log_list() 
     if not missing_logs:
         logger.info("已更新到最新版日志")
         return
     log_list = []
-    logger.info(f"正在请求 {len(missing_logs)} 个日志文件...")
+    logger.info(f"正在请求日志文件{(missing_logs)}...")
     logs_data = fetch_logs(missing_logs)
+    print(logs_data)
     logs_data = logs_data["data"] 
 
     for filename, content in list(logs_data.items()): 
@@ -177,7 +185,7 @@ def run_scheduler(time_str="23:59"):
     try:
         while True:
             schedule.run_pending()
-            time.sleep(3600)  # 每小时检查一次
+            time.sleep(60)  
     except KeyboardInterrupt:
         logger.info("\n定时任务已停止")
 

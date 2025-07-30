@@ -3,7 +3,8 @@
 from flask import Flask, request, jsonify
 import logging
 import threading
-
+from werkzeug.utils import secure_filename
+import os
 from main import main  as run 
 from agents import ChatMultiAgent
 # --- 初始化 ---
@@ -14,8 +15,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger("CamelAgentAPI")
 logger.setLevel(logging.INFO)
+
+
 chat_agent = None
 is_ready = False # <-- 新增一个状态标志
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  
+UPLOAD_FOLDER = 'data/raw_data/uploads'
+ALLOWED_EXTENSIONS = {'txt', 'pdf'}
+# 确保上传目录存在
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def initialize_agent():
     """在后台线程中执行耗时的初始化。"""
@@ -34,6 +42,9 @@ def initialize_agent():
     except Exception as e:
         logger.error(f"后台初始化 ChatMultiAgent 失败: {e}", exc_info=True)
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # --- API 端点 ---
 @app.route('/api/run_query', methods=['POST'])
@@ -71,6 +82,46 @@ def run_query():
         return jsonify({"error": f"执行查询时发生内部错误: {str(e)}"}), 500
 
 
+@app.route('/api/upload', methods=['POST'])
+def upload_file():
+    # 检查文件是否存在
+    if 'file' not in request.files:
+        return jsonify({"status": "error", "message": "未找到文件字段"}), 400
+    
+    file = request.files['file']
+    
+    # 检查文件名
+    if file.filename == '':
+        return jsonify({"status": "error", "message": "未选择文件"}), 400
+    
+    # 验证文件类型
+    if not (file and allowed_file(file.filename)):
+        return jsonify({
+            "status": "error",
+            "message": f"不支持的文件类型，允许: {', '.join(ALLOWED_EXTENSIONS)}"
+        }), 400
+    
+    try:
+        # 安全处理文件名
+        filename = secure_filename(file.filename)
+        save_path = os.path.join(UPLOAD_FOLDER, filename)
+        
+        # 保存文件
+        file.save(save_path)
+        
+        # 返回成功响应
+        return jsonify({
+            "status": "success",
+            "filename": new_filename,
+            "url": f"/uploads/{new_filename}"
+        }), 200
+        
+    except Exception as e:
+        app.logger.error(f"文件上传失败: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": "服务器处理文件失败"
+        }), 500
 
 
 
