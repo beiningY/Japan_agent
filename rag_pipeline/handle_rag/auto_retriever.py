@@ -9,7 +9,7 @@ print(result)
 open("results.json", "w").write(json.dumps(result, ensure_ascii=False))
 
 
-"""rag = None
+rag = None
 for file in os.listdir("data/raw_data/bank"):
     # 使用UnstructuredIO解析文件, 支持.txt, .md, .rst, .org, .pdf, .doc, .docx, .odt, .rtf, .csv, .tsv, .xlsx, .ppt, .pptx, .jpg, .jpeg, .png, .tiff, .bmp, url
     elements = UnstructuredIO.parse_file_or_url(f"data/raw_data/bank/{file}")
@@ -29,5 +29,5 @@ from unstructured.partition.xml import partition_xml
 
 elements1 = partition_xml(filename="data/raw_data/test/test2.xlsx", xml_keep_tags=True)
 print(elements1)
-from unstructured.file_utils.model import FileType"""
+from unstructured.file_utils.model import FileType
 

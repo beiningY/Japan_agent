@@ -21,6 +21,29 @@ def test_get_operation_logs():
     print("操作日志测试结果:")
     print(json.dumps(response.json(), ensure_ascii=False, indent=2))
 
+
+def test_run_query():
+    BASE_URL = "http://localhost:5001/api/run_query"
+    payload = {
+        "query": "请简要介绍一下陆上养殖系统"
+    }
+
+    try:
+        # 发送 POST 请求
+        response = requests.post(BASE_URL, json=payload)
+
+        # 检查响应状态
+        if response.status_code == 200:
+            print("✅ 成功返回结果：")
+            print(response.json())
+        else:
+            print(f"❌ 请求失败，状态码: {response.status_code}")
+            print(response.json())
+
+    except Exception as e:
+        print(f"请求出错: {e}")
+
 if __name__ == "__main__":
-    test_upload_files()
-    test_get_operation_logs()
+    #test_upload_files()
+    #test_get_operation_logs()
+    test_run_query()

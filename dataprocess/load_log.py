@@ -26,8 +26,8 @@ def extract_date_from_chunk_id(chunk_id):
 
 def sort_log_data():
     """对日志数据按日期排序"""
-    data_path = "data/cleand_data/data_json_log.json"
-    #data_path = "data/cleand_data/test_json_log.json"
+    data_path = "data/json_data/data_json_log.json"
+    #data_path = "data/json_data/test_json_log.json"
     with open(data_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     sorted_data = sorted(data, key=lambda x: extract_date_from_chunk_id(x['chunk_id']), reverse=True)
@@ -112,14 +112,14 @@ def structure_log(log_list):
     data = logs_data[:]
     # 读取现有数据
     try:
-        with open('data/cleand_data/test_json_log.json', 'r', encoding='utf-8') as f:
+        with open('data/json_data/data_json_log.json', 'r', encoding='utf-8') as f:
             existing_data = json.load(f)
             logs_data.extend(existing_data)
     except FileNotFoundError:
         logger.info("创建新的日志数据文件")
     
     # 保存更新后的数据
-    with open('data/cleand_data/data_json_log.json', 'w', encoding='utf-8') as f:
+    with open('data/json_data/data_json_log.json', 'w', encoding='utf-8') as f:
         json.dump(logs_data, f, ensure_ascii=False, indent=2)
     logger.info("已将最新操作日志添加到data_json_log.json文件中")
     return data
@@ -128,6 +128,9 @@ def embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500):
     """向量化日志数据"""
     logs_data = structure_log(log_list)
     embedding_for_log = RAG(collection_name="log")
+    embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
+    logger.info("已将最新操作日志向量化到log库中")
+    embedding_for_log = RAG(collection_name="all_data")
     embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
     logger.info("已将最新操作日志向量化到log库中")
     '''# 向量化到all_data库

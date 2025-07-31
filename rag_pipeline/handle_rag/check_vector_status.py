@@ -18,18 +18,15 @@ def check_qdrant_collections():
     
     # 检查不同的存储路径
     storage_paths = [
-        "data/knowledge_base",
-        "camel/retrievers"
+        "data/vector_data"
     ]
-    
+    # 尝试加载embedding模型来获取向量维度
+    embedding_model = SentenceTransformerEncoder(model_name="models/multilingual-e5-large")
+    vector_dim = embedding_model.get_output_dim()
     for storage_path in storage_paths:
         if os.path.exists(storage_path):
             print(f"\n 检查存储路径: {storage_path}")
             try:
-                # 尝试加载embedding模型来获取向量维度
-                embedding_model = SentenceTransformerEncoder(model_name="models/multilingual-e5-large")
-                vector_dim = embedding_model.get_output_dim()
-                
                 # 检查该路径下的所有集合
                 if os.path.exists(os.path.join(storage_path, "meta.json")):
                     with open(os.path.join(storage_path, "meta.json"), "r") as f:
@@ -70,16 +67,17 @@ def check_qdrant_collections():
                                     try:
                                         points = storage.client.scroll(
                                             collection_name=collection_name,
-                                            limit=3,
+                                            limit=20,
                                             with_payload=True,
                                             with_vectors=False
                                         )[0]
                                         
                                         if points:
                                             print(f"      示例数据:")
-                                            for i, point in enumerate(points[:2]):
+                                            for i, point in enumerate(points):
                                                 payload = point.payload
                                                 print(f"        示例 {i+1}: {payload.get('text', '无文本')[:100]}...")
+                                                print(payload)
                                     except Exception as e:
                                         print(f"      无法获取示例数据: {e}")
                                 else:
@@ -151,18 +149,6 @@ def main():
     """主函数"""
     # 检查所有集合
     check_qdrant_collections()
-    
-    # 检查配置文件中的默认集合
-    try:
-        with open("utils/config.json", "r", encoding="utf-8") as f:
-            config = json.load(f)
-        default_collection = config.get("collection_name", "all_data")
-        
-        print(f"\n 检查默认集合: {default_collection}")
-        check_specific_collection(default_collection)
-        
-    except Exception as e:
-        print(f"无法读取配置文件: {e}")
 
 if __name__ == "__main__":
     main() 

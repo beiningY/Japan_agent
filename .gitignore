@@ -8,3 +8,6 @@ __pycache__/
 
 # 忽略模型目录
 models/
+
+# 忽略向量数据库
+storage.sqlite

@@ -89,7 +89,9 @@ class KnowledgeBase:
             folder_path,
             loader_cls=UnstructuredFileLoader,
             use_multithreading=True,
-            recursive=True
+            recursive=True,
+            max_concurrency=2,  # 控制线程数
+            show_progress=True,  # 显示进度（取决于版本）
         )
         docs = loader.load()
         chunks = self._load_and_split(docs)

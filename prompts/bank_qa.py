@@ -4,19 +4,14 @@ from langchain_openai import ChatOpenAI
 import os
 from dotenv import load_dotenv
 load_dotenv()
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-# 配置路径
-DATA_DIR = "data/raw_data"
-INITIAL_DATA = os.path.join(DATA_DIR, "bank")
-UPDATES_DATA = os.path.join(DATA_DIR, "updates")
-
-# 创建知识库实例
-kb = KnowledgeBase(
-    persist_path="data/vector_data",
-    collection_name="bank"
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
+logger = logging.getLogger("JapanQA")
+logger.setLevel(logging.INFO)
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.4, max_tokens=None)
 
 
 def ask(question: str, k: int = 5):
@@ -50,7 +45,20 @@ def ask(question: str, k: int = 5):
     return answer
 
 
-if __name__ == "__main__":
+def main(query):
+    os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+    # 配置路径
+    DATA_DIR = "data/raw_data"
+    INITIAL_DATA = os.path.join(DATA_DIR, "bank")
+    UPDATES_DATA = os.path.join(DATA_DIR, "updates")
+
+    # 创建知识库实例
+    kb = KnowledgeBase(
+        persist_path="data/vector_data",
+        collection_name="bank"
+    )
+
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.4, max_tokens=None)
     # 第一次运行：初始化知识库（只需一次）
     # kb.initialize_from_folder(INITIAL_DATA)
 
@@ -59,6 +67,8 @@ if __name__ == "__main__":
     # kb.add_folder(UPDATES_DATA)
 
     # 任意次数提问
-    ask("什么是银行？")
+    ask(query)
     # ask("贷款有哪些类型？")
     # ask("最新的反洗钱政策是什么？")
+if __name__ == "__main__":
+    main(query, k=10)
