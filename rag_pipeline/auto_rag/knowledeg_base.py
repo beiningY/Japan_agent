@@ -91,7 +91,7 @@ class KnowledgeBase:
             use_multithreading=True,
             recursive=True,
             max_concurrency=2,  # 控制线程数
-            show_progress=True,  # 显示进度（取决于版本）
+            show_progress=True,  
         )
         docs = loader.load()
         chunks = self._load_and_split(docs)

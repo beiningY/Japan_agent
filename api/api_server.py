@@ -1,4 +1,4 @@
-# /usr/sarah/Camel_agent/api_server.py
+
 import os
 from flask import Flask, request, jsonify
 import logging
@@ -13,7 +13,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("AgentAPI")
 logger.setLevel(logging.INFO)
-app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  
+ 
 UPLOAD_FOLDER = 'data/raw_data/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf'}
 # 确保上传目录存在
@@ -43,9 +43,11 @@ def initialize_tokenizer():
         loaded_tokenizer = True
     except Exception as e:
         logger.error(f"tokenizer初始化失败: {e}", exc_info=True)
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/api/run_query', methods=['POST'])
 def run_query():
     if not loaded_model:
