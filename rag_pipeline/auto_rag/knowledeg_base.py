@@ -8,7 +8,13 @@ from langchain_qdrant import QdrantVectorStore
 from langchain_huggingface import HuggingFaceEmbeddings
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
-
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("AutoKnowledgeBaseAPI")
+logger.setLevel(logging.INFO)
 
 class KnowledgeBase:
     """
@@ -40,13 +46,13 @@ class KnowledgeBase:
 
     def _initialize(self):
         """初始化 embedding 模型和向量客户端"""
-        print(f"加载 Embedding 模型: {self.embedding_model_path}")
+        logger.info(f"加载 Embedding 模型: {self.embedding_model_path}")
         self.embeddings = HuggingFaceEmbeddings(
             model_name=self.embedding_model_path,
             encode_kwargs={"batch_size": 16}
         )
 
-        print(f"连接向量数据库: {self.persist_path}")
+        logger.info(f"连接向量数据库: {self.persist_path}")
         self.client = QdrantClient(path=self.persist_path)
         self._connect_or_create_collection()
 
@@ -54,9 +60,9 @@ class KnowledgeBase:
         """创建或连接到 collection"""
         try:
             self.client.get_collection(self.collection_name)
-            print(f"已连接到集合: {self.collection_name}")
+            logger.info(f"已连接到集合: {self.collection_name}")
         except:
-            print(f"创建新集合: {self.collection_name}")
+            logger.info(f"创建新集合: {self.collection_name}")
             self.client.create_collection(
                 collection_name=self.collection_name,
                 vectors_config=VectorParams(size=self.vector_size, distance=Distance.COSINE)
@@ -84,7 +90,7 @@ class KnowledgeBase:
         if not os.path.exists(folder_path):
             raise FileNotFoundError(f"文件夹不存在: {folder_path}")
 
-        print(f"初始化知识库,加载文档: {folder_path}")
+        logger.info(f"初始化知识库,加载文档: {folder_path}")
         loader = DirectoryLoader(
             folder_path,
             loader_cls=UnstructuredFileLoader,
@@ -96,29 +102,29 @@ class KnowledgeBase:
         docs = loader.load()
         chunks = self._load_and_split(docs)
 
-        print(f"加载 {len(docs)} 个文档 → 切分为 {len(chunks)} 个文本块")
+        logger.info(f"加载 {len(docs)} 个文档 → 切分为 {len(chunks)} 个文本块")
         self.vectorstore.add_documents(chunks)
-        print("知识库构建完成！")
+        logger.info("知识库构建完成！")
 
     def add_file(self, file_path: str):
         """添加单个新文件"""
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"文件不存在: {file_path}")
 
-        print(f"添加新文件: {file_path}")
+        logger.info(f"添加新文件: {file_path}")
         loader = UnstructuredFileLoader(file_path)
         docs = loader.load()
         chunks = self._load_and_split(docs)
         self.vectorstore.add_documents(chunks)
-        print(f"文件 '{os.path.basename(file_path)}' 已添加")
+        logger.info(f"文件 '{os.path.basename(file_path)}' 已添加")
 
     def add_folder(self, folder_path: str):
         """添加整个文件夹的文档"""
         if not os.path.exists(folder_path):
-            print(f"[!] 文件夹不存在，跳过: {folder_path}")
+            logger.info(f"[!] 文件夹不存在，跳过: {folder_path}")
             return
 
-        print(f"添加新文件夹: {folder_path}")
+        logger.info(f"添加新文件夹: {folder_path}")
         loader = DirectoryLoader(
             folder_path,
             loader_cls=UnstructuredFileLoader,
@@ -128,12 +134,12 @@ class KnowledgeBase:
         docs = loader.load()
         chunks = self._load_and_split(docs)
         self.vectorstore.add_documents(chunks)
-        print(f"文件夹 '{os.path.basename(folder_path)}' 中所有文档已添加")
+        logger.info(f"文件夹 '{os.path.basename(folder_path)}' 中所有文档已添加")
 
     def retrieve(self, query: str, k: int = 5) -> List[Document]:
         """检索最相关的文档片段"""
-        print(f"检索中: '{query}' (top-{k})")
+        logger.info(f"检索中: '{query}' (top-{k})")
         query = f"query: {query}"
         results = self.vectorstore.similarity_search(query, k=k)
-        print(f"检索到 {len(results)} 条相关片段")
+        logger.info(f"检索到 {len(results)} 条相关片段")
         return results

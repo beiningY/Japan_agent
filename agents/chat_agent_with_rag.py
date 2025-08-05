@@ -42,7 +42,7 @@ class ChatRAGAgent:
         """初始化模型"""
         self.model=ModelFactory.create(
                 model_platform=ModelPlatformType.OPENAI,
-                model_type=ModelType.GPT_4O_MINI,
+                model_type=ModelType.GPT_4O,
                 api_key=self.api_key,
                 model_config_dict={"temperature": self.config.get("temperature", 0.4), "max_tokens": self.config.get("max_tokens", 4096)},
             )
@@ -121,7 +121,7 @@ class ChatRAGAgent:
         rag_contexts = query + "\n相关知识内容如下，请结合以下信息作答，如果信息与问题无关可忽略。：\n" + "\n".join(context)
         return rag_contexts
 
-    def chat(self, query: str, round_limit: int = 10):
+    def chat(self, query: str, round_limit: int = 5):
         """主对话逻辑：RAG增强的多轮用户-专家角色扮演对话"""
         society = self.create_society(query)
         input_msg = society.init_chat()

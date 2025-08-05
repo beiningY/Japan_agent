@@ -40,7 +40,7 @@ class JudgeAgent:
             ),
             model=ModelFactory.create(
                 model_platform=ModelPlatformType.OPENAI,
-                model_type=ModelType.GPT_4O_MINI,
+                model_type=ModelType.GPT_4O,
                 api_key=self.api_key,
                 model_config_dict={"temperature": 0.4, "max_tokens": 4096},
             )

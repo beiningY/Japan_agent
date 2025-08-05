@@ -42,7 +42,7 @@ class AgentWithRAG:
             system_message="你是一个南美白对虾的养殖专家，你的任务是根据用户的问题，结合养殖手册和操作日志，给出专业的养殖建议。",
             model=ModelFactory.create(
                 model_platform=ModelPlatformType.OPENAI,
-                model_type=ModelType.GPT_4O_MINI,
+                model_type=ModelType.GPT_4O,
                 api_key=self.api_key,
                 model_config_dict={"temperature": 0.4, "max_tokens": 4096},
             )

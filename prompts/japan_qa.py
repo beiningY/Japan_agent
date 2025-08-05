@@ -26,7 +26,7 @@ def simple_agent(query: str):
 
 def judge_agent(query: str, answer: str):
     """判断是否需要启用多智能体写作场景"""
-    logger.info(f"判断是否需要启用多智能体写作场景...")
+    logger.info(f"判断是否需要启用多智能体协作场景...")
     judge_agent = JudgeAgent()
     result = judge_agent.judge(query, answer)
     return result

@@ -4,7 +4,11 @@ from flask import Flask, request, jsonify
 import logging
 import threading
 from rag_pipeline.handle_rag.vector_retriever import ModelManager
-from prompts.japan_qa import main  as run 
+from prompts.japan_qa import main  as run_japan
+from prompts.bank_qa import main as run_bank
+import torch
+import gc
+
 # --- 初始化 ---
 app = Flask(__name__)
 logging.basicConfig(
@@ -13,12 +17,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger("AgentAPI")
 logger.setLevel(logging.INFO)
- 
-UPLOAD_FOLDER = 'data/raw_data/uploads'
-ALLOWED_EXTENSIONS = {'txt', 'pdf'}
-# 确保上传目录存在
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-# 全局预热（只执行一次）
+
+
+
 loaded_model = False
 loaded_tokenizer = False
 
@@ -50,8 +51,6 @@ def allowed_file(filename):
 
 @app.route('/api/run_query', methods=['POST'])
 def run_query():
-    if not loaded_model:
-        return jsonify({"error": "服务初始化中，请稍后..."}), 503
 
     if not request.is_json:
         return jsonify({"error": "必须为 JSON 格式"}), 400
@@ -65,22 +64,48 @@ def run_query():
         return jsonify({"error": "查询内容不能为空"}), 400
 
     logger.info(f"收到查询: {query}")
-    try:
-        response = run(query)
-        content = getattr(response, 'content', str(response))
-        return jsonify({"result": content})
-    except Exception as e:
-        logger.exception("运行失败")
-        return jsonify({"error": "服务器内部错误"}), 500
+    agent_type = data['agent_type']
+    if not agent_type:
+        return jsonify({"error": "智能体类型不能为空"}), 400
+    if agent_type == 'japan':
+        try:
+            torch.cuda.empty_cache()
+            gc.collect()
+            response = run_japan(query)
+            content = getattr(response, 'content', str(response))
+            return jsonify({"result": content})
+        except Exception as e:
+            logger.exception("运行失败")
+            return jsonify({"error": "服务器内部错误"}), 500
+        finally:
+            # 清理日本模型显存
+            torch.cuda.empty_cache()
+            gc.collect()
+
+    elif agent_type == 'bank':
+        try:
+            torch.cuda.empty_cache()
+            gc.collect()
+            response = run_bank(query)
+            content = getattr(response, 'content', str(response))
+            return jsonify({"result": content})
+        except Exception as e:
+            logger.exception("运行失败")
+            return jsonify({"error": "服务器内部错误"}), 500
+        finally:
+            # 清理银行模型显存
+            torch.cuda.empty_cache()
+            gc.collect()
+
     
-@app.route('/api/upload', methods=['POST'])
+"""@app.route('/api/upload', methods=['POST'])
 def upload_file():
+    UPLOAD_FOLDER = 'data/raw_data/uploads'
+    ALLOWED_EXTENSIONS = {'txt', 'pdf'}
     # 检查文件是否存在
     if 'file' not in request.files:
         return jsonify({"status": "error", "message": "未找到文件字段"}), 400
-    
     file = request.files['file']
-    
     # 检查文件名
     if file.filename == '':
         return jsonify({"status": "error", "message": "未选择文件"}), 400
@@ -108,11 +133,59 @@ def upload_file():
         return jsonify({
             "status": "error",
             "message": "服务器处理文件失败"
-        }), 500
+        }), 500"""
+
+# 预定义知识库配置
+KB_CONFIG = {
+    "cede3e0b-6447-4418-9c80-97129710beb5": {
+        "name": "银行相关",
+        "path": "data/raw_data/bank"
+    },
+    "25241d69-33fd-465d-8fd1-18d34865248c": {
+        "name": "陆上养殖",
+        "path": "data/raw_data/japan_shrimp"
+    }
+}
+
+@app.route("/api/get_knowledge_base_list", methods=["GET"])
+def get_kb_list():
+    # 从查询参数获取 kb_ids（格式：?kb_ids=id1,id2,id3）
+    kb_ids_str = request.args.get("kb_ids", "")
+    if not kb_ids_str:
+        return jsonify({"error": "缺少 kb_ids 参数"}), 400
+    
+    kb_ids = kb_ids_str.split(",")
+    result = []
+    
+    for kb_id in kb_ids:
+        if kb_id not in KB_CONFIG:
+            return jsonify({"error": f"无效的 kb_id: {kb_id}"}), 404
+            logger.info("运行失败")
+        kb_path = KB_CONFIG[kb_id]["path"]
+        if not os.path.isdir(kb_path):
+            return jsonify({"error": f"知识库路径不存在: {kb_path}"}), 404
+            logger.info("运行失败")
+        try:
+            files = [
+                f for f in os.listdir(kb_path) 
+                if not f.startswith('.') and not f.startswith('__')
+            ]
+            
+            result.append({
+                "kb_id": kb_id,
+                "kb_name": KB_CONFIG[kb_id]["name"],
+                "files": files
+            })
+        except Exception as e:
+            return jsonify({"error": f"读取文件列表失败: {str(e)}"}), 500
+            logger.info("运行失败")
+    logger.info("返回列表")
+    return jsonify({"status": "success", "data": result})
+
 # --- 启动服务 ---
 if __name__ == '__main__':
     # 启动后台初始化线程
-    init_thread = threading.Thread(target=initialize_agent)
+    init_thread = threading.Thread()
     init_thread.daemon = True 
     init_thread.start()
     

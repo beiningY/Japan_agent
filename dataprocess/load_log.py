@@ -87,7 +87,7 @@ def download_log(log_list):
         if log['content'] != '':
             date = log['name']
             content = log['content']
-            log_path = f"data/raw_data/log/{date}"
+            log_path = f"data/raw_data/japan_shrimp/{date}"
             with open(log_path, 'w', encoding='utf-8') as f:
                 f.write(content)
             log_paths.append(log_path)

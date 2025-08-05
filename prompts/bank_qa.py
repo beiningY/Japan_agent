@@ -13,15 +13,20 @@ logger = logging.getLogger("BankQA")
 logger.setLevel(logging.INFO)
 
 
-
 def ask(question: str, k: int = 5):
     """在 main 中实现问答逻辑"""
-    print(f"\n问题: {question}")
+    kb = KnowledgeBase(
+        persist_path="data/vector_data",
+        collection_name="bank"
+    )
+
+    llm = ChatOpenAI(model="gpt-4o", temperature=0.4, max_tokens=None)
+    logger.info(f"\n问题: {question}")
     contexts = kb.retrieve(question, k=k)
-    print(f"回答是{contexts}")
+    logger.info(f"检索到的是{contexts}")
     if not contexts:
         answer = "抱歉，知识库中未找到相关信息。"
-        print(f"回答: {answer}")
+        logger.info(f"回答: {answer}")
         return answer
 
     # 提取唯一源文件
@@ -41,7 +46,6 @@ def ask(question: str, k: int = 5):
 
     response = llm.invoke(messages)
     answer = response.content
-    print(f"回答:\n{answer}")
     return answer
 
 
@@ -53,12 +57,7 @@ def main(query):
     UPDATES_DATA = os.path.join(DATA_DIR, "updates")
 
     # 创建知识库实例
-    kb = KnowledgeBase(
-        persist_path="data/vector_data",
-        collection_name="bank"
-    )
 
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.4, max_tokens=None)
     # 第一次运行：初始化知识库（只需一次）
     # kb.initialize_from_folder(INITIAL_DATA)
 
@@ -67,8 +66,12 @@ def main(query):
     # kb.add_folder(UPDATES_DATA)
 
     # 任意次数提问
-    ask(query)
+    result = ask(query)
+    logger.info(f"回答:\n{result}")
     # ask("贷款有哪些类型？")
     # ask("最新的反洗钱政策是什么？")
+    return result
 if __name__ == "__main__":
-    main(query, k=10)
+    query="贷款有哪些类型？"
+    main(query)
+    
