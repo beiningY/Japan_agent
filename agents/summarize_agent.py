@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 import json
 import logging
-#问题+讨论+评论+建议
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -15,6 +15,7 @@ logger = logging.getLogger("SummarizeAgent")
 logger.setLevel(logging.INFO)
   
 class SummarizeAgent:
+    #问题+讨论+评论+建议
     def __init__(self):
         self.plan_agent = PlanAgent()
         self.load_env()
