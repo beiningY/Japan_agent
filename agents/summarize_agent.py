@@ -41,7 +41,7 @@ class SummarizeAgent:
             system_message="你是一个擅长总结并回答问题的专家，你的任务是根据用户的问题参考两种不同的答案，总结并给出最终的最准确的答案。",
             model=ModelFactory.create(
                 model_platform=ModelPlatformType.OPENAI,
-                model_type=ModelType.GPT_4O_MINI,
+                model_type=ModelType.GPT_4O,
                 api_key=self.api_key,
                 model_config_dict={"temperature": 0.4, "max_tokens": 4096},
             )
