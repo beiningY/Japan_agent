@@ -69,33 +69,22 @@ def run_query():
         return jsonify({"error": "智能体类型不能为空"}), 400
     if agent_type == 'japan':
         try:
-            torch.cuda.empty_cache()
-            gc.collect()
             response = run_japan(query)
             content = getattr(response, 'content', str(response))
             return jsonify({"result": content})
         except Exception as e:
             logger.exception("运行失败")
             return jsonify({"error": "服务器内部错误"}), 500
-        finally:
-            # 清理日本模型显存
-            torch.cuda.empty_cache()
-            gc.collect()
+
 
     elif agent_type == 'bank':
         try:
-            torch.cuda.empty_cache()
-            gc.collect()
             response = run_bank(query)
             content = getattr(response, 'content', str(response))
             return jsonify({"result": content})
         except Exception as e:
             logger.exception("运行失败")
             return jsonify({"error": "服务器内部错误"}), 500
-        finally:
-            # 清理银行模型显存
-            torch.cuda.empty_cache()
-            gc.collect()
 
     
 """@app.route('/api/upload', methods=['POST'])

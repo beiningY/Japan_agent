@@ -24,10 +24,7 @@ def test_get_operation_logs():
 
 def test_run_query():
     BASE_URL = "http://localhost:5001/api/run_query"
-    payload = {
-        "query": "金融服务机构发生重大欺诈行为后，需在几天内向OJK报告？",
-        "agent_type":"bank"
-    }
+    payload = {'query': '日本陆上养殖技术', 'agent_type': 'japan'}
 
     try:
         # 发送 POST 请求
