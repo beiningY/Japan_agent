@@ -9,6 +9,8 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 import logging
+import torch
+import gc
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -143,3 +145,21 @@ class KnowledgeBase:
         results = self.vectorstore.similarity_search(query, k=k)
         logger.info(f"检索到 {len(results)} 条相关片段")
         return results
+
+    def del_model(self):
+        """if hasattr(self, "embeddings") and self.embeddings is not None:
+            try:
+                # 如果 self.embeddings 是 HuggingFaceEmbeddings，真正的模型通常在 self.embeddings.client 或 self.embeddings.model
+                self.embeddings.cpu()  # ← 请根据具体结构调整
+            except Exception as e:
+                logger.warning(f"释放 CPU 时出错: {e}")"""
+
+        # 清理引用
+        self.embeddings = None
+        self.vectorstore = None
+
+        # 显存与内存回收
+        torch.cuda.empty_cache()
+        gc.collect()
+        logger.info("释放显存")
+

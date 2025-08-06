@@ -25,8 +25,8 @@ def test_get_operation_logs():
 def test_run_query():
     BASE_URL = "http://localhost:5001/api/run_query"
     payload = {
-        "query": "请介绍一下水循环养殖系统",
-        "agent_type":"japan"
+        "query": "金融服务机构发生重大欺诈行为后，需在几天内向OJK报告？",
+        "agent_type":"bank"
     }
 
     try:

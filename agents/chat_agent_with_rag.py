@@ -160,6 +160,7 @@ class ChatRAGAgent:
             input_msg = assistant_response.msg
             output_msg += f"第{round_idx}轮养殖员的输出:\n{user_content}\n" + f"第{round_idx}轮专家顾问的输出:\n{assistant_content}\n"
         logger.info(f"最终的对话结果:\n{output_msg}\n")
+        self.rag.release()
         return output_msg
     
 if __name__ == "__main__":

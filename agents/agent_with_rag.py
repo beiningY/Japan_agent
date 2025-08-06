@@ -57,6 +57,7 @@ class AgentWithRAG:
         context = self.rag_context(query)
         response = self.agent.step(context)
         result = response.msg.content
+        self.rag.release() 
         return result
     
     

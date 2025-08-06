@@ -46,6 +46,7 @@ def ask(question: str, k: int = 5):
 
     response = llm.invoke(messages)
     answer = response.content
+    kb.del_model()
     return answer
 
 

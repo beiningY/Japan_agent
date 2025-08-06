@@ -7,6 +7,8 @@ from camel.retrievers import VectorRetriever
 import os
 from transformers import AutoTokenizer
 import logging
+import torch
+import gc
 
 logging.basicConfig(
     level=logging.INFO,
@@ -50,6 +52,31 @@ class ModelManager:
     
     def get_config(self):
         return self._load_config()
+    
+    def del_model(self):
+        try:
+            if self._embedding_model is not None:
+                logger.info("尝试释放embedding模型")
+                # 尝试释放底层模型
+                if hasattr(self._embedding_model, "model"):
+                    model = self._embedding_model.model
+                    model.cpu()
+                    del model
+                del self._embedding_model
+                self._embedding_model = None
+            else:
+                logger.info("embedding模型为None，无需释放")
+
+            # 同样清理 tokenizer（可选）
+            self._tokenizer = None
+
+        except Exception as e:
+            logger.warning(f"释放模型出错: {e}")
+        finally:
+            gc.collect()
+            torch.cuda.empty_cache()
+            logger.info("模型释放完毕，已尝试清理显存")
+
 
 class RAG:
     def __init__(self, collection_name):
@@ -118,5 +145,9 @@ class RAG:
         logger.info(retrieved)
         return retrieved          
     
+    def release(self):
+        logger.info("开始释放 RAG 占用的资源")
+        self.vr = None 
+        self.vector_storage = None
+        self.model_manager.del_model()
 
-    

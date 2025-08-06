@@ -16,6 +16,7 @@ def preload_models():
     model_manager.get_embedding_model()
     logger.info("模型预热完成！")
 
+
 def simple_agent(query: str):
     """单智能体"""
     # 创建单智能体
