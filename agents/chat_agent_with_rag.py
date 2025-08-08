@@ -126,27 +126,28 @@ class ChatRAGAgent:
         return rag_contexts
 
 
-    def chat(self, query: str, round_limit: int = 5):
+    def chat(self, query: str, round_limit: int = 10):
         """主对话逻辑：RAG增强的多轮用户-专家角色扮演对话"""
         society = self.create_society(query)
         input_msg = society.init_chat()
-
-
-        output_msg = f"""任务设定：\n{query}
-用户角色: {society.user_agent.role_name}
-专家角色: {society.assistant_agent.role_name}
-"""
+        output_msg = f"""\n\n已进入多轮对话场景模式......
+主任务设定：\n{query}
+对话场景用户角色: {society.user_agent.role_name}
+对话场景专家角色: {society.assistant_agent.role_name}
+"""     
+        yield output_msg
+        # 进行多轮对话循环
         for round_idx in range(1, round_limit + 1):
 
-            # 用户先提问（由User Agent生成）
+            # 由User Agent拆分问题
             _, user_response = society.step(input_msg)
             user_content = user_response.msg.content.strip()
-            logger.info("用户上下文"+str(society.user_agent.system_message))
+            yield f"\n{society.user_agent.role_name}:\n{user_content}\n\n"
             if user_response.terminated or "CAMEL_TASK_DONE" in user_content:
-
                 break
-
-            # 调用RAG补充知识后，交由专家回答
+            if "CAMEL_TASK_DONE" in user_response.msg.content:
+                break
+            # 调用RAG补充prompt 新建拼接Assistant Agent消息
             assistant_input = self.rag_context(user_content)
             assistant_msg = BaseMessage.make_assistant_message(
                 role_name=society.assistant_agent.role_name,
@@ -155,22 +156,18 @@ class ChatRAGAgent:
 
             assistant_response, _ = society.step(assistant_msg)
             assistant_content = assistant_response.msg.content.strip()
-            logger.info("助手上下文"+str(society.assistant_agent.system_message))
+            yield f"\n{society.assistant_agent.role_name}:\n{assistant_content}\n\n"
 
             if assistant_response.terminated:
-                break
-            if "CAMEL_TASK_DONE" in user_response.msg.content:
                 break
             if "CAMEL_TASK_DONE" in assistant_response.msg.content:
                 break
             # 准备下一轮输入
             input_msg = assistant_response.msg
-            logger.info("下一轮用户的输入"+input_msg.content)  # init_chat() 生成的内容
-
             output_msg += f"第{round_idx}轮养殖员的输出:\n{user_content}\n" + f"第{round_idx}轮专家顾问的输出:\n{assistant_content}\n"
         logger.info(f"最终的对话结果:\n{output_msg}\n")
-        self.rag.release()
         return output_msg
+
     
 if __name__ == "__main__":
     Agent = ChatRAGAgent()

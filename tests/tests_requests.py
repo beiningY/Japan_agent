@@ -50,15 +50,17 @@ def test_get_kb_list():
 
 
 def test_sse():
-    url = "http://localhost:5001/stream"
-    with requests.get(url, stream=True) as response:
-        if response.status_code != 200:
-            print(f"Failed to connect, status code: {response.status_code}")
-            return
-        for line in response.iter_lines(decode_unicode=True):
-            if line:
-                print(f"收到的数据{line}")
-        print(response.iter_lines(decode_unicode=True))
+    url = "http://127.0.0.1:5001/test_stream"
+    params = {
+        "agent_type": "japan",
+        "query": "如何调整ph值"
+    }
+
+    with requests.get(url, params=params, stream=True) as resp:
+
+        for line in resp.iter_lines(decode_unicode=True):
+            if line:  
+                print(line)
 
 
 

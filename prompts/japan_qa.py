@@ -29,17 +29,17 @@ def judge_agent(query: str, answer: str):
     """判断是否需要启用多智能体写作场景"""
     logger.info(f"判断是否需要启用多智能体协作场景...")
     judge_agent = JudgeAgent()
-    result = judge_agent.judge(query, answer)
+    result = yield from judge_agent.judge(query, answer)
     return result
 
 def main(query: str):
     answer1 = simple_agent(query)
-    logger.info(f"单智能体的初步回答：{answer1}")
-    answer2 = judge_agent(query, answer1)
+    yield (f"专家智能体的回答：{answer1}")
+    answer2 = yield from judge_agent(query, answer1)
     logger.info(f"最终答案: {answer2}")
     return answer2
 
 if __name__ == "__main__":
-    query = "ph值如何调整"
+    query = "请根据操作日志里的内容告诉我7月20号喂食量有多少"
     main(query)
     
