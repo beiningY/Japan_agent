@@ -2,7 +2,7 @@ import requests
 import json
 def test_upload_files():
     BASE_URL = "http://localhost:5001/api/upload"  
-    file_path = 'data/raw_data/log/2025_06_12.txt'  # 替换成测试文件
+    file_path = 'data/raw_data/log/2025_06_12.txt'  
 
     with open(file_path, 'rb') as f:
         files = {'file': f}
@@ -47,8 +47,24 @@ def test_get_kb_list():
     }
     response = requests.get(url, params=params)
     print(response.json())
+
+
+def test_sse():
+    url = "http://localhost:5001/stream"
+    with requests.get(url, stream=True) as response:
+        if response.status_code != 200:
+            print(f"Failed to connect, status code: {response.status_code}")
+            return
+        for line in response.iter_lines(decode_unicode=True):
+            if line:
+                print(f"收到的数据{line}")
+        print(response.iter_lines(decode_unicode=True))
+
+
+
 if __name__ == "__main__":
     #test_upload_files()
     #test_get_operation_logs()
-    test_run_query()
+    #test_run_query()
     #test_get_kb_list()
+    test_sse()

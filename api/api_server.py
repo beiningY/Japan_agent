@@ -15,7 +15,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
-logger = logging.getLogger("AgentAPI")
+logger = logging.getLogger("AgentHttpAPI")
 logger.setLevel(logging.INFO)
 
 
@@ -85,6 +85,7 @@ def run_query():
         except Exception as e:
             logger.exception("运行失败")
             return jsonify({"error": "服务器内部错误"}), 500
+
 
     
 """@app.route('/api/upload', methods=['POST'])

@@ -44,7 +44,7 @@ class ChatRAGAgent:
                 model_platform=ModelPlatformType.OPENAI,
                 model_type=ModelType.GPT_4O,
                 api_key=self.api_key,
-                model_config_dict={"temperature": self.config.get("temperature", 0.4), "max_tokens": self.config.get("max_tokens", 4096)},
+                model_config_dict={"temperature": self.config.get("temperature", 0.4), "max_tokens": 10000},
             )
 
 
@@ -53,18 +53,21 @@ class ChatRAGAgent:
         """创建助手角色参数"""
         assistant_role_kwargs = {
             'assistant_role_name': '南美白对虾养殖专家',
-            'assistant_agent_kwargs': {'model': self.model}
-        }        
-        
-        """创建用户角色参数"""
+            'assistant_agent_kwargs': {
+                'model': self.model
+            }
+        }
+
         user_role_kwargs = {
             'user_role_name': '南美白对虾养殖员',
-            'user_agent_kwargs': {'model': self.model}
-        } 
+            'user_agent_kwargs': {
+                'model': self.model
+            }
+        }
 
         """创建批评角色参数"""
         critic_role_kwargs = {
-            'with_critic_in_the_loop': True,
+            'with_critic_in_the_loop': False,
             'critic_role_name': '农业专家',
             'critic_kwargs': {'model': self.model},
             'critic_criteria': '是否符合农业专家的角色'
@@ -72,7 +75,7 @@ class ChatRAGAgent:
 
         """创建细化任务参数"""
         task_special_kwargs = {
-            'with_task_specify': True,
+            'with_task_specify': False,
             'task_specify_agent_kwargs': {
                 'model': self.model,
             }
@@ -106,25 +109,29 @@ class ChatRAGAgent:
         return society
     
     def rag_context(self, query: str):
-        """用RAG检索并拼接上下文"""
-        input_match = re.search(r'Input:\s*(.*)', query, re.DOTALL)
-        instruction_match = re.search(r'Instruction:\s*(.*?)(?:\s*Input:|$)', query, re.DOTALL)
-        
-        if input_match and input_match.group(1).strip() != "None":
-            rag_query = input_match.group(1).strip()
-        elif instruction_match:
-            rag_query = instruction_match.group(1).strip()
+        # 取出Instruction部分（核心问题）
+        instruction_match = re.search(r'Instruction:\s*(.*)', query, re.DOTALL)
+        if instruction_match:
+            question = instruction_match.group(1).strip()
         else:
-            rag_query = query
-        
-        context = self.rag.rag_retrieve(rag_query)
-        rag_contexts = query + "\n相关知识内容如下，请结合以下信息作答，如果信息与问题无关可忽略。：\n" + "\n".join(context)
+            question = query.strip()
+
+        context = self.rag.rag_retrieve(question)
+        rag_contexts = (
+            f"用户的问题是: {question}\n"
+            f"相关知识内容如下，请结合以下信息作答，如果信息与问题无关可忽略：\n"
+            + "\n".join(context) +
+            "\n如果记忆的上下文被截断请无视，必须根据用户问题和可参考的知识库内容给出合理的答案。"
+        )
         return rag_contexts
+
 
     def chat(self, query: str, round_limit: int = 5):
         """主对话逻辑：RAG增强的多轮用户-专家角色扮演对话"""
         society = self.create_society(query)
         input_msg = society.init_chat()
+
+
         output_msg = f"""任务设定：\n{query}
 用户角色: {society.user_agent.role_name}
 专家角色: {society.assistant_agent.role_name}
@@ -134,7 +141,7 @@ class ChatRAGAgent:
             # 用户先提问（由User Agent生成）
             _, user_response = society.step(input_msg)
             user_content = user_response.msg.content.strip()
-
+            logger.info("用户上下文"+str(society.user_agent.system_message))
             if user_response.terminated or "CAMEL_TASK_DONE" in user_content:
 
                 break
@@ -148,7 +155,7 @@ class ChatRAGAgent:
 
             assistant_response, _ = society.step(assistant_msg)
             assistant_content = assistant_response.msg.content.strip()
-
+            logger.info("助手上下文"+str(society.assistant_agent.system_message))
 
             if assistant_response.terminated:
                 break
@@ -158,6 +165,8 @@ class ChatRAGAgent:
                 break
             # 准备下一轮输入
             input_msg = assistant_response.msg
+            logger.info("下一轮用户的输入"+input_msg.content)  # init_chat() 生成的内容
+
             output_msg += f"第{round_idx}轮养殖员的输出:\n{user_content}\n" + f"第{round_idx}轮专家顾问的输出:\n{assistant_content}\n"
         logger.info(f"最终的对话结果:\n{output_msg}\n")
         self.rag.release()
