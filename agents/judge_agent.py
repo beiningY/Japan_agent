@@ -54,7 +54,11 @@ class JudgeAgent:
 
         output = summarize_agent.reponse_agent(query, answer, chat_result)
         logger.info(f"已完成总结 结果是{output}\n")
-        output = yield (f"根据多轮场景对话的分析总结：{output}")
+        data = {
+            "agent_type": "summarize_agent",
+            "agent_response": output
+        }
+        yield data
         return output
     
     def judge(self, query: str, answer: str) -> bool:
@@ -69,14 +73,28 @@ class JudgeAgent:
         result = response.msg.content.strip().upper()
         logger.info(f"判断结果:{result}")
         if result == "YES":
+            data = {
+                "agent_type": "judge_agent",
+                "agent_response": "\n\n无需启用多轮场景对话，单智能体回答已满足问题需求\n\n"
+            }
+            yield data
             logger.info("判断结果：单智能体回答已满足问题需求")
             return answer
         elif result == "NO":
-            yield ("\n\n用户问题被归类为复杂问题，将启用多轮场景对话模式进行辅助分析\n\n")
+            data = {
+                "agent_type": "judge_agent",
+                "agent_response": "\n\n问题被归类为复杂问题，将启用多轮场景对话模式进行辅助分析\n\n"
+            }
+            yield data
             logger.info("判断结果：需要多智能体进行进一步分析")
             output = yield from self.run(query, answer)
             return output
         else:
+            data = {
+                "agent_type": "judge_agent",
+                "agent_response": "\n\njudge_agent: 判断结果不符合格式\n\n"
+            }
+            yield data
             logger.info(f"判断结果:{result}，回答不符合格式，返回单智能体答案。")
             return answer
     

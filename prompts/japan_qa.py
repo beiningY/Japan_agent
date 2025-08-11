@@ -1,6 +1,8 @@
-from rag_pipeline.handle_rag.vector_retriever import ModelManager
+
 from agents import AgentWithRAG, JudgeAgent
 import logging
+import traceback
+from typing import Dict, Any, Generator
 
 logging.basicConfig(
     level=logging.INFO,
@@ -8,38 +10,65 @@ logging.basicConfig(
 )
 logger = logging.getLogger("JapanQA")
 logger.setLevel(logging.INFO)
-# 在运行多智能体之前提前加载模型，避免重复加载模型，减少响应时间
-def preload_models():
-    """预热模型"""
-    logger.info("正在预热模型...")
-    model_manager = ModelManager()
-    model_manager.get_embedding_model()
-    logger.info("模型预热完成！")
 
 
-def simple_agent(query: str):
+def simple_agent(query: str) -> Generator[Dict[str, Any], None, Dict[str, Any]]:
     """单智能体"""
-    # 创建单智能体
-    logger.info(f"单智能体启动...")
-    chat_agent = AgentWithRAG()
-    output = chat_agent.run(query)
-    return output
+    try:
+        # 创建单智能体
+        logger.info(f"单智能体启动，处理查询: {query}")
+        chat_agent = AgentWithRAG()
+        result = yield from chat_agent.run(query)
+        logger.info("单智能体处理完成")
+        return result
+    except Exception as e:
+        logger.error(f"单智能体处理失败: {str(e)}")
+        logger.error(traceback.format_exc())
+        return {"error": str(e), "agent_response": "处理过程中出现错误"}
 
-def judge_agent(query: str, answer: str):
+def multi_agent(query: str, answer: str) -> Generator[Dict[str, Any], None, Dict[str, Any]]:
     """判断是否需要启用多智能体写作场景"""
-    logger.info(f"判断是否需要启用多智能体协作场景...")
-    judge_agent = JudgeAgent()
-    result = yield from judge_agent.judge(query, answer)
-    return result
+    try:
+        logger.info(f"判断是否需要启用多智能体协作场景...")
+        judge_agent = JudgeAgent()
+        result = yield from judge_agent.judge(query, answer)
+        logger.info("判断完成")
+        return result
+    except Exception as e:
+        logger.error(f"判断过程失败: {str(e)}")
+        logger.error(traceback.format_exc())
+        return {"error": str(e), "judgment": "判断过程中出现错误"}
 
-def main(query: str):
-    answer1 = simple_agent(query)
-    yield (f"专家智能体的回答：{answer1}")
-    answer2 = yield from judge_agent(query, answer1)
-    logger.info(f"最终答案: {answer2}")
-    return answer2
+def main(query: str) -> Generator[Dict[str, Any], None, Dict[str, Any]]:
+    """主函数，协调单智能体和判断智能体"""
+    try:
+        logger.info(f"开始处理查询: {query}")
+
+        answer1 = yield from simple_agent(query)
+        
+        # 检查单智能体是否成功
+        if "error" in answer1:
+            logger.error("单智能体处理失败，停止后续处理")
+            return
+            
+        answer2 = yield from multi_agent(query, answer1)
+        
+    except Exception as e:
+        logger.error(f"主函数处理失败: {str(e)}")
+        logger.error(traceback.format_exc())
+        yield {"error": str(e), "agent_response": "处理过程中出现错误"}
+        
 
 if __name__ == "__main__":
     query = "请根据操作日志里的内容告诉我7月20号喂食量有多少"
-    main(query)
+    logger.info("开始执行测试查询")
+    
+    try:
+        # 创建生成器并运行
+        gen = main(query)
+        for result in gen:
+            print(f"结果: {result}")
+    except Exception as e:
+        logger.error(f"测试执行失败: {str(e)}")
+        logger.error(traceback.format_exc())
     

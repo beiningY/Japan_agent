@@ -69,6 +69,11 @@ def main(query):
     # 任意次数提问
     result = ask(query)
     logger.info(f"回答:\n{result}")
+    data = {
+        "agent_type": "single_agent",
+        "agent_response": result
+    }
+    yield data
     # ask("贷款有哪些类型？")
     # ask("最新的反洗钱政策是什么？")
     return result

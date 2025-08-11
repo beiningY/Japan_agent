@@ -126,23 +126,32 @@ class ChatRAGAgent:
         return rag_contexts
 
 
-    def chat(self, query: str, round_limit: int = 10):
+    def chat(self, query: str, round_limit: int = 5):
         """主对话逻辑：RAG增强的多轮用户-专家角色扮演对话"""
         society = self.create_society(query)
         input_msg = society.init_chat()
-        output_msg = f"""\n\n已进入多轮对话场景模式......
+        output_msg = f"""开始进入多轮对话场景模式......
 主任务设定：\n{query}
 对话场景用户角色: {society.user_agent.role_name}
 对话场景专家角色: {society.assistant_agent.role_name}
 """     
-        yield output_msg
+        data = {
+            "agent_type": "chat_agent",
+            "agent_response": output_msg
+        }
+        yield data
         # 进行多轮对话循环
         for round_idx in range(1, round_limit + 1):
-
+           
             # 由User Agent拆分问题
             _, user_response = society.step(input_msg)
             user_content = user_response.msg.content.strip()
-            yield f"\n{society.user_agent.role_name}:\n{user_content}\n\n"
+            data = {
+                "agent_type": "chat_agent",
+                "agent_response": user_content,
+                "role_name": society.user_agent.role_name
+            }
+            yield data
             if user_response.terminated or "CAMEL_TASK_DONE" in user_content:
                 break
             if "CAMEL_TASK_DONE" in user_response.msg.content:
@@ -156,7 +165,12 @@ class ChatRAGAgent:
 
             assistant_response, _ = society.step(assistant_msg)
             assistant_content = assistant_response.msg.content.strip()
-            yield f"\n{society.assistant_agent.role_name}:\n{assistant_content}\n\n"
+            data = {
+                "agent_type": "chat_agent",
+                "agent_response": assistant_content,
+                "role_name": society.assistant_agent.role_name
+            }
+            yield data
 
             if assistant_response.terminated:
                 break

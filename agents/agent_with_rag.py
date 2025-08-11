@@ -56,9 +56,13 @@ class AgentWithRAG:
     def run(self, query: str):
         context = self.rag_context(query)
         response = self.agent.step(context)
-        result = response.msg.content
+        data = {
+            "agent_type": "single_agent",
+            "agent_response": response.msg.content
+        }
+        yield data
         self.rag.release() 
-        return result
+        return response.msg.content
     
     
 if __name__ == "__main__":
