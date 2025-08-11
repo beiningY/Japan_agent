@@ -11,6 +11,7 @@ from qdrant_client.http.models import Distance, VectorParams
 import logging
 import torch
 import gc
+from uuid import uuid4
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -76,67 +77,77 @@ class KnowledgeBase:
             embedding=self.embeddings,
         )
 
-    def _load_and_split(self, docs: List[Document]) -> List[Document]:
-        """切分文档并添加前缀"""
-        splitter = TokenTextSplitter(
-            chunk_size=self.chunk_size,
-            chunk_overlap=self.chunk_overlap
-        )
-        chunks = splitter.split_documents(docs)
-        for chunk in chunks:
-            chunk.page_content = f"passage: {chunk.page_content}"
-        return chunks
-
     def initialize_from_folder(self, folder_path: str):
         """首次构建知识库：从文件夹加载所有文档"""
-        if not os.path.exists(folder_path):
-            raise FileNotFoundError(f"文件夹不存在: {folder_path}")
+        loader = DirectoryLoader(folder_path)
 
-        logger.info(f"初始化知识库,加载文档: {folder_path}")
-        loader = DirectoryLoader(
-            folder_path,
-            loader_cls=UnstructuredFileLoader,
-            use_multithreading=True,
-            recursive=True,
-            max_concurrency=2,  # 控制线程数
-            show_progress=True,  
-        )
         docs = loader.load()
-        chunks = self._load_and_split(docs)
-
+        logger.info(f"使用loader的docs{docs}")
+        splitter = TokenTextSplitter(
+            chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
+        )
+        chunks = splitter.split_documents(docs)
         logger.info(f"加载 {len(docs)} 个文档 → 切分为 {len(chunks)} 个文本块")
+        logger.info(f"使用split的chunks{chunks}")
         self.vectorstore.add_documents(chunks)
         logger.info("知识库构建完成！")
-
-    def add_file(self, file_path: str):
-        """添加单个新文件"""
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"文件不存在: {file_path}")
-
-        logger.info(f"添加新文件: {file_path}")
-        loader = UnstructuredFileLoader(file_path)
-        docs = loader.load()
-        chunks = self._load_and_split(docs)
-        self.vectorstore.add_documents(chunks)
-        logger.info(f"文件 '{os.path.basename(file_path)}' 已添加")
+        
+    #=================可添加到知识库的文档类型 txt pdf xlsx docx csv ========
+    # UnstructuredLoader支持txt html pad im
 
     def add_folder(self, folder_path: str):
-        """添加整个文件夹的文档"""
-        if not os.path.exists(folder_path):
-            logger.info(f"[!] 文件夹不存在，跳过: {folder_path}")
-            return
+        loader = DirectoryLoader(folder_path)
 
-        logger.info(f"添加新文件夹: {folder_path}")
-        loader = DirectoryLoader(
-            folder_path,
-            loader_cls=UnstructuredFileLoader,
-            use_multithreading=True,
-            recursive=True
-        )
         docs = loader.load()
-        chunks = self._load_and_split(docs)
+        logger.info(f"使用loader的docs{docs}")
+        splitter = TokenTextSplitter(
+            chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
+        )
+        chunks = splitter.split_documents(docs)
+        logger.info(f"加载 {len(docs)} 个文档 → 切分为 {len(chunks)} 个文本块")
+        logger.info(f"使用split的chunks{chunks}")
         self.vectorstore.add_documents(chunks)
-        logger.info(f"文件夹 '{os.path.basename(folder_path)}' 中所有文档已添加")
+        logger.info("知识库文件夹添加完成")
+
+    def add_file(self, file_path: str):
+        # 获取文件名
+        file_name = os.path.basename(file_path)
+        loader = UnstructuredFileLoader(file_path)
+        docs = loader.load()
+        logger.info(f"使用loader的docs{docs}")
+        splitter = TokenTextSplitter(
+            chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
+        )
+        id_chunks = []
+        chunks = splitter.split_documents(docs)
+        ids = [str(uuid4()) for _ in range(len(chunks))]
+        for i,chunk in enumerate(chunks):
+            id_chunks.append(Document(
+                page_content=chunk.page_content,
+                metadata={
+                    "source": file_name,
+                    "chunk_id": ids[i]
+                }
+            ))
+        logger.info(f"加载 {len(docs)} 个文档 → 切分为 {len(chunks)} 个文本块")
+        logger.info(f"使用split的chunks{id_chunks}")
+        self.vectorstore.add_documents(id_chunks,ids=ids)
+        logger.info("知识库文件添加完成")
+
+    def delete_file(self, file_path: str):
+        file_name = os.path.basename(file_path)
+        # 先查出 file_id 对应的所有 chunk id
+        results = self.vectorstore.similarity_search(
+            query="",
+            k=10000,
+            filter={"source": file_name} 
+        )
+
+        chunk_ids_to_delete = [doc.metadata["chunk_id"] for doc in results]
+
+        # 批量删除
+        self.vectorstore.delete(ids=chunk_ids_to_delete)
+        logger.info(f"文件{file_path}在向量知识库中删除完成")
 
     def retrieve(self, query: str, k: int = 5) -> List[Document]:
         """检索最相关的文档片段"""
@@ -150,7 +161,7 @@ class KnowledgeBase:
         """if hasattr(self, "embeddings") and self.embeddings is not None:
             try:
                 # 如果 self.embeddings 是 HuggingFaceEmbeddings，真正的模型通常在 self.embeddings.client 或 self.embeddings.model
-                self.embeddings.cpu()  # ← 请根据具体结构调整
+                self.embeddings.cpu()  
             except Exception as e:
                 logger.warning(f"释放 CPU 时出错: {e}")"""
 

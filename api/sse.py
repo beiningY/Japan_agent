@@ -47,6 +47,7 @@ def stream():
             }
             json_data = json.dumps(start_message, ensure_ascii=False)
             yield sse_format(json_data)
+            logger.info(f"发送初始消息: {json_data}")
         except Exception as e:
             logger.exception("发送初始消息失败")
             error_data = json.dumps({"error": "发送初始消息失败"}, ensure_ascii=False)
@@ -77,6 +78,7 @@ def stream():
                     }
                     json_data = json.dumps(message, ensure_ascii=False)
                     yield sse_format(json_data)
+                    logger.info(f"发送消息: {json_data}")
         except Exception as e:
             logger.exception("运行失败")
             error_data = json.dumps({"error": "服务器内部错误"}, ensure_ascii=False)
@@ -95,6 +97,7 @@ def stream():
             }
             json_data = json.dumps(end_message, ensure_ascii=False)
             yield sse_format(json_data)
+            logger.info(f"发送结束消息: {json_data}")
         except Exception as e:
             logger.exception("发送结束消息失败")
             error_data = json.dumps({"error": "发送结束消息失败"}, ensure_ascii=False)

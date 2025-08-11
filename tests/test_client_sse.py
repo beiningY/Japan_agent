@@ -37,12 +37,12 @@ def connect_sse(url, session_id=None, query=None, agent_type=None):
 if __name__ == "__main__":
     # 示例调用 - 传递所有参数
     
-    #connect_sse(
-    #    "http://localhost:5001/stream",
-    #    session_id="session_123",
-    #    query="如何调整ph值",
-    #    agent_type="japan"
-    #)
+    connect_sse(
+        "http://localhost:5001/stream",
+        session_id="session_123",
+        query="如何调整ph值",
+        agent_type="japan"
+    )
     
     # 也可以只传递部分参数
     # connect_sse(
@@ -52,4 +52,4 @@ if __name__ == "__main__":
     #)
     
     # 或者不传递任何参数（保持原有行为）
-    connect_sse("http://localhost:5001/stream")
+    # connect_sse("http://localhost:5001/stream")

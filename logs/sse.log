@@ -1,0 +1,147 @@
+nohup: ignoring input
+ * Serving Flask app 'sse'
+ * Debug mode: on
+2025-08-11 15:03:11,520 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.171.111:5001
+2025-08-11 15:03:11,520 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-11 15:03:11,521 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:03:14,168 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:03:14,169 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:24:42,139 - werkzeug - ERROR - 198.235.24.15 - - [11/Aug/2025 15:24:42] code 400, message Bad request version ('À\x13À')
+2025-08-11 15:24:42,139 - werkzeug - INFO - 198.235.24.15 - - [11/Aug/2025 15:24:42] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03nq4CoÞ1Z[cM/Â¬\x14ôîí¼3¼\x1b\x94;\x9cH£þdvaü \x8eüÜÍ®!Ë\x05O|\x86¶?º£\x09ÌÔ~`\x8e\x00ã¥\x94\x93\x80\x03E-m\x97\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+2025-08-11 15:24:42,297 - werkzeug - ERROR - 198.235.24.15 - - [11/Aug/2025 15:24:42] code 400, message Bad request version ('À(À$À\x14À')
+2025-08-11 15:24:42,297 - werkzeug - INFO - 198.235.24.15 - - [11/Aug/2025 15:24:42] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03\x18\x12ÅÌ l\x0dÙ\x80\x97ºó\x8f\x86$NÚÄ¤1ôU\x8eýØßô\x17Ô,©~\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-08-11 15:25:29,328 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
+2025-08-11 15:25:29,881 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:25:32,497 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:25:32,497 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:26:07,667 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
+2025-08-11 15:26:08,195 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:26:10,780 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:26:10,780 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:31:28,296 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 15:31:28,839 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:31:31,663 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:31:31,663 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:35:47,847 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 15:35:48,369 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:35:50,940 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:35:50,940 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:37:30,416 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 15:37:30,957 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:37:33,490 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:37:33,490 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:37:48,571 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 15:37:49,113 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:37:51,629 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:37:51,630 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:39:47,175 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 15:39:47,703 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:39:50,186 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:39:50,187 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:39:59,239 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/auto_qa.py', reloading
+2025-08-11 15:39:59,772 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:40:02,315 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:40:02,316 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:46:34,122 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 15:46:34,641 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:46:37,368 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:46:37,368 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:51:32,773 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 15:51:33,285 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:51:35,875 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:51:35,875 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:54:56,821 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 15:54:57,363 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:54:59,966 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:54:59,967 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 15:55:19,070 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 15:55:19,626 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 15:55:22,151 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 15:55:22,151 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:15:32,826 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:15:33,376 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:15:35,948 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:15:35,949 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:17:19,444 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:17:20,004 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:17:22,525 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:17:22,525 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:18:38,901 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:18:39,455 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:18:42,022 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:18:42,022 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:18:52,077 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:18:52,598 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:18:55,186 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:18:55,187 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:19:16,292 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:19:16,800 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:19:19,365 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:19:19,365 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:21:56,098 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:21:56,638 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:21:59,172 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:21:59,173 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:24:16,826 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:24:17,337 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:24:19,827 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:24:19,828 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:24:27,874 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:24:28,394 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:24:30,942 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:24:30,942 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:25:58,345 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:25:58,853 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:26:01,333 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:26:01,333 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:26:41,528 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:26:42,058 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:26:44,618 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:26:44,618 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:27:32,852 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
+2025-08-11 16:27:33,373 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:27:35,963 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:27:35,964 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:27:41,999 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 16:27:42,533 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:27:45,137 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:27:45,137 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 16:42:54,398 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
+2025-08-11 16:42:54,935 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 16:42:57,446 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 16:42:57,446 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 17:00:26,339 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
+2025-08-11 17:00:26,860 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 17:00:29,497 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 17:00:29,497 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 17:03:09,252 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
+2025-08-11 17:03:09,782 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 17:03:12,272 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 17:03:12,273 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 17:03:56,492 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
+2025-08-11 17:03:57,021 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 17:03:59,814 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 17:03:59,814 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 17:05:24,213 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
+2025-08-11 17:05:24,755 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 17:05:27,264 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 17:05:27,264 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 17:06:10,478 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 17:06:10,978 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 17:06:13,552 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 17:06:13,553 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 17:07:09,835 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 17:07:10,403 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 17:07:12,988 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 17:07:12,989 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 17:07:14,002 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
+2025-08-11 17:07:14,537 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 17:07:17,087 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 17:07:17,087 - werkzeug - INFO -  * Debugger PIN: 433-768-971
+2025-08-11 17:07:25,132 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
+2025-08-11 17:07:25,675 - werkzeug - INFO -  * Restarting with stat
+2025-08-11 17:07:28,216 - werkzeug - WARNING -  * Debugger is active!
+2025-08-11 17:07:28,216 - werkzeug - INFO -  * Debugger PIN: 433-768-971
