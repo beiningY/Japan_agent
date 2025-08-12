@@ -26,7 +26,7 @@ def stream():
         agent_type = request.args.get('agent_type', 'japan')
     else:  # POST
         data = request.get_json() or {}
-        session_id = data.get('session_id', uuid.uuid4())
+        session_id = data.get('session_id', str(uuid.uuid4()))
         query = data.get('query', '请介绍日本陆上养殖项目')
         agent_type = data.get('agent_type', 'japan')
     
