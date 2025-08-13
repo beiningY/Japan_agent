@@ -5,7 +5,7 @@
 2. 删除知识库（知识库名称）
 3. 链接默认agent进行对话
 """
-from rag_pipeline.auto_rag.knowledeg_base import KnowledgeBase
+from rag_pipeline.lang_rag import LangRAG
 from langchain_openai import ChatOpenAI
 import os
 from dotenv import load_dotenv

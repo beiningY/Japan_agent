@@ -2,7 +2,8 @@ from camel.agents import ChatAgent
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from dotenv import load_dotenv
-from agents import SummarizeAgent,ChatRAGAgent
+from agents import SummarizeAgent
+from typing import Generator, Any, Dict
 import os
 import json
 import logging
@@ -13,7 +14,28 @@ logging.basicConfig(
 logger = logging.getLogger("JudgeAgent")
 logger.setLevel(logging.INFO)
 class JudgeAgent:
-    def __init__(self):
+    def __init__(self,
+                 rag_collection_name: str | None = None,
+                 rag_topk_multi: int | None = None,
+                 temperature: float | None = None,
+                 multi_user_role_name: str | None = None,
+                 multi_assistant_role_name: str | None = None,
+                 multi_critic_role_name: str | None = None,
+                 with_critic_in_the_loop: bool | None = None,
+                 with_task_specify: bool | None = None,
+                 with_task_planner: bool | None = None,
+                 multi_max_tokens: int | None = None,
+                 ):
+        self.custom_rag_collection_name = rag_collection_name
+        self.custom_rag_topk_multi = rag_topk_multi
+        self.custom_temperature = temperature
+        self.custom_multi_user_role_name = multi_user_role_name
+        self.custom_multi_assistant_role_name = multi_assistant_role_name
+        self.custom_multi_critic_role_name = multi_critic_role_name
+        self.custom_with_critic_in_the_loop = with_critic_in_the_loop
+        self.custom_with_task_specify = with_task_specify
+        self.custom_with_task_planner = with_task_planner
+        self.custom_multi_max_tokens = multi_max_tokens
         self.load_env()
         self.load_config()
         self.init_agents()
@@ -34,6 +56,7 @@ class JudgeAgent:
     
     def init_agents(self):
         """初始化回答和判断智能体"""
+        temperature = self.custom_temperature if self.custom_temperature is not None else 0.4
         self.agent = ChatAgent(
             system_message=(
                 "你是一个善于判断回答质量的助手，你的任务是判断下面这个回答是否全面、准确和合理地回答了用户提出的问题。"
@@ -42,13 +65,24 @@ class JudgeAgent:
                 model_platform=ModelPlatformType.OPENAI,
                 model_type=ModelType.GPT_4O,
                 api_key=self.api_key,
-                model_config_dict={"temperature": 0.4, "max_tokens": 4096},
+                model_config_dict={"temperature": temperature, "max_tokens": 4096},
             )
         )
-    def run(self, query: str, answer: str):
+    def run(self, query: str, answer: str, round_limit: int = 5) -> Generator[Dict[str, Any], None, str]:
         """执行回答流程"""
-        chat_agent = ChatRAGAgent()
-        chat_result = yield from chat_agent.chat(query)
+        chat_agent = ChatRAGAgent(
+            temperature=self.custom_temperature,
+            user_role_name=self.custom_multi_user_role_name,
+            assistant_role_name=self.custom_multi_assistant_role_name,
+            critic_role_name=self.custom_multi_critic_role_name,
+            with_critic_in_the_loop=self.custom_with_critic_in_the_loop,
+            with_task_specify=self.custom_with_task_specify,
+            with_task_planner=self.custom_with_task_planner,
+            collection_name=self.custom_rag_collection_name,
+            rag_topk_multi_turn=self.custom_rag_topk_multi,
+            max_tokens=self.custom_multi_max_tokens,
+        )
+        chat_result = yield from chat_agent.chat(query, round_limit=round_limit)
         logger.info(f"已完成多轮对话 结果是{chat_result}\n")
         summarize_agent = SummarizeAgent()
 
@@ -61,7 +95,7 @@ class JudgeAgent:
         yield data
         return output
     
-    def judge(self, query: str, answer: str) -> bool:
+    def judge(self, query: str, answer: str, round_limit: int = 5) -> Generator[Dict[str, Any], None, str]:
         """返回是否满足需求，True表示回答满意"""
         judgement_prompt = (
             f"用户的问题是：{query}\n"
@@ -87,7 +121,7 @@ class JudgeAgent:
             }
             yield data
             logger.info("判断结果：需要多智能体进行进一步分析")
-            output = yield from self.run(query, answer)
+            output = yield from self.run(query, answer, round_limit=round_limit)
             return output
         else:
             data = {

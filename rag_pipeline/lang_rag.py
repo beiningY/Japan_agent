@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger("AutoKnowledgeBaseAPI")
 logger.setLevel(logging.INFO)
 
-class KnowledgeBase:
+class LangRAG:
     """
     知识库类可操作功能：
     - 初始化向量库

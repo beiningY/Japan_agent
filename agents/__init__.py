@@ -1,8 +1,8 @@
 from .plan_agent import PlanAgent
 from .chat_multiagent import ChatMultiAgent
 from .summarize_agent import SummarizeAgent
-from .chat_agent_with_rag import ChatRAGAgent
+from .camel_roleplay_agent import CamelRoleplayAgent
 from .judge_agent import JudgeAgent
-from .agent_with_rag import AgentWithRAG
+from .camel_single_agent import CamelSingleAgent
 
-__all__ = ["PlanAgent", "ChatMultiAgent", "SummarizeAgent", "ChatRAGAgent", "JudgeAgent", "AgentWithRAG"]
+__all__ = ["PlanAgent", "ChatMultiAgent", "SummarizeAgent", "JudgeAgent", "CamelSingleAgent", "CamelRoleplayAgent"]

@@ -1,59 +1,69 @@
-from agents.plan_agent import PlanAgent
-from camel.agents import ChatAgent
-from camel.models import ModelFactory
-from camel.types import ModelPlatformType, ModelType
-from dotenv import load_dotenv
-import os
-import json
+
+from agents import AgentWithRAG, JudgeAgent
 import logging
+import traceback
+from typing import Dict, Any, Generator
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
 logger = logging.getLogger("MultiAgent")
-logger.setLevel(logging.INFO)
-class MainAgent:
-    def __init__(self):
-        self.plan_agent = PlanAgent()
-        self.load_env()
-        self.load_config()
-        self.init_agent()
 
-    def load_env(self):
-        """加载环境变量"""
-        load_dotenv(dotenv_path=".env")
-        os.environ["TOKENIZERS_PARALLELISM"] = "false"
-        self.api_key = os.getenv("GPT_API_KEY")
-        if not self.api_key:
-            raise ValueError("API_KEY 未在 .env 文件中设置")
+
+def simple_agent(query: str) -> Generator[Dict[str, Any], None, Dict[str, Any]]:
+    """单智能体"""
+    try:
+        # 创建单智能体
+        logger.info(f"单智能体启动，处理查询: {query}")
+        chat_agent = AgentWithRAG()
+        result = yield from chat_agent.run(query)
+        logger.info("单智能体处理完成")
+        return result
+    except Exception as e:
+        logger.error(f"单智能体处理失败: {str(e)}")
+        logger.error(traceback.format_exc())
+        return {"error": str(e), "agent_response": "处理过程中出现错误"}
+
+def multi_agent(query: str, answer: str) -> Generator[Dict[str, Any], None, Dict[str, Any]]:
+    """判断是否需要启用多智能体写作场景"""
+    try:
+        logger.info(f"判断是否需要启用多智能体协作场景...")
+        judge_agent = JudgeAgent()
+        result = yield from judge_agent.judge(query, answer)
+        logger.info("判断完成")
+        return result
+    except Exception as e:
+        logger.error(f"判断过程失败: {str(e)}")
+        logger.error(traceback.format_exc())
+        return {"error": str(e), "judgment": "判断过程中出现错误"}
+
+def main(query: str) -> Generator[Dict[str, Any], None, Dict[str, Any]]:
+    """主函数，协调单智能体和判断智能体"""
+    try:
+        logger.info(f"开始处理查询: {query}")
+
+        answer1 = yield from simple_agent(query)
+        
+        # 检查单智能体是否成功
+        if "error" in answer1:
+            logger.error("单智能体处理失败，停止后续处理")
+            return
             
-        os.environ["OPENAI_API_KEY"] = self.api_key
-
-    def load_config(self):
-        """加载配置文件"""
-        with open("utils/config.json", "r", encoding="utf-8") as f:
-            self.config = json.load(f)     
-    
-    def init_agent(self):
-        self.agent = ChatAgent(
-            system_message="你是一个南美白对虾的养殖专家，你的任务是根据用户的问题，结合养殖手册和操作日志，给出专业的养殖建议。",
-            model=ModelFactory.create(
-                model_platform=ModelPlatformType.OPENAI,
-                model_type=ModelType.GPT_4O_MINI,
-                api_key=self.api_key,
-                model_config_dict={"temperature": 0.4, "max_tokens": 4096},
-            )
-        )
-
-    def reponse_agent(self, query):
-        final_query = self.plan_agent.process_query(query)
-        logger.info(f"最终生成的prompt: {final_query}")
-        response = self.agent.step(final_query)
-        return response.msg.content
+        answer2 = yield from multi_agent(query, answer1)
+        
+    except Exception as e:
+        logger.error(f"主函数处理失败: {str(e)}")
+        logger.error(traceback.format_exc())
+        yield {"error": str(e), "agent_response": "处理过程中出现错误"}
+        
 
 if __name__ == "__main__":
-    main_agent = MainAgent()
-    query = input("请输入问题：")
-    result = main_agent.reponse_agent(query)
-    logger.info(f"最终的回答: {result}")
+    query = "请根据操作日志里的内容告诉我7月20号喂食量有多少"
+    logger.info("开始执行测试查询")
+    
+    try:
+        # 创建生成器并运行
+        gen = main(query)
+        for result in gen:
+            print(f"结果: {result}")
+    except Exception as e:
+        logger.error(f"测试执行失败: {str(e)}")
+        logger.error(traceback.format_exc())
+    

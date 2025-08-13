@@ -1,88 +1,78 @@
-import os
-import json
-from dotenv import load_dotenv
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from camel.messages import BaseMessage
 from camel.societies import RolePlaying 
-from rag_pipeline.handle_rag.vector_retriever import RAG
+from rag_pipeline.camel_rag import RAG
 import logging
 import re
+from agents.base import BaseAgent
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger("ChatAgentRag")
-logger.setLevel(logging.INFO)
-class ChatRAGAgent:
-    def __init__(self):
-        self.load_env()
-        self.load_config()
-        self.init_models()
-        self.rag = RAG(self.config.get("collection_name"))
+logger = logging.getLogger("CamelRoleplayAgent")
 
-    def load_env(self):
-        """加载环境变量"""
-        load_dotenv(dotenv_path=".env")
-        os.environ["TOKENIZERS_PARALLELISM"] = "false"
-        self.api_key = os.getenv("GPT_API_KEY")
-        if not self.api_key:
-            raise ValueError("错误：API_KEY 未在 .env 文件中或环境变量中设置。")
-        os.environ["OPENAI_API_KEY"] = self.api_key
-
-   
-    def load_config(self):
-        """加载配置文件"""
-        with open("utils/config.json", "r", encoding="utf-8") as f:
-            self.config = json.load(f)  
+class CamelRoleplayAgent(BaseAgent):
+    r"""
+    Camel框架的角色扮演对话，支持使用RAG增强检索后的相关知识，给出专业的讨论。
+    """
+    def __init__(self,
+                 user_role_name: str | None = None,
+                 assistant_role_name: str | None = None,
+                 with_task_specify: bool | None = None,
+                 with_task_planner: bool | None = None,
+                 collection_name: str | None = None,
+                 **kwargs):
+        self.custom_user_role_name = user_role_name
+        self.custom_assistant_role_name = assistant_role_name
+        self.custom_with_task_specify = with_task_specify
+        self.custom_with_task_planner = with_task_planner
+        self.custom_collection_name = collection_name
+        super().__init__(**kwargs)
+        self.rag = RAG(self.custom_collection_name or self.config.get("collection_name"))
 
 
-    def init_models(self):
+    def init_model(self):
         """初始化模型"""
         self.model=ModelFactory.create(
                 model_platform=ModelPlatformType.OPENAI,
-                model_type=ModelType.GPT_4O,
+                model_type=ModelType.GPT_4O_MINI,
                 api_key=self.api_key,
-                model_config_dict={"temperature": self.config.get("temperature", 0.4), "max_tokens": 10000},
+                model_config_dict={"temperature": self.temperature, "max_tokens": self.max_tokens},
             )
 
-
     def create_society(self, query: str):
-
         """创建助手角色参数"""
         assistant_role_kwargs = {
-            'assistant_role_name': '南美白对虾养殖专家',
+            'assistant_role_name': self.custom_assistant_role_name,
             'assistant_agent_kwargs': {
                 'model': self.model
             }
         }
-
+        """创建用户角色参数"""
         user_role_kwargs = {
-            'user_role_name': '南美白对虾养殖员',
+            'user_role_name': self.custom_user_role_name,
             'user_agent_kwargs': {
                 'model': self.model
             }
         }
 
-        """创建批评角色参数"""
+        """创建批评角色参数
         critic_role_kwargs = {
-            'with_critic_in_the_loop': False,
-            'critic_role_name': '农业专家',
+            'with_critic_in_the_loop': self.custom_with_critic_in_the_loop if self.custom_with_critic_in_the_loop is not None else False,
+            'critic_role_name': self.custom_critic_role_name or '农业专家',
             'critic_kwargs': {'model': self.model},
             'critic_criteria': '是否符合农业专家的角色'
         }        
+        """
 
         """创建细化任务参数"""
         task_special_kwargs = {
-            'with_task_specify': False,
+            'with_task_specify': self.custom_with_task_specify if self.custom_with_task_specify is not None else False,
             'task_specify_agent_kwargs': {
                 'model': self.model,
             }
         }   
         """创建计划任务参数"""
         task_plan_kwargs = {
-            'with_task_planner': False,
+            'with_task_planner': self.custom_with_task_planner if self.custom_with_task_planner is not None else False,
             'task_planner_agent_kwargs': {
                 'model': self.model,
             }
@@ -101,14 +91,14 @@ class ChatRAGAgent:
         society = RolePlaying(
             **assistant_role_kwargs,
             **user_role_kwargs,          
-            **critic_role_kwargs,
+            #**critic_role_kwargs,
             **task_special_kwargs,   
             **task_plan_kwargs,
             **task_kwargs
         )
         return society
     
-    def rag_context(self, query: str):
+    def rag_context(self, query: str, topk: int | None = None):
         # 取出Instruction部分（核心问题）
         instruction_match = re.search(r'Instruction:\s*(.*)', query, re.DOTALL)
         if instruction_match:
@@ -116,7 +106,9 @@ class ChatRAGAgent:
         else:
             question = query.strip()
 
-        context = self.rag.rag_retrieve(question)
+        # 单轮/多轮不同topk
+        topk = topk if topk is not None else self.config.get("vector_top_k", 5)
+        context = self.rag.rag_retrieve(question, topk)
         rag_contexts = (
             f"用户的问题是: {question}\n"
             f"相关知识内容如下，请结合以下信息作答，如果信息与问题无关可忽略：\n"
@@ -126,8 +118,8 @@ class ChatRAGAgent:
         return rag_contexts
 
 
-    def chat(self, query: str, round_limit: int = 5):
-        """主对话逻辑：RAG增强的多轮用户-专家角色扮演对话"""
+    def stream(self, query: str, round_limit: int = 5):
+        """主对话逻辑流式输出：RAG增强的多轮用户-专家角色扮演对话"""
         society = self.create_society(query)
         input_msg = society.init_chat()
         output_msg = f"""开始进入多轮对话场景模式......
@@ -178,12 +170,15 @@ class ChatRAGAgent:
                 break
             # 准备下一轮输入
             input_msg = assistant_response.msg
-            output_msg += f"第{round_idx}轮养殖员的输出:\n{user_content}\n" + f"第{round_idx}轮专家顾问的输出:\n{assistant_content}\n"
-        logger.info(f"最终的对话结果:\n{output_msg}\n")
+        return
+    
+    def run(self, query: str, round_limit: int = 5):
+        """输出完后返回全部对话的过程"""
+        output_msg = ""
+        for i in self.stream(query, round_limit):
+            output_msg += i["agent_response"]
         return output_msg
 
-    
-if __name__ == "__main__":
-    Agent = ChatRAGAgent()
-    query = input("请输入问题：")
-    Agent.chat(query)
+
+
+

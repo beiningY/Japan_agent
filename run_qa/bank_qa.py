@@ -1,5 +1,5 @@
 # main.py
-from rag_pipeline.auto_rag.knowledeg_base import KnowledgeBase
+from rag_pipeline.lang_rag import LangRAG
 from langchain_openai import ChatOpenAI
 import os
 from dotenv import load_dotenv
@@ -15,7 +15,7 @@ logger.setLevel(logging.INFO)
 
 def ask(question: str, k: int = 5):
     """在 main 中实现问答逻辑"""
-    kb = KnowledgeBase(
+    kb = LangRAG(
         persist_path="data/vector_data",
         collection_name="bank"
     )

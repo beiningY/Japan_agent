@@ -3,9 +3,10 @@ import os
 from flask import Flask, request, jsonify
 import logging
 import threading
-from rag_pipeline.handle_rag.vector_retriever import ModelManager
-from prompts.japan_qa import main  as run_japan
-from prompts.bank_qa import main as run_bank
+from rag_pipeline.camel_rag import ModelManager
+from run_qa.japan_qa import main  as run_japan
+from run_qa.bank_qa import main as run_bank
+from run_qa.orchestrator import main as run_orchestrator
 import torch
 import gc
 
@@ -45,9 +46,6 @@ def initialize_tokenizer():
     except Exception as e:
         logger.error(f"tokenizer初始化失败: {e}", exc_info=True)
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/api/run_query', methods=['POST'])
 def run_query():
@@ -82,6 +80,20 @@ def run_query():
             response = run_bank(query)
             content = getattr(response, 'content', str(response))
             return jsonify({"result": content})
+        except Exception as e:
+            logger.exception("运行失败")
+            return jsonify({"error": "服务器内部错误"}), 500
+
+    elif agent_type == 'orchestrator':
+        try:
+            config = data.get('config') or {}
+            # orchestrator returns a generator; stream internally and return last agent_response
+            gen = run_orchestrator(query, config)
+            last_response = None
+            for chunk in gen:
+                if isinstance(chunk, dict) and 'agent_response' in chunk:
+                    last_response = chunk['agent_response']
+            return jsonify({"result": last_response or ""})
         except Exception as e:
             logger.exception("运行失败")
             return jsonify({"error": "服务器内部错误"}), 500

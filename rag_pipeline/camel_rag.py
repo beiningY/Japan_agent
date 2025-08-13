@@ -10,12 +10,9 @@ import logging
 import torch
 import gc
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger("VectorRetriever")
+logger = logging.getLogger("CamelRAG")
 logger.setLevel(logging.INFO)
+
 class ModelManager:
     """避免重复加载模型"""
     _instance = None
@@ -46,7 +43,7 @@ class ModelManager:
     
     def _load_config(self):
         if self._config is None:
-            with open("utils/config.json", "r", encoding="utf-8") as f:
+            with open("config/default_config.json", "r", encoding="utf-8") as f:
                 self._config = json.load(f)
         return self._config
     

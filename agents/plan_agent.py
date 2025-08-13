@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from camel.agents import ChatAgent
-from rag_pipeline.handle_rag.vector_retriever import RAG
+from rag_pipeline.camel_rag import RAG
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from datetime import datetime

@@ -6,8 +6,8 @@ import argparse
 import logging
 import requests
 from dataprocess.clean_log import clean_log_file
-from rag_pipeline.handle_rag.vector_retriever import RAG
-from embeddings.vr_chunking import chunk_data_for_log
+from rag_pipeline.camel_rag import RAG
+from embeddings.japan_book_chunking import chunk_data_for_log
 
 logging.basicConfig(
     level=logging.INFO,
