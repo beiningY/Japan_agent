@@ -1,0 +1,120 @@
+{
+    "config": {
+        "mode": {
+            "type": "string",
+            "description": "选择专家智能体的模式single单智能体模式、roleplay多轮场景对话模式、auto专家自动模式",
+            "default": "auto",
+            "enum": ["single", "roleplay", "auto"]
+        },
+        "rag": {
+            "description": "启动增强检索模式，必须启用",
+            "parameters": {
+                "collection_name": {
+                    "type": "string",
+                    "description": "RAG的collection名称，必填",
+                    "default": "all_data",
+                    "enum": ["all_data"]
+                },
+                "topk_single": {    
+                    "type": "int",
+                    "description": "单次对话的RAG的topk，如果mode是single或auto则必填",
+                    "default": 5,
+                    "range": {
+                        "min": 1,
+                        "max": 15
+                    }
+                },
+                "topk_multi": {
+                    "type": "int",
+                    "description": "多轮对话RAG的topk，如果mode是roleplay或auto则必填",
+                    "default": 5,
+                    "range": {
+                        "min": 1,
+                        "max": 15
+                    }
+                }
+            },
+            "required": ["collection_name", "topk_single", "topk_multi"]
+        },
+        "single": {
+            "description": "可利用RAG技术进行增强检索的单次对话的agent模式，如果mode是single或者auto则以下参数必填，如果mode是roleplay则不启用",
+            "parameters": {
+                "temperature": {
+                "type": "float",
+                "description": "温度参数，用于控制模型输出的随机性。",
+                "default": 0.4,
+                    "range": {
+                        "min": 0.0,
+                        "max": 1.0
+                    }
+                    },
+                "system_prompt": {
+                "type": "string",
+                "description": "系统提示词，用于控制模型输出的行为。",
+                "default": "你是一个领域专家，你的任务是根据用户的问题，结合增强检索后的相关知识，给出专业的回答。"
+                },
+                "max_tokens": {
+                "type": "int",
+                "description": "最大令牌数，用于控制模型输出的长度。",
+                "default": 4096,
+                "range": {
+                    "min": 1024,
+                    "max": 16384
+                }
+                }
+            },
+            "required": ["temperature", "system_prompt", "max_tokens"]
+        },
+        "roleplay": {
+            "description": "可利用RAG技术进行增强检索的多轮对话的agent模式，如果mode是roleplay或者auto则以下参数必填，如果mode是single则不启用",
+            "parameters": {
+                "temperature": {
+                "type": "float",    
+                "description": "温度参数，用于控制模型输出的随机性。",
+                "default": 0.4
+                },
+                "user_role_name": {
+                "type": "string",
+                "description": "用户角色名称，用于决定用户角色的行为。",
+                "default": "user"
+                },
+                "assistant_role_name": {
+                "type": "string",
+                "description": "专家角色名称，用于决定专家角色的行为。",
+                "default": "assistant"
+                },
+                "round_limit": {
+                "type": "int",
+                "description": "轮数限制，用于决定对话的轮数。如果轮次过多会导致上下文过长，模型无法处理。",
+                "default": 5,
+                "range": {
+                    "min": 1,
+                    "max": 10
+                }
+                },
+                "max_tokens": {
+                "type": "int",
+                "description": "最大令牌数，用于决定每个角色模型的最大输出。由于对话模式和rag信息检索的特殊性，轮次越多记忆也就越长，如果最大令牌太小会导致模型无法处理。",
+                "default": 10000,
+                "range": {
+                    "min": 1024,
+                    "max": 16384
+                }
+                },
+                "with_task_specify": {
+                "type": "bool",
+                "description": "是否启用特殊任务指定。",
+                "default": false,
+                "enum": [true, false]
+                },
+                "with_task_planner": {
+                "type": "bool",
+                "description": "是否启用规划任务功能。",
+                "default": false,
+                "enum": [true, false]
+                }
+            },
+            "required": ["temperature", "user_role_name", "assistant_role_name", "round_limit", "max_tokens", "with_task_specify", "with_task_planner"]
+        }
+    }
+}

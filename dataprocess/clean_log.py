@@ -1,7 +1,7 @@
 from pathlib import Path
 import json
 from embeddings.japan_book_chunking import chunk_data_for_log
-from rag_pipeline.camel_rag import RAG
+from rag.camel_rag import RAG
 
 def clean_log(log):
     clean_text = log.replace('\n', '') 

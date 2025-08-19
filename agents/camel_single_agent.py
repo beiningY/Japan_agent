@@ -3,10 +3,10 @@ import logging
 from camel.agents import ChatAgent
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
-from rag_pipeline.camel_rag import RAG
+from rag.camel_rag import RAG
 
 logger = logging.getLogger("CamelSingleAgent")
-
+logger.setLevel(logging.INFO)
 class CamelSingleAgent(BaseAgent):
     r"""
     Camel框架的单智能体对话，支持使用RAG增强检索后的相关知识，给出专业的回答。
@@ -19,7 +19,8 @@ class CamelSingleAgent(BaseAgent):
         self.custom_collection_name = collection_name
         if rag:
             self.rag = RAG(self.custom_collection_name or self.config.get("collection_name"))
-
+        else:
+            self.rag = None
     def init_model(self):
         """初始化Camel Single Agent模型"""
         self.agent = ChatAgent(
@@ -52,7 +53,8 @@ class CamelSingleAgent(BaseAgent):
             context = query
         response = self.agent.step(context)
         result = response.msg.content
-        self.rag.release()
+        if self.rag:
+            self.rag.release()
         return result
     
     def stream(self, query: str, topk: int | None = None):

@@ -3,8 +3,8 @@ import os
 from flask import Flask, request, jsonify
 import logging
 import threading
-from rag_pipeline.camel_rag import ModelManager
-from run_qa.japan_qa import main  as run_japan
+from rag.camel_rag import ModelManager
+from agents.multi_agent import main  as run_japan
 from run_qa.bank_qa import main as run_bank
 from run_qa.orchestrator import main as run_orchestrator
 import torch

@@ -3,9 +3,7 @@ import os
 from flask import Flask, request, jsonify
 import logging
 import threading
-from rag_pipeline.handle_rag.vector_retriever import ModelManager
-from run_qa.japan_qa import main  as run_japan
-from run_qa.bank_qa import main as run_bank
+from run_qa.orchestrator import main
 import torch
 import gc
 

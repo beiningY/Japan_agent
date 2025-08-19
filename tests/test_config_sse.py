@@ -1,0 +1,31 @@
+from run_qa.orchestrator import main as run_orchestrator
+
+def test_config_sse():
+    config = {
+        "mode": "auto",
+        "rag": {
+        "collection_name": "all_data",
+        "topk_single": 5,
+        "topk_multi": 5
+        },
+        "single": {
+        "temperature": 0.4,
+        "system_prompt": "你是一个领域专家，你的任务是根据用户的问题，结合增强检索后的相关知识，给出专业的回答。",
+        "max_tokens": 4096
+        },
+        "roleplay": {
+        "temperature": 0.4,
+        "user_role_name": "user",
+        "assistant_role_name": "assistant",
+        "round_limit": 5,
+        "max_tokens": 10000,
+        "with_task_specify": False,
+        "with_task_planner": False
+        }
+    }
+    for data in run_orchestrator(query="请介绍日本陆上养殖项目", config=config):
+        print(data)
+    
+if __name__ == "__main__":
+    test_config_sse()
+

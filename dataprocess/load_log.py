@@ -6,7 +6,7 @@ import argparse
 import logging
 import requests
 from dataprocess.clean_log import clean_log_file
-from rag_pipeline.camel_rag import RAG
+from rag.camel_rag import RAG
 from embeddings.japan_book_chunking import chunk_data_for_log
 
 logging.basicConfig(

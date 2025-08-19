@@ -2,8 +2,6 @@ import time
 import json
 from flask import Flask, Response, request, jsonify
 import logging
-from run_qa.japan_qa import main  as run_japan
-from run_qa.bank_qa import main as run_bank
 from run_qa.orchestrator import main as run_orchestrator
 import uuid
 app = Flask(__name__)
@@ -55,20 +53,15 @@ def stream():
             yield sse_format(error_data)
             return
         agent_functions = {
-            'japan': run_japan,
-            'bank': run_bank,
-            'orchestrator': run_orchestrator,
-            'default': run_japan
+            'japan': run_orchestrator,
+            'bank': run_orchestrator,
+            'default': run_orchestrator
         }
         agent_function = agent_functions.get(agent_type, agent_functions['default'])
 
         # 开始处理消息并发送数据
         try:    
-            payload = None
-            # 支持通过 POST body 传入 orchestrator 配置
-            if request.method == 'POST':
-                payload = (request.get_json() or {}).get('config')
-            for i, data in enumerate(agent_function(query) if payload is None else agent_function(query, payload)):
+            for i, data in enumerate(agent_function(query)):
                 if data:
                     message = {
                         "session_id": session_id,

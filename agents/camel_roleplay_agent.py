@@ -2,7 +2,7 @@ from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from camel.messages import BaseMessage
 from camel.societies import RolePlaying 
-from rag_pipeline.camel_rag import RAG
+from rag.camel_rag import RAG
 import logging
 import re
 from agents.base import BaseAgent
@@ -19,12 +19,14 @@ class CamelRoleplayAgent(BaseAgent):
                  with_task_specify: bool | None = None,
                  with_task_planner: bool | None = None,
                  collection_name: str | None = None,
+                 topk: int | None = None,
                  **kwargs):
         self.custom_user_role_name = user_role_name
         self.custom_assistant_role_name = assistant_role_name
         self.custom_with_task_specify = with_task_specify
         self.custom_with_task_planner = with_task_planner
         self.custom_collection_name = collection_name
+        self.custom_topk = topk
         super().__init__(**kwargs)
         self.rag = RAG(self.custom_collection_name or self.config.get("collection_name"))
 
@@ -41,14 +43,14 @@ class CamelRoleplayAgent(BaseAgent):
     def create_society(self, query: str):
         """创建助手角色参数"""
         assistant_role_kwargs = {
-            'assistant_role_name': self.custom_assistant_role_name,
+            'assistant_role_name': (self.custom_assistant_role_name or self.config.get("assistant_role_name"),"专家"),
             'assistant_agent_kwargs': {
                 'model': self.model
             }
         }
         """创建用户角色参数"""
         user_role_kwargs = {
-            'user_role_name': self.custom_user_role_name,
+            'user_role_name': (self.custom_user_role_name or self.config.get("user_role_name"),"用户"),
             'user_agent_kwargs': {
                 'model': self.model
             }
@@ -118,8 +120,8 @@ class CamelRoleplayAgent(BaseAgent):
         return rag_contexts
 
 
-    def stream(self, query: str, round_limit: int = 5):
-        """主对话逻辑流式输出：RAG增强的多轮用户-专家角色扮演对话"""
+    def run(self, query: str, round_limit: int = 5):
+        """主对话逻辑：RAG增强的多轮用户-专家角色扮演对话"""
         society = self.create_society(query)
         input_msg = society.init_chat()
         output_msg = f"""开始进入多轮对话场景模式......
@@ -149,7 +151,7 @@ class CamelRoleplayAgent(BaseAgent):
             if "CAMEL_TASK_DONE" in user_response.msg.content:
                 break
             # 调用RAG补充prompt 新建拼接Assistant Agent消息
-            assistant_input = self.rag_context(user_content)
+            assistant_input = self.rag_context(user_content, topk=self.custom_topk)
             assistant_msg = BaseMessage.make_assistant_message(
                 role_name=society.assistant_agent.role_name,
                 content=assistant_input,
@@ -170,13 +172,8 @@ class CamelRoleplayAgent(BaseAgent):
                 break
             # 准备下一轮输入
             input_msg = assistant_response.msg
-        return
-    
-    def run(self, query: str, round_limit: int = 5):
-        """输出完后返回全部对话的过程"""
-        output_msg = ""
-        for i in self.stream(query, round_limit):
-            output_msg += i["agent_response"]
+            output_msg += f"第{round_idx}轮养殖员的输出:\n{user_content}\n" + f"第{round_idx}轮专家顾问的输出:\n{assistant_content}\n"
+        logger.info(f"最终的对话结果:\n{output_msg}\n")
         return output_msg
 
 

@@ -4,24 +4,19 @@
 1. 添加文件（文件路径/知识库名称）
 2. 删除文件（原文件路径/知识库名称/文件名称）
 """
-# main.py
-from rag_pipeline.auto_rag.knowledeg_base import KnowledgeBase
-from langchain_openai import ChatOpenAI
+from rag.lang_rag import LangRAG
 import os
 from dotenv import load_dotenv
 load_dotenv()
 import logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+
 logger = logging.getLogger("AutoEmbedding")
 logger.setLevel(logging.INFO)
 
 
 def embedding(kb_name: str,file_path: str):
     os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-    kb = KnowledgeBase(
+    kb = LangRAG(
         persist_path="data/vector_data",
         collection_name=kb_name
     )
@@ -30,7 +25,7 @@ def embedding(kb_name: str,file_path: str):
     return True
 
 def delete(kb_name: str,file_path: str):
-    kb = KnowledgeBase(
+    kb = LangRAG(
         persist_path="data/vector_data",
         collection_name=kb_name
     )
