@@ -1,32 +1,44 @@
+import os
 import time
 import json
-from flask import Flask, Response, request, jsonify
+from flask import Flask, Response, request, jsonify, Blueprint
 import logging
+from agents.langchain_single_agent import LangchainSingleAgent
 from run_qa.orchestrator import main as run_orchestrator
 import uuid
-app = Flask(__name__)
 
-logger = logging.getLogger("AgentSseAPI")
+logger = logging.getLogger("api_qa_sse")
 logger.setLevel(logging.INFO)
+
+sse = Blueprint("sse", __name__, url_prefix="/sse")
+
+
+@sse.route('/agent_config', methods=['GET'])
+def agent_config():
+    logger.info("收到请求,返回agent_config")
+    config = json.load(open("config/config_description.json", "r", encoding="utf-8"))
+    return jsonify(config)
+
+
 
 def sse_format(data: str):
     """格式化成 SSE 数据格式"""
     return f"data: {data}\n\n"
 
-@app.route('/stream', methods=['GET', 'POST'])
+@sse.route('/stream_qa', methods=['GET', 'POST'])
 def stream():
     # 获取参数（支持GET和POST）
     if request.method == 'GET':
         session_id = request.args.get('session_id', str(uuid.uuid4()))
         query = request.args.get('query', '请介绍日本陆上养殖项目')
         agent_type = request.args.get('agent_type', 'japan')
-        config = request.args.get('config', None)
+        agent_config = json.loads(request.args.get('config', None))
     else:  # POST
         data = request.get_json() or {}
         session_id = data.get('session_id', str(uuid.uuid4()))
         query = data.get('query', '请介绍日本陆上养殖项目')
         agent_type = data.get('agent_type', 'japan')
-        config = data.get('config', None)
+        agent_config = json.loads(data.get('config', None))
     # 记录接收到的参数
     logger.info(f"收到SSE请求 - Session ID: {session_id}, Query: {query}, Agent Type: {agent_type}")
     def generate():
@@ -51,14 +63,16 @@ def stream():
             yield sse_format(error_data)
             return
         agent_functions = {
-            'orchestrator': run_orchestrator,
+            'japan': run_orchestrator,
+            #'bank': LangchainSingleAgent().run,
             'default': run_orchestrator
         }
         agent_function = agent_functions.get(agent_type, agent_functions['default'])
 
         # 开始处理消息并发送数据
         try:    
-
+            # 准备配置参数
+            config = agent_config if agent_config is not None else None
             for i, data in enumerate(agent_function(query, config)):
                 if data:
                     message = {
@@ -107,7 +121,3 @@ def stream():
                        'Connection': 'keep-alive',
                        'Access-Control-Allow-Origin': '*'
                    })
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True, threaded=True)

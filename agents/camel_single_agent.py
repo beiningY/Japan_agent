@@ -3,7 +3,7 @@ import logging
 from camel.agents import ChatAgent
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
-from rag.camel_rag import RAG
+from rag.camel_rag import CamelRAG
 
 logger = logging.getLogger("CamelSingleAgent")
 logger.setLevel(logging.INFO)
@@ -18,7 +18,7 @@ class CamelSingleAgent(BaseAgent):
         super().__init__(**kwargs) 
         self.custom_collection_name = collection_name
         if rag:
-            self.rag = RAG(self.custom_collection_name or self.config.get("collection_name"))
+            self.rag = CamelRAG(self.custom_collection_name or self.config.get("collection_name"))
         else:
             self.rag = None
     def init_model(self):

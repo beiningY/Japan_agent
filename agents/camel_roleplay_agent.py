@@ -2,7 +2,7 @@ from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from camel.messages import BaseMessage
 from camel.societies import RolePlaying 
-from rag.camel_rag import RAG
+from rag.camel_rag import CamelRAG
 import logging
 import re
 from agents.base import BaseAgent
@@ -28,7 +28,7 @@ class CamelRoleplayAgent(BaseAgent):
         self.custom_collection_name = collection_name
         self.custom_topk = topk
         super().__init__(**kwargs)
-        self.rag = RAG(self.custom_collection_name or self.config.get("collection_name"))
+        self.rag = CamelRAG(self.custom_collection_name or self.config.get("collection_name"))
 
 
     def init_model(self):
