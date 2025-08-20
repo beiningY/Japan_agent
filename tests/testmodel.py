@@ -1,6 +1,30 @@
-from sentence_transformers import SentenceTransformer
-
-model = SentenceTransformer("models/multilingual-e5-large")
+#from sentence_transformers import SentenceTransformer
+import json
+#model = SentenceTransformer("models/multilingual-e5-large")
 
 # 直接查看底层 transformer 的参数类型
-print(next(model[0].auto_model.parameters()).dtype)
+#print(next(model[0].auto_model.parameters()).dtype)
+config = {
+        "mode": "auto",
+        "rag": {
+        "collection_name": "all_data",
+        "topk_single": 5,
+        "topk_multi": 5
+        },
+        "single": {
+        "temperature": 0.4,
+        "system_prompt": "你是一个领域专家，你的任务是根据用户的问题，结合增强检索后的相关知识，给出专业的回答。",
+        "max_tokens": 4096
+        },
+        "roleplay": {
+        "temperature": 0.4,
+        "user_role_name": "user",
+        "assistant_role_name": "assistant",
+        "round_limit": 5,
+        "max_tokens": 10000,
+        "with_task_specify": False,
+        "with_task_planner": False
+        }
+    }
+
+print(json.dumps(config, ensure_ascii=False))
