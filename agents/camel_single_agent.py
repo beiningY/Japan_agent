@@ -4,7 +4,8 @@ from camel.agents import ChatAgent
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from rag.camel_rag import CamelRAG
-
+from rag.lang_rag import LangRAG
+import os
 logger = logging.getLogger("CamelSingleAgent")
 logger.setLevel(logging.INFO)
 class CamelSingleAgent(BaseAgent):
@@ -18,7 +19,10 @@ class CamelSingleAgent(BaseAgent):
         super().__init__(**kwargs) 
         self.custom_collection_name = collection_name
         if rag:
-            self.rag = CamelRAG(self.custom_collection_name or self.config.get("collection_name"))
+            self.rag = LangRAG(
+                persist_path="data/vector_data",
+                collection_name=self.custom_collection_name or self.config.get("collection_name")
+            )
         else:
             self.rag = None
     def init_model(self):
@@ -35,11 +39,34 @@ class CamelSingleAgent(BaseAgent):
 
     def rag_context(self, query: str, topk: int | None = None):
         """获取RAG增强检索后的chunk并合并成context"""
-        context = self.rag.rag_retrieve(query, topk or self.config.get("vector_top_k", 5))
+        contexts = self.rag.retrieve(query, k=topk or self.config.get("vector_top_k", 5))
+        logger.info(f"检索到的是{contexts}")
+        if not contexts:
+            answer = "抱歉，知识库中未找到相关信息。"
+            logger.info(f"回答: {answer}")
+            return answer
+
+        # 提取唯一源文件（兼容 Document 与 str）
+        def _extract_source(item):
+            try:
+                if hasattr(item, "metadata") and isinstance(item.metadata, dict):
+                    return os.path.basename(item.metadata.get("source", "未知文件"))
+            except Exception:
+                pass
+            return "日本陆上养殖知识库"
+
+        sources = list(set([_extract_source(doc) for doc in contexts]))
+
+        # 生成内容（兼容 Document 与 str）
+        def _to_text(item):
+            return item.page_content if hasattr(item, "page_content") else str(item)
+
+        content = "\n".join([f"{i+1}. {_to_text(ctx)}" for i, ctx in enumerate(contexts)])
+
         rag_contexts = (
-            f"用户的问题是: {query}\n"
-            f"相关知识内容如下，请结合以下信息作答，如果信息与问题无关可忽略：\n"
-            + "\n".join(context) +
+            f"问题：{query}\n\n"
+            f"参考内容：\n{content}\n\n"
+            f"请务必说明参考了以下文件：{', '.join(sources)}"
             "\n如果记忆的上下文被截断请无视，必须根据用户问题和可参考的知识库内容给出合理的答案。"
         )
         return rag_contexts

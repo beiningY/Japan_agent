@@ -1,4 +1,4 @@
-from run_qa.defaut_kb_qa import create_kb, delete_kb, ask
+from run_qa.lang_kb_qa import create_kb, delete_kb, ask
 
 def test_create_kb():
     create_kb("bank")
