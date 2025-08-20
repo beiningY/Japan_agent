@@ -13,6 +13,13 @@ import torch
 import gc
 import shutil
 from uuid import uuid4
+from langchain_community.chat_models import ChatOpenAI
+from typing import List
+import logging
+from openai import OpenAI
+import json
+import dotenv
+dotenv.load_dotenv()
 
 logger = logging.getLogger("Langchain_RAG")
 logger.setLevel(logging.INFO)
@@ -155,14 +162,98 @@ class LangRAG:
         self.vectorstore.delete(ids=chunk_ids_to_delete)
         logger.info(f"文件{file_path}在向量知识库中删除完成")
 
+    def rerank(self, query: str, results: List[Document], k: int = 5) -> List[Document]:
+        """
+        使用 LangChain LLM 对检索结果进行 cross-encoder 重排序
+        Args:
+            query: 用户查询
+            results: 检索到的 Document 列表
+            k: 返回 cross-encoder的top-k 排序结果
+            
+        Returns:
+            List[Document]: 按相关性排序后的文档列表
+        """
+        if not results:
+            return []
+
+        # 构建候选文本
+        candidate_texts = [doc.page_content for doc in results]
+
+        # 构建 prompt，让 LLM 对候选文本打分
+        prompt = f"""
+    你是一个搜索重排序器。给定一个查询和若干候选文档，请为每个候选文档给出 0~10 的相关性分数，分数越高表示越相关。
+    查询: {query}
+
+    候选文档:
+    """
+        for i, text in enumerate(candidate_texts, 1):
+            prompt += f"{i}. {text}\n"
+
+        prompt += """
+    请输出 JSON 格式：
+    [
+    {"context": "pe", "score": 6},
+    {"context": "ez", "score": 7},
+    ...
+    ]
+    只输出 JSON格式，不要额外文字。
+    """
+
+        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        schema = {
+            "name": "rerank_response",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "context": {"type": "string"},
+                                "score": {"type": "integer"}
+                            },
+                            "required": ["context", "score"]
+                        }
+                    }
+                },
+                "required": ["results"]
+            }
+        }
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            response_format={
+                "type": "json_schema",
+                "json_schema": schema
+            },
+            messages=[
+                {"role": "system", "content": "你是一个搜索重排序器。"},
+                {"role": "user", "content": prompt},
+            ],
+        )
+
+        scores_list = json.loads(response.choices[0].message.content)["results"]
+
+        logger.info(f"重排序结果: {scores_list}")
+        scored_docs = sorted(scores_list, key=lambda x: x["score"], reverse=True)
+
+        # 只取 context 字段
+        rerank_results = [d["context"] for d in scored_docs]
+        return rerank_results
+
+
     def retrieve(self, query: str, k: int = 5) -> List[Document]:
         """检索最相关的文档片段"""
         logger.info(f"检索中: '{query}' (top-{k})")
         query = f"query: {query}"
         # results = self.vectorstore.similarity_search_with_score(query, k=k)
-        results = self.vectorstore.similarity_search(query, k=k)
-        logger.info(f"检索到 {len(results)} 条相关片段")
-        return results
+        retrieve_results = self.vectorstore.similarity_search(query, k=k)
+        logger.info(f"检索到相关片段:{retrieve_results}")
+        rerank_results = self.rerank(query, retrieve_results, k)
+        logger.info(f"重排序后相关片段 {rerank_results} ")
+        return rerank_results
+
 
     def del_model(self):
         """if hasattr(self, "embeddings") and self.embeddings is not None:

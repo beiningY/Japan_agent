@@ -58,13 +58,22 @@ def ask(question: str, k: int = 5, kb_name: str="all_data", model: str="gpt-4o-m
         logger.info(f"回答: {answer}")
         return answer
 
-    # 提取唯一源文件
-    sources = list(set([
-        os.path.basename(doc.metadata.get("source", "未知文件"))
-        for doc in contexts
-    ]))
+    # 提取唯一源文件（兼容 Document 与 str）
+    def _extract_source(item):
+        try:
+            if hasattr(item, "metadata") and isinstance(item.metadata, dict):
+                return os.path.basename(item.metadata.get("source", "未知文件"))
+        except Exception:
+            pass
+        return "日本陆上养殖知识库"
 
-    content = "\n".join([f"{i+1}. {ctx.page_content}" for i, ctx in enumerate(contexts)])
+    sources = list(set([_extract_source(doc) for doc in contexts]))
+
+    # 生成内容（兼容 Document 与 str）
+    def _to_text(item):
+        return item.page_content if hasattr(item, "page_content") else str(item)
+
+    content = "\n".join([f"{i+1}. {_to_text(ctx)}" for i, ctx in enumerate(contexts)])
 
     messages = [
         ("system", "你是一个问答专家，请根据用户的问题和相关的知识库内容，给出专业、清晰的回答。"),
@@ -84,10 +93,10 @@ if __name__ == "__main__":
     kb_name = "all_data"
     query="今天天气怎么样"
     # 创建知识库
-    kb = create_kb(kb_name)
+    #kb = create_kb(kb_name)
 
     # 删除知识库
-    delete_kb(kb_name)
+    #delete_kb(kb_name)
 
     # 提问
     result = ask(query,kb_name=kb_name)

@@ -2,6 +2,45 @@ from qdrant_client import QdrantClient
 
 # 连接 Qdrant
 client = QdrantClient(path="data/vector_data")
+"""
+from qdrant_client.http import models as rest
+
+
+collection_name = "all_data"
+
+# 分批 scroll 读取所有点
+scroll_cursor = None
+while True:
+    points, scroll_cursor = client.scroll(
+        collection_name=collection_name,
+        limit=100,  # 每次批量 100 个，可以调大/调小
+        offset=scroll_cursor,
+        with_vectors=True  # 保证 vector 一起读出，方便回写
+    )
+
+    if not points:
+        break
+
+    new_points = []
+    for p in points:
+        payload = p.payload.copy()
+        if "text" in payload:
+            payload["page_content"] = payload.pop("text")  # 改字段名
+        new_points.append(
+            rest.PointStruct(
+                id=p.id,
+                vector=p.vector,     # 保持原始向量
+                payload=payload      # 更新后的 payload
+            )
+        )
+
+    # 回写更新
+    client.upsert(
+        collection_name=collection_name,
+        points=new_points
+    )
+
+print("所有点的 `text` 字段已改为 `page_content` ✅")"""
 
 # 1. 查看有哪些 collections
 print("=== Collections 列表 ===")
@@ -28,3 +67,4 @@ print("\n=== LangChain 数据样例 ===")
 langchain_points = client.scroll(collection_name=langchain_collection, limit=3)[0]
 for p in langchain_points:
     print(p.payload)
+
