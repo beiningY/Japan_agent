@@ -10,9 +10,9 @@
         "parameters": {
             "collection_name": {
                 "type": "string",
-                "description": "RAG的collection名称，必填",
+                "description": "RAG的collection名称，必填,如果是和日本陆上养殖相关则选择all_data,如果是和银行相关则选择bank",
                 "default": "all_data",
-                "enum": ["all_data"]
+                "enum": ["all_data", "bank"]
             },
             "topk_single": {    
                 "type": "int",

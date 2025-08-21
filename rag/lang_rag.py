@@ -181,7 +181,7 @@ class LangRAG:
 
         # 构建 prompt，让 LLM 对候选文本打分
         prompt = f"""
-    你是一个搜索重排序器。给定一个查询和若干候选文档，请为每个候选文档给出 0~10 的相关性分数，分数越高表示越相关。
+    你是一个搜索重排序器。给定一个查询和若干候选文档，请为每个候选文档给出 0~10 的相关性分数，分数越高表示越相关。如果与查询毫无关系请直接删除，不需要返回在json格式里
     查询: {query}
 
     候选文档:
@@ -255,7 +255,7 @@ class LangRAG:
         return rerank_results
 
 
-    def del_model(self):
+    def release(self):
         """if hasattr(self, "embeddings") and self.embeddings is not None:
             try:
                 # 如果 self.embeddings 是 HuggingFaceEmbeddings，真正的模型通常在 self.embeddings.client 或 self.embeddings.model

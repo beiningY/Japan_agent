@@ -104,7 +104,9 @@ class CamelRoleplayAgent(BaseAgent):
     
     def rag_context(self, query: str, topk: int | None = None):
         # 取出Instruction部分（核心问题）
-        instruction_match = re.search(r'Instruction:\s*(.*)', query, re.DOTALL)
+        first_line = query.splitlines()[0]
+        instruction_match = re.search(r'Instruction:\s*(.*)', first_line)
+
         if instruction_match:
             question = instruction_match.group(1).strip()
         else:

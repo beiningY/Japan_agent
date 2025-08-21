@@ -207,5 +207,5 @@ if __name__ == "__main__":
     #test_sse()
     #test_simple_sse()
     #connect_sse()
-    test_agent_config()
-    #test_stream_qa()
+    #test_agent_config()
+    test_stream_qa()
