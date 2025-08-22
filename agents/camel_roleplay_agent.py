@@ -128,7 +128,7 @@ class CamelRoleplayAgent(BaseAgent):
                     return os.path.basename(item.metadata.get("source", "未知文件"))
             except Exception:
                 pass
-            return "日本陆上养殖知识库"
+            return "无源文件信息"
 
         sources = list(set([_extract_source(doc) for doc in contexts]))
 
