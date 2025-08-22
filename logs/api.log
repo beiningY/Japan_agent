@@ -184,3 +184,12 @@ nohup: ignoring input
 2025-08-22 14:51:13,476 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
 2025-08-22 14:51:13,479 - werkzeug - WARNING -  * Debugger is active!
 2025-08-22 14:51:13,480 - werkzeug - INFO -  * Debugger PIN: 778-500-625
+2025-08-22 15:06:11,014 - werkzeug - ERROR - 198.235.24.26 - - [22/Aug/2025 15:06:11] code 400, message Bad request version ('À\x13À')
+2025-08-22 15:06:11,014 - werkzeug - INFO - 198.235.24.26 - - [22/Aug/2025 15:06:11] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03Öã`\x11û\x98¬\x10I\x83¤Ä¶Òè¤²ç\x91\x10xC\x0d6M{\x0fÑ×¥}¤ o²¾'\x9f\x80Mê\x8fp\x15Ã\\ î\x93±J\x9bÄ\x16Ø/æ9ü\x1fPýç\x83à\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+2025-08-22 15:06:11,200 - werkzeug - ERROR - 198.235.24.26 - - [22/Aug/2025 15:06:11] code 400, message Bad request version ('À(À$À\x14À')
+2025-08-22 15:06:11,200 - werkzeug - INFO - 198.235.24.26 - - [22/Aug/2025 15:06:11] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03w\\\x9b\x13Ü¨\x13öÇ87l\x0f¼Êß\x09f]\x12ñ6ö) \x9cRÞ íñU\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-08-22 15:13:26,901 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/api/main.py', reloading
+2025-08-22 15:13:27,407 - werkzeug - INFO -  * Restarting with stat
+2025-08-22 15:13:29,995 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-22 15:13:29,999 - werkzeug - WARNING -  * Debugger is active!
+2025-08-22 15:13:29,999 - werkzeug - INFO -  * Debugger PIN: 778-500-625

@@ -17,7 +17,16 @@ logger.setLevel(logging.INFO)
 app.register_blueprint(knowledgebase)
 app.register_blueprint(sse)
 
-
+KB_CONFIG = {
+    "cede3e0b-6447-4418-9c80-97129710beb5": {
+        "name": "银行相关",
+        "path": "data/raw_data/bank"
+    },
+    "25241d69-33fd-465d-8fd1-18d34865248c": {
+        "name": "陆上养殖",
+        "path": "data/raw_data/japan_shrimp"
+    }
+}
 @app.route("/api/get_knowledge_base_list", methods=["GET"])
 def get_kb_list():
     # 从查询参数获取 kb_ids（格式：?kb_ids=id1,id2,id3）
