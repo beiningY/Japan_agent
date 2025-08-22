@@ -134,3 +134,53 @@ nohup: ignoring input
 2025-08-22 10:02:57,184 - werkzeug - ERROR - 96.126.104.20 - - [22/Aug/2025 10:02:57] code 400, message Bad request version ('À\x13À')
 2025-08-22 10:02:57,184 - werkzeug - INFO - 96.126.104.20 - - [22/Aug/2025 10:02:57] "[35m[1m\x16\x03\x01\x00ò\x01\x00\x00î\x03\x03êCÞ^³ÏóÑ\x80i\x80&SAMá®a8ÓÈCòH¤·¸°AÆ,\x0e \x03\x8d!Ù³ãTRmC±\x84ÈÝRñ\x01ý\x8e\x98\x84-&©\x05\x91\x07\x8a\x99H#3\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
 2025-08-22 10:02:57,507 - werkzeug - INFO - 96.126.104.20 - - [22/Aug/2025 10:02:57] "[33mGET /signin HTTP/1.1[0m" 404 -
+2025-08-22 11:16:51,372 - werkzeug - INFO - 205.210.31.131 - - [22/Aug/2025 11:16:51] "[33mGET / HTTP/1.1[0m" 404 -
+2025-08-22 12:04:29,806 - werkzeug - INFO - 198.235.24.222 - - [22/Aug/2025 12:04:29] "[33mGET / HTTP/1.1[0m" 404 -
+2025-08-22 12:43:45,621 - werkzeug - ERROR - 104.234.115.181 - - [22/Aug/2025 12:43:45] code 400, message Bad request version ('À\x14À')
+2025-08-22 12:43:45,621 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:43:45] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x18 ¾¥u.Î\x85Â±ò)qÞ!ÝÒI[lµ<xÐS\x16ò*\x04\x95¡â A\x0bI¯c¾G¥ûl\x0d¬\x7fÖs7ð(i\x0c\x8c3\x83Ïvè ¾\x99\x01+-\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-08-22 12:44:07,411 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:44:07] "[33mGET / HTTP/1.1[0m" 404 -
+2025-08-22 12:44:26,470 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:44:26] "[33mGET /manage/account/login HTTP/1.1[0m" 404 -
+2025-08-22 12:44:43,567 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:44:43] "[33mGET /admin/index.html HTTP/1.1[0m" 404 -
+2025-08-22 12:44:55,128 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:44:55] "[33mGET /index.html HTTP/1.1[0m" 404 -
+2025-08-22 12:45:11,263 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:45:11] "[33mGET /+CSCOE+/logon.html HTTP/1.1[0m" 404 -
+2025-08-22 12:45:23,208 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:45:23] "[33mGET /cgi-bin/login.cgi HTTP/1.1[0m" 404 -
+2025-08-22 12:45:34,867 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:45:34] "[33mGET /login.htm HTTP/1.1[0m" 404 -
+2025-08-22 12:45:46,319 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:45:46] "[33mGET /login.html HTTP/1.1[0m" 404 -
+2025-08-22 12:45:59,194 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:45:59] "[33mGET /login.jsp HTTP/1.1[0m" 404 -
+2025-08-22 12:46:10,759 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:46:10] "[33mGET /login HTTP/1.1[0m" 404 -
+2025-08-22 12:46:22,709 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:46:22] "[33mGET /doc/index.html HTTP/1.1[0m" 404 -
+2025-08-22 12:46:35,297 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:46:35] "[33mGET /remote/login HTTP/1.1[0m" 404 -
+2025-08-22 12:46:47,689 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:46:47] "[33mGET /admin/login.asp HTTP/1.1[0m" 404 -
+2025-08-22 12:46:59,342 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:46:59] "[33mGET /web/ HTTP/1.1[0m" 404 -
+2025-08-22 12:47:11,223 - werkzeug - INFO - 104.234.115.181 - - [22/Aug/2025 12:47:11] "[33mGET /webpages/login.html HTTP/1.1[0m" 404 -
+2025-08-22 12:51:06,785 - werkzeug - ERROR - 147.185.132.210 - - [22/Aug/2025 12:51:06] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03A{Öó\x12')
+2025-08-22 12:51:06,786 - werkzeug - INFO - 147.185.132.210 - - [22/Aug/2025 12:51:06] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03A{Öó\x12\x0cHÏçðÓÒ\x02[0m" HTTPStatus.BAD_REQUEST -
+2025-08-22 12:51:07,240 - werkzeug - ERROR - 147.185.132.210 - - [22/Aug/2025 12:51:07] code 400, message Bad request version ('À(À$À\x14À')
+2025-08-22 12:51:07,241 - werkzeug - INFO - 147.185.132.210 - - [22/Aug/2025 12:51:07] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03\x7fç\x1dl@LÇ\x9di\x89F]\x9eÄiàé1\x18s;¨o\x03Ø\x8c$§ÿ\x14Pø\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-08-22 13:51:43,559 - werkzeug - ERROR - 172.105.128.12 - - [22/Aug/2025 13:51:43] code 400, message Bad request syntax ('\x16\x03\x01\x01')
+2025-08-22 13:51:43,560 - werkzeug - INFO - 172.105.128.12 - - [22/Aug/2025 13:51:43] "[35m[1m\x16\x03\x01\x01[0m" HTTPStatus.BAD_REQUEST -
+2025-08-22 13:51:43,878 - werkzeug - ERROR - 172.105.128.12 - - [22/Aug/2025 13:51:43] code 400, message Bad request syntax ('\x16\x03\x01\x01')
+2025-08-22 13:51:43,878 - werkzeug - INFO - 172.105.128.12 - - [22/Aug/2025 13:51:43] "[35m[1m\x16\x03\x01\x01[0m" HTTPStatus.BAD_REQUEST -
+2025-08-22 14:01:32,435 - werkzeug - ERROR - 96.126.104.20 - - [22/Aug/2025 14:01:32] code 400, message Bad request version ('À\x13À')
+2025-08-22 14:01:32,435 - werkzeug - INFO - 96.126.104.20 - - [22/Aug/2025 14:01:32] "[35m[1m\x16\x03\x01\x00ò\x01\x00\x00î\x03\x03¼Á\x02ý5P\x1a=3-Í¨Y*È\x05ÛÁËq \x81\x12'-ìµ\x96ÐQ¼Ö B\x82\x0c×>éµ~\x113%ù\x91Yï*ÿ\x86\x0e\x0e\x9a\x90À\x12E»·9>»0T\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+2025-08-22 14:01:32,781 - werkzeug - INFO - 96.126.104.20 - - [22/Aug/2025 14:01:32] "[33mGET /signin HTTP/1.1[0m" 404 -
+2025-08-22 14:35:20,541 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/MCP/mcp_server.py', reloading
+2025-08-22 14:35:21,889 - werkzeug - INFO -  * Restarting with stat
+2025-08-22 14:35:24,506 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-22 14:35:24,509 - werkzeug - WARNING -  * Debugger is active!
+2025-08-22 14:35:24,509 - werkzeug - INFO -  * Debugger PIN: 778-500-625
+2025-08-22 14:38:23,378 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/MCP/mcp_server.py', reloading
+2025-08-22 14:38:23,910 - werkzeug - INFO -  * Restarting with stat
+2025-08-22 14:38:26,459 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-22 14:38:26,462 - werkzeug - WARNING -  * Debugger is active!
+2025-08-22 14:38:26,462 - werkzeug - INFO -  * Debugger PIN: 778-500-625
+2025-08-22 14:47:03,951 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/MCP/mcp_server.py', reloading
+2025-08-22 14:47:04,493 - werkzeug - INFO -  * Restarting with stat
+2025-08-22 14:47:07,109 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-22 14:47:07,112 - werkzeug - WARNING -  * Debugger is active!
+2025-08-22 14:47:07,113 - werkzeug - INFO -  * Debugger PIN: 778-500-625
+2025-08-22 14:51:10,296 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/MCP/client.py', reloading
+2025-08-22 14:51:10,839 - werkzeug - INFO -  * Restarting with stat
+2025-08-22 14:51:13,476 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-22 14:51:13,479 - werkzeug - WARNING -  * Debugger is active!
+2025-08-22 14:51:13,480 - werkzeug - INFO -  * Debugger PIN: 778-500-625

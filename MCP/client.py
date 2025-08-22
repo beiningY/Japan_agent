@@ -1,6 +1,7 @@
 """
 MCP 客户端示例
 用于连接并调用 cognitive-mcp-server
+目的是用于调用数据库进行查询功能
 """
 
 import asyncio

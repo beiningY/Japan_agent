@@ -1,16 +1,47 @@
-from mcp.server.fastmcp import FastMCP
+# mcp_server.py
+from mcp.server import MCPServer
+from kb_manager import create_collection, delete_collection, list_collections
+from kb_manager import create_collection, delete_file, embedding_file
+# 向中枢或其他智能体提供知识库接口管理增删改查功能
 
-mcp = FastMCP("Math")
+# 初始化 MCP Server
+server = MCPServer()
 
-@mcp.tool()
-def add(a: int, b: int) -> int:
-    """2数相加"""
-    return a + b
+# 注册工具
+server.register_tool(
+    name="create_collection",
+    description="创建一个新的类型的知识库",
+    func=create_collection,
+    input_schema={"collection_name": str}
+)
 
-@mcp.tool()
-def multiply(a: int, b: int) -> int:
-    """2数相乘"""
-    return a * b
+server.register_tool(
+    name="delete_collection",
+    description="删除指定的知识库集合",
+    func=delete_collection,
+    input_schema={"collection_name": str}
+)
 
-if __name__ == "__main__":
-    mcp.run(transport="stdio")
+server.register_tool(
+    name="list_collections",
+    description="列出所有知识库集合",
+    func=list_collections,
+    input_schema={"collection_name": str}
+)
+server.register_tool(
+    name="create_file",
+    description="向量化一个文件",
+    func=embedding_file,
+    input_schema={"collection_name": str, "file_path": str}
+)
+
+server.register_tool(
+    name="delete_file",
+    description="删除一个已向量化的文件",
+    func=delete_file,
+    input_schema={"collection_name": str, "file_path": str}
+)
+
+
+# 启动 MCP 服务端
+server.start()
