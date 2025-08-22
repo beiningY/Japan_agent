@@ -1,9 +1,8 @@
 # mcp_server.py
 from mcp.server import MCPServer
-from kb_manager import create_collection, delete_collection, list_collections
-from kb_manager import create_collection, delete_file, embedding_file
-# 向中枢或其他智能体提供知识库接口管理增删改查功能
-
+from run_qa.lang_kb_qa import create_kb, delete_kb
+from rag.lang_rag import add_file, delete_file
+# 向中枢或其他智能体提供知识库接口管理增删改查功
 # 初始化 MCP Server
 server = MCPServer()
 
@@ -11,14 +10,14 @@ server = MCPServer()
 server.register_tool(
     name="create_collection",
     description="创建一个新的类型的知识库",
-    func=create_collection,
+    func=create_kb,
     input_schema={"collection_name": str}
 )
 
 server.register_tool(
     name="delete_collection",
     description="删除指定的知识库集合",
-    func=delete_collection,
+    func=delete_kb,
     input_schema={"collection_name": str}
 )
 
@@ -31,7 +30,7 @@ server.register_tool(
 server.register_tool(
     name="create_file",
     description="向量化一个文件",
-    func=embedding_file,
+    func=add_file,
     input_schema={"collection_name": str, "file_path": str}
 )
 
