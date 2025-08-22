@@ -1,46 +1,54 @@
-# mcp_server.py
-from mcp.server import MCPServer
-from run_qa.lang_kb_qa import create_kb, delete_kb
-from rag.lang_rag import add_file, delete_file
+from mcp.server import FastMCP
+#from run_qa.lang_kb_qa import create_kb, delete_kb, ask, add_file, delete_file
 # 向中枢或其他智能体提供知识库接口管理增删改查功
 # 初始化 MCP Server
-server = MCPServer()
-
+server = FastMCP(name="rag-mcp-server")
+mcp_with_instructions =FastMCP(
+    name="rag-mcp-server",
+    instructions="""
+    This server provides knowledge base management.
+    You can create, delete, and query knowledge bases.
+    You can also add and delete files from the knowledge base.
+    """
+    )
 # 注册工具
-server.register_tool(
+@server.tool(
+    name="get_weather",
+    description="获取天气信息")
+async def get_weather():
+    return "天气晴朗"
+
+"""@server.tool(    
     name="create_collection",
-    description="创建一个新的类型的知识库",
-    func=create_kb,
-    input_schema={"collection_name": str}
-)
+    description="创建一个新的类型的知识库")
+async def create_collection(collection_name: str):
+    return create_kb(collection_name)
 
-server.register_tool(
+@server.tool(
     name="delete_collection",
-    description="删除指定的知识库集合",
-    func=delete_kb,
-    input_schema={"collection_name": str}
-)
+    description="删除指定的知识库集合")
+async def delete_collection(collection_name: str):
+    return delete_kb(collection_name)
 
-server.register_tool(
-    name="list_collections",
-    description="列出所有知识库集合",
-    func=list_collections,
-    input_schema={"collection_name": str}
-)
-server.register_tool(
+
+@server.tool(
     name="create_file",
-    description="向量化一个文件",
-    func=add_file,
-    input_schema={"collection_name": str, "file_path": str}
-)
+    description="向量化一个文件")
+async def create_file(collection_name: str, file_path: str):
+    return add_file(collection_name, file_path)
 
-server.register_tool(
+@server.tool(
     name="delete_file",
-    description="删除一个已向量化的文件",
-    func=delete_file,
-    input_schema={"collection_name": str, "file_path": str}
-)
+    description="删除一个已向量化的文件")
+async def delete_file(collection_name: str, file_path: str):
+    return delete_file(collection_name, file_path)
 
 
+@server.tool(
+    name="ask",
+    description="向知识库提问")
+async def ask(collection_name: str, question: str):
+    return ask(collection_name, question)"""
+ 
 # 启动 MCP 服务端
-server.start()
+server.run()

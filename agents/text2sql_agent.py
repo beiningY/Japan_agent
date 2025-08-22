@@ -7,10 +7,6 @@ from camel.types import ModelPlatformType, ModelType
 from camel.agents import ChatAgent
 import logging
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
 logger = logging.getLogger("Text2SQL")
 logger.setLevel(logging.INFO)
 

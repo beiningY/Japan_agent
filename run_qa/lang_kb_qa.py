@@ -89,6 +89,27 @@ def ask(question: str, k: int = 5, kb_name: str="all_data", model: str="gpt-4o-m
     kb.del_model()
     return answer
 
+
+def get_kb_list():
+    kb_list = LangRAG(
+        persist_path = "data/vector_data",
+        collection_name = "all_data"
+    )
+    return kb_list.get_kb_list()
+def add_file(file_path: str, kb_name: str="all_data"):
+    kb = LangRAG(
+        persist_path = "data/vector_data",
+        collection_name = kb_name
+    )
+    kb.add_file(file_path)
+    return True
+def delete_file(file_path: str, kb_name: str="all_data"):
+    kb = LangRAG(
+        persist_path = "data/vector_data",
+        collection_name = kb_name
+    )
+    kb.delete_file(file_path)
+    return True
 if __name__ == "__main__":
     kb_name = "all_data"
     query="今天天气怎么样"
