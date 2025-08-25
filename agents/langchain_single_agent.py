@@ -46,7 +46,7 @@ class LangchainSingleAgent(BaseAgent):
         content = "\n".join([f"{i+1}. {ctx.page_content}" for i, ctx in enumerate(contexts)])
 
         messages = [
-            ("system", "你是一个金融专家，请根据用户的问题和相关的知识库内容，给出专业、清晰的回答。"),
+            ("system", "你是一个专家，请根据用户的问题和相关的知识库内容，给出专业、清晰的回答。"),
             ("human", f"问题：{question}\n\n"
                     f"参考内容：\n{content}\n\n"
                     f"请务必说明参考了以下文件：{', '.join(sources)}")
