@@ -8,7 +8,7 @@ from rag.camel_rag import RAG
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from datetime import datetime
-from .text2sql_agent import Text2SQL
+
 import logging
 
 logging.basicConfig(
