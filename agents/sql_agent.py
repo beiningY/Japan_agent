@@ -12,18 +12,12 @@ from langgraph.prebuilt import create_react_agent
 from langgraph.prebuilt.chat_agent_executor import AgentState
 from MCP.db_client import load_sql_tools
 from langchain_core.tools import tool
-import os
+
 
 logger = logging.getLogger("sql_agent")
 logger.setLevel(logging.INFO)
 
-if load_dotenv():
-    print("✅ Loaded .env file")
-else:
-    print("⚠️ No .env file found")
 
-
-# Memory & Config
 agent_graph = None
 agent_memory = InMemorySaver()
 recursion_limit = 3
@@ -32,6 +26,7 @@ def user_config(sessionId):
     return {"configurable": {"thread_id": sessionId, "recursion_limit": recursion_limit}}
 
 def pre_model_hook(state: AgentState) -> dict[str, list[AnyMessage]]:
+    """在调用LLM之前，对历史消息进行修剪"""
     trimmed_messages = trim_messages(
         state["messages"],
         strategy="last",
@@ -50,7 +45,7 @@ async def init_agent():
     # LLM
     llm = ChatOpenAI(model="gpt-4o", temperature=0.4)
 
-    # System Prompt
+    # 设置text2sql的系统消息
     prompt_template = hub.pull("langchain-ai/sql-agent-system-prompt")
     SYSTEM_PROMPT = prompt_template.messages[0].prompt.template.format(
     dialect="MySQL", top_k=10
@@ -58,7 +53,7 @@ async def init_agent():
     if agent_graph is not None:
         return agent_graph
 
-    print("🚀 Initializing Agent...")
+    logger.info("智能体初始化...")
     allowed_tools = await load_sql_tools()
     agent_graph = create_react_agent(
         llm,
@@ -67,7 +62,7 @@ async def init_agent():
         checkpointer=agent_memory,
         prompt=SYSTEM_PROMPT,
     )
-    print("✅ Agent initialized successfully.")
+    logger.info("智能体初始化成功")
     return agent_graph
 
 def format_messages(messages: List[AnyMessage]) -> str:
