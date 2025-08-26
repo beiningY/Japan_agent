@@ -26,12 +26,12 @@ def user_config(sessionId):
     return {"configurable": {"thread_id": sessionId, "recursion_limit": recursion_limit}}
 
 def pre_model_hook(state: AgentState) -> dict[str, list[AnyMessage]]:
-    """在调用LLM之前，对历史消息进行修剪"""
+    """在调用LLM之前，对历史消息进行修剪和整理"""
     trimmed_messages = trim_messages(
         state["messages"],
         strategy="last",
         token_counter=count_tokens_approximately,
-        max_tokens=30000,
+        max_tokens=3000,
         start_on="human",
         end_on=("human", "tool"),
         include_system=True,
