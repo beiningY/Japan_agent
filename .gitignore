@@ -11,3 +11,5 @@ models/
 
 # 忽略向量数据库
 storage.sqlite
+
+*.log

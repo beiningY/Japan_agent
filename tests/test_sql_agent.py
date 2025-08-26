@@ -3,7 +3,11 @@ import os
 import logging
 from agents.sql_agent import init_agent, format_messages, user_config, agent_graph
 
-logger = logging.getLogger("LangMySQLAgent")
+logger = logging.getLogger("sql_agent")
+logger.setLevel(logging.INFO)
+
+
+
 
 async def ask_agent(query: str, sessionId: str) -> str:
     global agent_graph
