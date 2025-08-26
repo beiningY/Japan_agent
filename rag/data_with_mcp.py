@@ -11,7 +11,7 @@ def ask_agent(query: str, sessionId: str) -> str:
         agent_graph = init_agent()
 
     config = user_config(sessionId)
-    input_query = query + "\n请同时返回在数据库里查询到的数据并根据问题进行分析和回答"
+    input_query = query + "\n请在回答时同时返回在数据库里查询到的数据并根据问题进行分析和回答"
     inputs = {"messages": [("user", input_query)]}
     try:
         final_state = agent_graph.invoke(inputs, config=config)

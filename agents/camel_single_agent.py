@@ -6,6 +6,7 @@ from camel.types import ModelPlatformType, ModelType
 from rag.camel_rag import CamelRAG
 from rag.lang_rag import LangRAG
 import os
+from rag.data_with_mcp import main as db
 logger = logging.getLogger("CamelSingleAgent")
 logger.setLevel(logging.INFO)
 class CamelSingleAgent(BaseAgent):
@@ -15,9 +16,11 @@ class CamelSingleAgent(BaseAgent):
     def __init__(self,
                  collection_name: str | None = None,
                  rag: bool = True,
+                 data_with_mcp: bool = False,
                  **kwargs):
         super().__init__(**kwargs) 
         self.custom_collection_name = collection_name
+        self.data_with_mcp = data_with_mcp
         if rag:
             self.rag = LangRAG(
                 persist_path="data/vector_data",
@@ -62,13 +65,15 @@ class CamelSingleAgent(BaseAgent):
             return item.page_content if hasattr(item, "page_content") else str(item)
 
         content = "\n".join([f"{i+1}. {_to_text(ctx)}" for i, ctx in enumerate(contexts)])
-
         rag_contexts = (
             f"问题：{query}\n\n"
             f"参考内容：\n{content}\n\n"
             f"请务必说明参考了以下文件：{', '.join(sources)}"
-            "\n如果记忆的上下文被截断请无视，必须根据用户问题和可参考的知识库内容给出合理的答案。"
+            f"如果记忆的上下文被截断请无视，必须根据用户问题和可参考的知识库内容给出合理的答案。"
         )
+        if self.data_with_mcp:
+            db_response = db(query)
+            rag_contexts = f"{rag_contexts}\n\n以下是查询数据库后给出的数据和答案，请参考：\n{db_response}"
         return rag_contexts
 
 
