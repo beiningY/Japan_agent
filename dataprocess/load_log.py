@@ -25,7 +25,7 @@ def extract_date_from_chunk_id(chunk_id):
     return datetime.datetime.strptime(date_str, '%Y-%m-%d')
 
 def sort_log_data():
-    """对日志数据按日期排序"""
+    """根据json文件里的数据对日志数据按日期排序"""
     data_path = "data/json_data/data_json_log.json"
     #data_path = "data/json_data/test_json_log.json"
     with open(data_path, 'r', encoding='utf-8') as f:
@@ -36,11 +36,9 @@ def sort_log_data():
         json.dump(sorted_data, f, ensure_ascii=False, indent=2)
     
     logger.info("数据已按日期从大到小排序完成！")
-    logger.info(f"总共处理了 {len(sorted_data)} 条记录")
     if sorted_data:
         logger.info("最新一条日志的日期：")
         date = extract_date_from_chunk_id(sorted_data[0]['chunk_id'])
-        logger.info(f"{sorted_data[0]['chunk_id']} - {date.strftime('%Y年%m月%d日')}")
         return date
     else:
         # 如果没有现有数据，返回一个默认的早期日期
@@ -77,7 +75,6 @@ def fetch_logs(log_filenames: list[str]) -> list[dict]:
         response = requests.post(url, json=payload)
         return response.json() 
     except Exception as e:
-        logger.error(f"请求日志失败: {e}")
         return []
 
 def download_log(log_list):
@@ -127,21 +124,10 @@ def structure_log(log_list):
 def embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500):
     """向量化日志数据"""
     logs_data = structure_log(log_list)
-    embedding_for_log = CamelRAG(collection_name="log")
+    embedding_for_log = CamelRAG(collection_name="japan_shrimp")
     embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
-    logger.info("已将最新操作日志向量化到log库中")
-    embedding_for_log = CamelRAG(collection_name="all_data")
-    embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
-    logger.info("已将最新操作日志向量化到log库中")
-    '''# 向量化到all_data库
-    embedding_for_log = RAG(collection_name="all_data")
-    embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
-    logger.info("已将最新操作日志向量化到all_data库中")
-    
-    # 向量化到log库
-    embedding_for_log = RAG(collection_name="log")
-    embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)   
-    logger.info("已将最新操作日志向量化到log库中")'''
+    logger.info("已将最新操作日志向量化到japan_shrimp库中")
+
 
 #====================运行定时日志获取和处理===========================
 def run_daily_log_fetch():
@@ -158,7 +144,6 @@ def run_daily_log_fetch():
 
     for filename, content in list(logs_data.items()): 
         if isinstance(content, dict) and "error" in content:
-            logger.error(f"获取日志失败: {content['error']}")
             del logs_data[filename]
         else:
             log = {"name": filename, "content": content}

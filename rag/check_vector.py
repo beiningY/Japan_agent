@@ -27,8 +27,6 @@ for p in points:
     payload = p.payload.copy()
     if "text" in payload:
         payload["page_content"] = payload.pop("text")  # 改字段名
-for p in points:
-    payload = p.payload.copy()
     if payload["extra_info"]["type"] == "text":
         payload["metadata"]["source"] = "循环水南美白对虾养殖系统设计及操作手册张驰v3.0"  # 改字段名
     elif payload["extra_info"]["type"] == "log":
