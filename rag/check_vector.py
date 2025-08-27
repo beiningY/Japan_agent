@@ -58,7 +58,7 @@ print("=== Collections 列表 ===")
 print(client.get_collections())
 
 # 2. 指定要对比的 collection 名称
-camel_collection = "all_data"
+camel_collection = "japan_shrimp"
 langchain_collection = "bank"
 log_collection = "log"
 book_collection = "book_zh"
