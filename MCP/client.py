@@ -13,10 +13,10 @@ async def run_client():
     # 启动服务端进程 (绝对路径)
     server_params = StdioServerParameters(
         command="python",
-        # args=["/usr/sarah/MCP/mcp_server/mcp_server.py"],
-        args=["/usr/henry/cognitive-center/mcp_server/main.py"],
+        args=["/Users/sarah/工作/AgentRag/Camel_agent/MCP/mcp_server.py"],
+        #args=["/usr/henry/cognitive-center/mcp_server/main.py"],
         env={
-            "MCP_SERVER_NAME": "cognitive-mcp-server",
+            "MCP_SERVER_NAME": "kb-mcp-server",
             "MCP_LOG_LEVEL": "INFO"
         }
     )

@@ -1,10 +1,15 @@
+import sys
+import os
+# 添加项目根目录到 Python 路径
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from mcp.server import FastMCP
-#from run_qa.lang_kb_qa import create_kb, delete_kb, ask, add_file, delete_file
+from run_qa import create_kb, delete_kb, ask, add_file, delete_file
 # 向中枢或其他智能体提供知识库接口管理增删改查功
 # 初始化 MCP Server
-server = FastMCP(name="rag-mcp-server")
+server = FastMCP(name="kb-mcp-server")
 mcp_with_instructions =FastMCP(
-    name="rag-mcp-server",
+    name="kb-mcp-server",
     instructions="""
     This server provides knowledge base management.
     You can create, delete, and query knowledge bases.
@@ -12,13 +17,7 @@ mcp_with_instructions =FastMCP(
     """
     )
 # 注册工具
-@server.tool(
-    name="get_weather",
-    description="获取天气信息")
-async def get_weather():
-    return "天气晴朗"
-
-"""@server.tool(    
+@server.tool(    
     name="create_collection",
     description="创建一个新的类型的知识库")
 async def create_collection(collection_name: str):
@@ -48,7 +47,7 @@ async def delete_file(collection_name: str, file_path: str):
     name="ask",
     description="向知识库提问")
 async def ask(collection_name: str, question: str):
-    return ask(collection_name, question)"""
+    return ask(collection_name, question)
  
 # 启动 MCP 服务端
 server.run()
