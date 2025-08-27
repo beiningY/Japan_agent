@@ -60,11 +60,15 @@ print(client.get_collections())
 # 2. 指定要对比的 collection 名称
 camel_collection = "all_data"
 langchain_collection = "bank"
-
+log_collection = "log"
+book_collection = "book_zh"
 # 3. 查看 collection 配置 (vector size / distance 等)
-print("\n=== CAMEL Collection Info ===")
+print("\n=== ALL Collection Info ===")
 print(client.get_collection(camel_collection))
-
+print("\n=== Log Collection Info ===")
+print(client.get_collection(log_collection))
+print("\n=== Book Collection Info ===")
+print(client.get_collection(book_collection))
 print("\n=== LangChain Collection Info ===")
 print(client.get_collection(langchain_collection))
 
@@ -74,8 +78,19 @@ camel_points = client.scroll(collection_name=camel_collection, limit=3)[0]
 for p in camel_points:
     print(p.payload)
 
+print("\n=== Log 数据样例 ===")
+log_points = client.scroll(collection_name=log_collection, limit=3)[0]
+for p in log_points:
+    print(p.payload)
+    
+print("\n=== Book 数据样例 ===")
+book_points = client.scroll(collection_name=book_collection, limit=3)[0]
+for p in book_points:
+    print(p.payload)
+
 print("\n=== LangChain 数据样例 ===")
 langchain_points = client.scroll(collection_name=langchain_collection, limit=3)[0]
 for p in langchain_points:
     print(p.payload)
+
 

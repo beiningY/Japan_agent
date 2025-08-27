@@ -6,7 +6,7 @@ import argparse
 import logging
 import requests
 from dataprocess.clean_log import clean_log_file
-from rag.camel_rag import RAG
+from rag.camel_rag import CamelRAG
 from embeddings.japan_book_chunking import chunk_data_for_log
 
 logging.basicConfig(
@@ -127,10 +127,10 @@ def structure_log(log_list):
 def embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500):
     """向量化日志数据"""
     logs_data = structure_log(log_list)
-    embedding_for_log = RAG(collection_name="log")
+    embedding_for_log = CamelRAG(collection_name="log")
     embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
     logger.info("已将最新操作日志向量化到log库中")
-    embedding_for_log = RAG(collection_name="all_data")
+    embedding_for_log = CamelRAG(collection_name="all_data")
     embedding_for_log.embedding(data=logs_data, chunk_type=chunk_type, max_tokens=max_tokens)
     logger.info("已将最新操作日志向量化到log库中")
     '''# 向量化到all_data库
