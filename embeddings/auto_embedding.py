@@ -2,7 +2,7 @@
 支持用户管理知识库里的文件
 支持功能
 1. 添加文件（文件路径/知识库名称）
-2. 删除文件（原文件路径/知识库名称/文件名称）
+2. 删除文件（知识库名称/文件名称）
 """
 from rag.lang_rag import LangRAG
 import os
@@ -21,7 +21,7 @@ def embedding(kb_name: str,file_path: str):
         collection_name=kb_name
     )
     kb.add_file(file_path)
-    kb.del_model()
+    kb.release()
     return True
 
 def delete(kb_name: str,file_path: str):
@@ -30,7 +30,7 @@ def delete(kb_name: str,file_path: str):
         collection_name=kb_name
     )
     kb.delete_file(file_path)   
-    kb.del_model()
+    kb.release()
     return True
 
 if __name__ == "__main__":
