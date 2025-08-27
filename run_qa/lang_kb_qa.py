@@ -30,7 +30,7 @@ def create_kb(kb_name: str):
     )
     kb.initialize_from_folder(kb_path)
     logger.info(f"知识库{kb_name}创建完成")
-    kb.del_model()
+    kb.release()
     return kb
 
 def delete_kb(kb_name: str):
@@ -39,7 +39,7 @@ def delete_kb(kb_name: str):
         collection_name=kb_name
     )
     kb.delete_collection(kb_name)
-    kb.del_model()
+    kb.release()
     logger.info(f"知识库{kb_name}删除完成")
     return True
 
@@ -86,7 +86,7 @@ def ask(question: str, k: int = 5, kb_name: str="all_data", model: str="gpt-4o-m
     response = llm.invoke(messages)
     answer = response.content
     logger.info(f"回答: {answer}")
-    kb.del_model()
+    kb.release()
     return answer
 
 
