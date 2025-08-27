@@ -48,23 +48,11 @@ class CamelSingleAgent(BaseAgent):
             answer = "抱歉，知识库中未找到相关信息。"
             logger.info(f"回答: {answer}")
             return answer
+        
+        # 从Document对象中提取content和source信息
+        content = "\n\n".join([f"片段{i+1}: {doc.page_content}" for i, doc in enumerate(contexts)])
+        sources = list(set([doc.metadata.get("source", "未知来源") for doc in contexts]))
 
-        # 提取唯一源文件（兼容 Document 与 str）
-        def _extract_source(item):
-            try:
-                if hasattr(item, "metadata") and isinstance(item.metadata, dict):
-                    return os.path.basename(item.metadata.get("source", "未知文件"))
-            except Exception:
-                pass
-            return "无源文件信息"
-
-        sources = list(set([_extract_source(doc) for doc in contexts]))
-
-        # 生成内容（兼容 Document 与 str）
-        def _to_text(item):
-            return item.page_content if hasattr(item, "page_content") else str(item)
-
-        content = "\n".join([f"{i+1}. {_to_text(ctx)}" for i, ctx in enumerate(contexts)])
         rag_contexts = (
             f"问题：{query}\n\n"
             f"参考内容：\n{content}\n\n"

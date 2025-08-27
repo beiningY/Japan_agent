@@ -7,6 +7,7 @@ import logging
 import re
 from agents.base import BaseAgent
 import os
+from rag.data_with_mcp import main as db
 logger = logging.getLogger("CamelRoleplayAgent")
 
 class CamelRoleplayAgent(BaseAgent):
@@ -19,6 +20,7 @@ class CamelRoleplayAgent(BaseAgent):
                  with_task_specify: bool | None = None,
                  with_task_planner: bool | None = None,
                  collection_name: str | None = None,
+                 data_with_mcp: bool = False,
                  topk: int | None = None,
                  **kwargs):
         self.custom_user_role_name = user_role_name
@@ -27,6 +29,7 @@ class CamelRoleplayAgent(BaseAgent):
         self.custom_with_task_planner = with_task_planner
         self.custom_collection_name = collection_name
         self.custom_topk = topk
+        self.data_with_mcp = data_with_mcp
         super().__init__(**kwargs)
         self.rag = LangRAG(
             persist_path="data/vector_data",
@@ -121,29 +124,19 @@ class CamelRoleplayAgent(BaseAgent):
             logger.info(f"回答: {answer}")
             return answer
 
-        # 提取唯一源文件（兼容 Document 与 str）
-        def _extract_source(item):
-            try:
-                if hasattr(item, "metadata") and isinstance(item.metadata, dict):
-                    return os.path.basename(item.metadata.get("source", "未知文件"))
-            except Exception:
-                pass
-            return "无源文件信息"
-
-        sources = list(set([_extract_source(doc) for doc in contexts]))
-
-        # 生成内容（兼容 Document 与 str）
-        def _to_text(item):
-            return item.page_content if hasattr(item, "page_content") else str(item)
-
-        content = "\n".join([f"{i+1}. {_to_text(ctx)}" for i, ctx in enumerate(contexts)])
+        # 从Document对象中提取content和source信息
+        content = "\n\n".join([f"片段{i+1}: {doc.page_content}" for i, doc in enumerate(contexts)])
+        sources = list(set([doc.metadata.get("source", "未知来源") for doc in contexts]))
 
         rag_contexts = (
             f"问题：{query}\n\n"
             f"参考内容：\n{content}\n\n"
             f"请务必说明参考了以下文件：{', '.join(sources)}"
-            "\n如果记忆的上下文被截断请无视，必须根据用户问题和可参考的知识库内容给出合理的答案。"
+            f"如果记忆的上下文被截断请无视，必须根据用户问题和可参考的知识库内容给出合理的答案。"
         )
+        if self.data_with_mcp:
+            db_response = db(query)
+            rag_contexts = f"{rag_contexts}\n\n以下是查询数据库后给出的数据和答案，请参考：\n{db_response}"
         return rag_contexts
 
 

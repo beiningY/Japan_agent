@@ -176,8 +176,9 @@ class LangRAG:
         if not results:
             return []
 
-        # 构建候选文本
+        # 构建候选文本，同时保存索引映射
         candidate_texts = [doc.page_content for doc in results]
+        doc_index_map = {doc.page_content: i for i, doc in enumerate(results)}
 
         # 构建 prompt，让 LLM 对候选文本打分
         prompt = f"""
@@ -192,10 +193,11 @@ class LangRAG:
         prompt += """
     请输出 JSON 格式：
     [
-    {"context": "pe", "score": 6},
-    {"context": "ez", "score": 7},
+    {"context": "实际的文档内容", "score": 6},
+    {"context": "实际的文档内容", "score": 7},
     ...
     ]
+    注意：context字段必须是原文档的完整内容，不要截断或修改。
     只输出 JSON格式，不要额外文字。
     """
 
@@ -238,9 +240,17 @@ class LangRAG:
         logger.info(f"重排序结果: {scores_list}")
         scored_docs = sorted(scores_list, key=lambda x: x["score"], reverse=True)
 
-        # 只取 context 字段
-        rerank_results = [d["context"] for d in scored_docs]
-        return rerank_results
+        # 根据重排序结果重新组织Document对象
+        reranked_documents = []
+        for scored_item in scored_docs:
+            context_text = scored_item["context"]
+            # 在原始文档中找到对应的Document对象
+            for doc in results:
+                if doc.page_content == context_text or context_text in doc.page_content:
+                    reranked_documents.append(doc)
+                    break
+        
+        return reranked_documents[:k]
 
 
     def retrieve(self, query: str, k: int = 5) -> List[Document]:

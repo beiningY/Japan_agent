@@ -8,7 +8,8 @@ import requests
 from dataprocess.clean_log import clean_log_file
 from rag.camel_rag import CamelRAG
 from embeddings.japan_book_chunking import chunk_data_for_log
-
+from qdrant_client import QdrantClient
+from qdrant_client.http import models as rest
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -37,7 +38,6 @@ def sort_log_data():
     
     logger.info("数据已按日期从大到小排序完成！")
     if sorted_data:
-        logger.info("最新一条日志的日期：")
         date = extract_date_from_chunk_id(sorted_data[0]['chunk_id'])
         return date
     else:
@@ -120,7 +120,51 @@ def structure_log(log_list):
         json.dump(logs_data, f, ensure_ascii=False, indent=2)
     logger.info("已将最新操作日志添加到data_json_log.json文件中")
     return data
+def modifier_metadata():
+    """修改日志数据的metadata字段"""
+    # 连接 Qdrant
+    client = QdrantClient(path="data/vector_data")
+    collection_name = "japan_shrimp"
+    # 分批 scroll 读取所有点
+    scroll_cursor = None
+    while True:
+        points, scroll_cursor = client.scroll(
+            collection_name=collection_name,
+            limit=100,  # 每次批量 100 个，可以调大/调小
+            offset=scroll_cursor,
+            with_vectors=True  # 保证 vector 一起读出，方便回写
+        )
 
+        if not points:
+            break
+        new_points = []
+
+        for p in points:
+            payload = p.payload.copy()
+            if "text" in payload:
+                payload["page_content"] = payload.pop("text")  # 改字段名
+            if payload["extra_info"]["type"] == "log":
+                payload["metadata"]["source"] = "操作日志"  # 改字段名
+
+            new_points.append(
+                rest.PointStruct(
+                    id=p.id,
+                    vector=p.vector,     # 保持原始向量
+                    payload=payload      # 更新后的 payload
+                )
+            )
+
+        # 回写更新
+        client.upsert(
+            collection_name=collection_name,
+            points=new_points
+        )
+        
+        # 如果没有更多数据了，退出循环
+        if not scroll_cursor:
+            break
+
+    logger.info("已修改日志的metadata字段")
 def embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500):
     """向量化日志数据"""
     logs_data = structure_log(log_list)
@@ -139,7 +183,7 @@ def run_daily_log_fetch():
     log_list = []
     logger.info(f"正在请求日志文件{(missing_logs)}...")
     logs_data = fetch_logs(missing_logs)
-    print(logs_data)
+    logger.info(logs_data)
     logs_data = logs_data["data"] 
 
     for filename, content in list(logs_data.items()): 
@@ -151,7 +195,7 @@ def run_daily_log_fetch():
 
     # 处理和向量化日志
     embedding_log(log_list, chunk_type=chunk_data_for_log, max_tokens=500) 
-
+    modifier_metadata()
 def scheduled_task():
     """定时任务"""
     logger.info(f"=== 定时任务执行 - {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ===")
