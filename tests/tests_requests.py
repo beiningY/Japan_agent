@@ -162,7 +162,7 @@ def test_stream_qa():
     config = {
             "mode": "auto",
             "rag": {
-            "collection_name": "all_data",
+            "collection_name": "japan_shrimp",
             "topk_single": 5,
             "topk_multi": 5
             },

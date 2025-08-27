@@ -26,16 +26,10 @@ while True:
 
     for p in points:
         payload = p.payload.copy()
-        if "text" in payload:
-            payload["page_content"] = payload.pop("text")  # 改字段名
-        if payload["extra_info"]["type"] == "text":
-            payload["metadata"]["source"] = "循环水南美白对虾养殖系统设计及操作手册张驰v3.0"  # 改字段名
-        elif payload["extra_info"]["type"] == "table":
-            payload["metadata"]["source"] = "循环水南美白对虾养殖系统设计及操作手册张驰v3.0"  # 改字段名
-        elif payload["extra_info"]["type"] == "log":
-            payload["metadata"]["source"] = "操作日志"  # 改字段名
-        elif payload["extra_info"]["type"] == "feed":
-            payload["metadata"]["source"] = "饲料手册"  # 改字段名
+        if payload["metadata"]["source"] == "循环水南美白对虾养殖系统设计及操作手册张驰v3.0":
+            payload["metadata"]["source"] = "data/raw_data/japan_shrimp/循环水南美白对虾养殖系统设计及操作手册张驰v3.0.pdf"
+        if payload["metadata"]["source"] == "饲料手册":
+            payload["metadata"]["source"] = "data/raw_data/japan_shrimp/喂食器参数与设置.txt"
         new_points.append(
             rest.PointStruct(
                 id=p.id,
@@ -73,7 +67,7 @@ print(client.get_collection(langchain_collection))
 
 # 4. 查看每个 collection 的前几条数据
 print("\n=== CAMEL 数据样例 ===")
-camel_points = client.scroll(collection_name=camel_collection, limit=3)[0]
+camel_points = client.scroll(collection_name=camel_collection, limit=10)[0]
 for p in camel_points:
     print(p.payload)
 

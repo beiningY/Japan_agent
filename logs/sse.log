@@ -1,315 +1,48 @@
 nohup: ignoring input
- * Serving Flask app 'sse'
+2025-08-27 17:39:15,580 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+ * Serving Flask app 'main'
  * Debug mode: on
-2025-08-11 15:03:11,520 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+2025-08-27 17:39:15,585 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:5001
  * Running on http://172.16.171.111:5001
-2025-08-11 15:03:11,520 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
-2025-08-11 15:03:11,521 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:03:14,168 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:03:14,169 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:24:42,139 - werkzeug - ERROR - 198.235.24.15 - - [11/Aug/2025 15:24:42] code 400, message Bad request version ('À\x13À')
-2025-08-11 15:24:42,139 - werkzeug - INFO - 198.235.24.15 - - [11/Aug/2025 15:24:42] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03nq4CoÞ1Z[cM/Â¬\x14ôîí¼3¼\x1b\x94;\x9cH£þdvaü \x8eüÜÍ®!Ë\x05O|\x86¶?º£\x09ÌÔ~`\x8e\x00ã¥\x94\x93\x80\x03E-m\x97\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
-2025-08-11 15:24:42,297 - werkzeug - ERROR - 198.235.24.15 - - [11/Aug/2025 15:24:42] code 400, message Bad request version ('À(À$À\x14À')
-2025-08-11 15:24:42,297 - werkzeug - INFO - 198.235.24.15 - - [11/Aug/2025 15:24:42] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03\x18\x12ÅÌ l\x0dÙ\x80\x97ºó\x8f\x86$NÚÄ¤1ôU\x8eýØßô\x17Ô,©~\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
-2025-08-11 15:25:29,328 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
-2025-08-11 15:25:29,881 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:25:32,497 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:25:32,497 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:26:07,667 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
-2025-08-11 15:26:08,195 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:26:10,780 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:26:10,780 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:31:28,296 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 15:31:28,839 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:31:31,663 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:31:31,663 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:35:47,847 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 15:35:48,369 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:35:50,940 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:35:50,940 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:37:30,416 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 15:37:30,957 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:37:33,490 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:37:33,490 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:37:48,571 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 15:37:49,113 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:37:51,629 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:37:51,630 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:39:47,175 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 15:39:47,703 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:39:50,186 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:39:50,187 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:39:59,239 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/auto_qa.py', reloading
-2025-08-11 15:39:59,772 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:40:02,315 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:40:02,316 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:46:34,122 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 15:46:34,641 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:46:37,368 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:46:37,368 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:51:32,773 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 15:51:33,285 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:51:35,875 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:51:35,875 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:54:56,821 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 15:54:57,363 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:54:59,966 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:54:59,967 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 15:55:19,070 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 15:55:19,626 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 15:55:22,151 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 15:55:22,151 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:15:32,826 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:15:33,376 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:15:35,948 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:15:35,949 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:17:19,444 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:17:20,004 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:17:22,525 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:17:22,525 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:18:38,901 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:18:39,455 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:18:42,022 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:18:42,022 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:18:52,077 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:18:52,598 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:18:55,186 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:18:55,187 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:19:16,292 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:19:16,800 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:19:19,365 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:19:19,365 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:21:56,098 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:21:56,638 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:21:59,172 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:21:59,173 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:24:16,826 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:24:17,337 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:24:19,827 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:24:19,828 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:24:27,874 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:24:28,394 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:24:30,942 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:24:30,942 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:25:58,345 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:25:58,853 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:26:01,333 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:26:01,333 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:26:41,528 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:26:42,058 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:26:44,618 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:26:44,618 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:27:32,852 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/prompts/defaut_qa.py', reloading
-2025-08-11 16:27:33,373 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:27:35,963 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:27:35,964 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:27:41,999 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 16:27:42,533 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:27:45,137 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:27:45,137 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 16:42:54,398 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
-2025-08-11 16:42:54,935 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 16:42:57,446 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 16:42:57,446 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 17:00:26,339 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
-2025-08-11 17:00:26,860 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 17:00:29,497 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 17:00:29,497 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 17:03:09,252 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
-2025-08-11 17:03:09,782 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 17:03:12,272 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 17:03:12,273 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 17:03:56,492 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
-2025-08-11 17:03:57,021 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 17:03:59,814 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 17:03:59,814 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 17:05:24,213 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
-2025-08-11 17:05:24,755 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 17:05:27,264 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 17:05:27,264 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 17:06:10,478 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 17:06:10,978 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 17:06:13,552 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 17:06:13,553 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 17:07:09,835 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 17:07:10,403 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 17:07:12,988 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 17:07:12,989 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 17:07:14,002 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/embeddings/auto_embedding.py', reloading
-2025-08-11 17:07:14,537 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 17:07:17,087 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 17:07:17,087 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 17:07:25,132 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/rag_pipeline/auto_rag/knowledeg_base.py', reloading
-2025-08-11 17:07:25,675 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 17:07:28,216 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 17:07:28,216 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 17:58:20,407 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/api/sse.py', reloading
-2025-08-11 17:58:20,885 - werkzeug - INFO -  * Restarting with stat
-2025-08-11 17:58:23,429 - werkzeug - WARNING -  * Debugger is active!
-2025-08-11 17:58:23,429 - werkzeug - INFO -  * Debugger PIN: 433-768-971
-2025-08-11 20:08:17,889 - werkzeug - ERROR - 65.49.1.38 - - [11/Aug/2025 20:08:17] code 400, message Bad request version ('À\x14À')
-2025-08-11 20:08:17,889 - werkzeug - INFO - 65.49.1.38 - - [11/Aug/2025 20:08:17] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03»?\x91\x93\x0bX6P\x0ebÌ%\x05tY\x0d\x01\x8fZ¦\x04øÜ²(©)\x08"\x9fR\x1c\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 01:31:29,196 - werkzeug - ERROR - 80.82.70.118 - - [12/Aug/2025 01:31:29] code 400, message Bad request version ("¯nãY»bhlÿ(=':©\x82ÙoÈ¢×\x93\x98´ï\x80å¹\x90\x00(À")
-2025-08-12 01:31:29,196 - werkzeug - INFO - 80.82.70.118 - - [12/Aug/2025 01:31:29] "[35m[1m\x16\x03\x02\x01o\x01\x00\x01k\x03\x02RHÅ\x1a#÷:Nßâ´\x82/ÿ\x09T\x9f§Äy°hÆ\x13\x8c¤\x1c="á\x1a\x98 \x84´,\x85¯nãY»bhlÿ(=':©\x82ÙoÈ¢×\x93\x98´ï\x80å¹\x90\x00(À[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 02:49:31,222 - werkzeug - ERROR - 185.170.144.3 - - [12/Aug/2025 02:49:31] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
-2025-08-12 02:49:31,222 - werkzeug - INFO - 185.170.144.3 - - [12/Aug/2025 02:49:31] "[35m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 06:03:10,188 - werkzeug - ERROR - 198.235.24.66 - - [12/Aug/2025 06:03:10] code 400, message Bad request version ('À\x13À')
-2025-08-12 06:03:10,188 - werkzeug - INFO - 198.235.24.66 - - [12/Aug/2025 06:03:10] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03©&ý£\x85x\x9dû"L\x86þ¢þÙ)û\x03\x0cö9[Ù-èè]úP\x89ÿp \x0eVÝ[%\x80\x08\x99ß­\x053,úif·¸H\x9f\x05\x06\x05.\x8f!÷\x81¢Q?\x0d\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 06:03:10,266 - werkzeug - ERROR - 198.235.24.66 - - [12/Aug/2025 06:03:10] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03"<û\x16(üç¿-WêOÕK¼\x10^%;û\x7f{Hø?\x8d0QºáR©\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À\'À#À\x13À')
-2025-08-12 06:03:10,267 - werkzeug - INFO - 198.235.24.66 - - [12/Aug/2025 06:03:10] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03"<û\x16(üç¿-WêOÕK¼\x10^%;û\x7f{Hø?\x8d0QºáR©\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 06:30:46,667 - werkzeug - ERROR - 206.168.34.92 - - [12/Aug/2025 06:30:46] code 400, message Bad request version ('À\x14À')
-2025-08-12 06:30:46,667 - werkzeug - INFO - 206.168.34.92 - - [12/Aug/2025 06:30:46] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x03oþ\x15\x96IoúÈ¡©¢Ò¸ö+êée{S[H¹<:íÞ¹ .Æ \x06Äÿ\x9aí\x83\x16\x1dfw)\x1a\x0dp\x87ù\x00S\x95½á|\x96+øcã\x85[L.\x02\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 06:30:50,909 - werkzeug - INFO - 206.168.34.92 - - [12/Aug/2025 06:30:50] "[33mGET / HTTP/1.1[0m" 404 -
-2025-08-12 06:30:59,846 - werkzeug - INFO - 206.168.34.92 - - [12/Aug/2025 06:30:59] "[33mGET / HTTP/1.1[0m" 404 -
-2025-08-12 06:31:02,097 - werkzeug - ERROR - 206.168.34.92 - - [12/Aug/2025 06:31:02] code 505, message Invalid HTTP version (2.0)
-2025-08-12 06:31:02,097 - werkzeug - INFO - 206.168.34.92 - - [12/Aug/2025 06:31:02] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
-2025-08-12 06:31:08,162 - werkzeug - INFO - 206.168.34.92 - - [12/Aug/2025 06:31:08] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-2025-08-12 06:31:08,599 - werkzeug - ERROR - 206.168.34.92 - - [12/Aug/2025 06:31:08] code 505, message Invalid HTTP version (2.0)
-2025-08-12 06:31:08,599 - werkzeug - INFO - 206.168.34.92 - - [12/Aug/2025 06:31:08] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
-2025-08-12 06:31:15,536 - werkzeug - ERROR - 206.168.34.92 - - [12/Aug/2025 06:31:15] code 400, message Bad request version ('À\x14À')
-2025-08-12 06:31:15,536 - werkzeug - INFO - 206.168.34.92 - - [12/Aug/2025 06:31:15] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x16u[\x0b°\x91íæó\x89\x88,\x14\x1cký~\x11\x8d\x87ûó\x06¢\x1f\x7få\x84¬\x16Í\x91 Óð ÿ{\x042!\x01ï\x87PÏé­&ÞBY§\x87¿½¯cM±cÂ®ë\x85\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 06:31:18,004 - werkzeug - INFO - 206.168.34.92 - - [12/Aug/2025 06:31:18] "[33mGET /robots.txt HTTP/1.1[0m" 404 -
-2025-08-12 08:04:18,234 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:04:18] code 400, message Bad request version ('\x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_')
-2025-08-12 08:04:18,235 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:04:18] "[35m[1m\x01\x00\x00ýÎú\x0b° \x00\x00\x00MMS\x14\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x01\x00\x03\x00ðððð\x0b\x00\x04\x00\x1c\x00\x03\x00N\x00S\x00P\x00l\x00a\x00y\x00e\x00r\x00/\x009\x00.\x000\x00.\x000\x00.\x002\x009\x008\x000\x00;\x00 \x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:04:27,715 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:04:27] code 400, message Bad request version ('GetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00')
-2025-08-12 08:04:27,715 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:04:27] "[35m[1m\x00\x00\x00\x1f\x00\x00\x00\x00\x00\x00\x00\x0cGetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:04:33,924 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:04:33] "[33mGET / HTTP/1.0[0m" 404 -
-2025-08-12 08:04:39,937 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:04:39] "[33mOPTIONS / HTTP/1.0[0m" 404 -
-2025-08-12 08:04:45,951 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:04:45] code 400, message Bad request version ('RTSP/1.0')
-2025-08-12 08:04:45,951 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:04:45] "[35m[1mOPTIONS / RTSP/1.0[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:04:57,189 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:04:57] code 400, message Bad request version ('\x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
-2025-08-12 08:04:57,189 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:04:57] "[35m[1m\x80\x00\x00(rþ\x1d\x13\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:03,412 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:03] code 400, message Bad HTTP/0.9 request type ('\x00')
-2025-08-12 08:05:03,412 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:03] "[35m[1m\x00\x1e\x00\x06\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07version\x04bind\x00\x00\x10\x00\x03[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:09,835 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:09] code 400, message Bad HTTP/0.9 request type ('\x00')
-2025-08-12 08:05:09,835 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:09] "[35m[1m\x00\x0c\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:11,238 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:11] code 400, message Bad request syntax ('EHLO')
-2025-08-12 08:05:11,238 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:11] "[35m[1mEHLO[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:15,051 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:15] code 400, message Bad request syntax ('HELP')
-2025-08-12 08:05:15,051 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:15] "[35m[1mHELP[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:18,057 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:18] code 400, message Bad request syntax ('\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00')
-2025-08-12 08:05:18,057 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:18] "[35m[1m\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:21,100 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:21] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie:')
-2025-08-12 08:05:21,100 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:21] "[35m[1m\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie: mstshash=nmap[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:24,909 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:24] code 400, message Bad request version ('\x00/\x00')
-2025-08-12 08:05:24,910 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:24] "[35m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:27,921 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:27] code 400, message Bad HTTP/0.9 request type ('\x80\x9e\x01\x03\x01\x00u\x00\x00\x00')
-2025-08-12 08:05:27,921 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:27] "[35m[1m\x80\x9e\x01\x03\x01\x00u\x00\x00\x00 \x00\x00f\x00\x00e\x00\x00d\x00\x00c\x00\x00b\x00\x00:\x00\x009\x00\x008\x00\x005\x00\x004\x00\x003\x00\x002\x00\x00/\x00\x00\x1b\x00\x00\x1a\x00\x00\x19\x00\x00\x18\x00\x00\x17\x00\x00\x16\x00\x00\x15\x00\x00\x14\x00\x00\x13\x00\x00\x12\x00\x00\x11\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:31,901 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:31] code 400, message Bad request syntax ('\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01')
-2025-08-12 08:05:31,901 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:31] "[35m[1m\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:41,119 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:41] code 400, message Bad request version ('0.12\x00')
-2025-08-12 08:05:41,120 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:41] "[35m[1m\x00\x00\x00¤ÿSMBr\x00\x00\x00\x00\x08\x01@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x06\x00\x00\x01\x00\x00\x81\x00\x02PC NETWORK PROGRAM 1.0\x00\x02MICROSOFT NETWORKS 1.03\x00\x02MICROSOFT NETWORKS 3.0\x00\x02LANMAN1.0\x00\x02LM1.2X002\x00\x02Samba\x00\x02NT LANMAN 1.0\x00\x02NT LM 0.12\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:47,738 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:47] code 400, message Bad HTTP/0.9 request type ('l\x00')
-2025-08-12 08:05:47,738 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:47] "[35m[1ml\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:49,340 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:49] "[33mGET /nice%20ports,/Trinity.txt.bak HTTP/1.0[0m" 404 -
-2025-08-12 08:05:51,947 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:51] code 400, message Bad request syntax ('\x01default')
-2025-08-12 08:05:51,947 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:51] "[35m[1m\x01default[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:05:54,953 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:05:54] code 400, message Bad request syntax ('0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00')
-2025-08-12 08:05:54,953 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:05:54] "[35m[1m0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:03,370 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:03] code 400, message Bad HTTP/0.9 request type ('0')
-2025-08-12 08:06:03,371 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:03] "[35m[1m0\x0c\x02\x01\x01`\x07\x02\x01\x02\x04\x00\x80\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:04,778 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:04] code 400, message Bad request version ('SIP/2.0')
-2025-08-12 08:06:04,778 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:04] "[35m[1mOPTIONS sip:nm SIP/2.0[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:12,594 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:12] code 400, message Bad request syntax ('TNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00')
-2025-08-12 08:06:12,594 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:12] "[35m[1mTNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:19,212 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:19] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00')
-2025-08-12 08:06:19,213 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:19] "[35m[1m\x03\x00\x00\x0b\x06à\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:26,622 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:26] code 400, message Bad request syntax ('DmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13')
-2025-08-12 08:06:26,622 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:26] "[35m[1mDmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:32,834 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:32] code 400, message Bad HTTP/0.9 request type (':\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@')
-2025-08-12 08:06:32,835 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:32] "[35m[1m:\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:38,649 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:38] code 400, message Bad request syntax ('DIST00000001ARGC00000005ARGV00000002ccARGV00000002-cARGV00000006nmap.cARGV00000002-oARGV00000006nmap.oDOTI00000000')
-2025-08-12 08:06:38,650 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:38] "[35m[1mDIST00000001ARGC00000005ARGV00000002ccARGV00000002-cARGV00000006nmap.cARGV00000002-oARGV00000006nmap.oDOTI00000000[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:44,062 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:44] code 400, message Bad request syntax ('JRMI\x00\x02K')
-2025-08-12 08:06:44,062 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:44] "[35m[1mJRMI\x00\x02K[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:50,276 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:50] code 400, message Bad request syntax ('\x01\x00\x00\x00\x01\x00\x00\x00\x08\x08')
-2025-08-12 08:06:50,277 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:50] "[35m[1m\x01\x00\x00\x00\x01\x00\x00\x00\x08\x08[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:51,476 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:51] code 400, message Bad request version ('>')
-2025-08-12 08:06:51,476 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:51] "[35m[1m< NTP/1.0 >[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:58,092 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:58] code 400, message Bad HTTP/0.9 request type ('\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00')
-2025-08-12 08:06:58,092 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:58] "[35m[1m\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00 \x00:\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x004æ\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00(CONNECT_DATA=(COMMAND=version))[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:06:59,092 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:06:59] code 400, message Bad request syntax ('Subscribe')
-2025-08-12 08:06:59,092 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:06:59] "[35m[1mSubscribe[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:00,321 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:00] code 400, message Bad request syntax ('Query')
-2025-08-12 08:07:00,322 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:00] "[35m[1mQuery[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:02,127 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:02] code 400, message Bad request syntax ('\x05\x04\x00\x01\x02\x80\x05\x01\x00\x03')
-2025-08-12 08:07:02,127 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:02] "[35m[1m\x05\x04\x00\x01\x02\x80\x05\x01\x00\x03[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:09,177 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:09] code 400, message Bad request syntax ('\x04\x01\x00\x16\x7f\x00\x00\x01root\x00')
-2025-08-12 08:07:09,177 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:09] "[35m[1m\x04\x01\x00\x16\x7f\x00\x00\x01root\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:14,889 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:14] code 400, message Bad request version ('\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00')
-2025-08-12 08:07:14,889 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:14] "[35m[1m\x12\x01\x004\x00\x00\x00\x00\x00\x00\x15\x00\x06\x01\x00\x1b\x00\x01\x02\x00\x1c\x00\x0c\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:15,290 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:15] code 400, message Bad request syntax ('HELP')
-2025-08-12 08:07:15,291 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:15] "[35m[1mHELP[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:16,293 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:16] code 400, message Bad request syntax ('stats')
-2025-08-12 08:07:16,293 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:16] "[35m[1mstats[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:17,503 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:17] code 400, message Bad request version ('\x06\x00\x00\x00\x00\x00\x08\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00\x02\x00\x00\x00')
-2025-08-12 08:07:17,504 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:17] "[35m[1m\x00\x00\x00\x01\x00\x00\x00\x13\x00\x00\x00\x02\x00\x00\x00$\x00\x00\x00\x0bservice_mgr\x00\x00\x00\x00\x02\x00\x00\x00\x13\x01\x08scanner \x04\x05nmap \x06\x00\x00\x00\x00\x00\x08\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00\x02\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:23,259 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:23] code 400, message Bad request version ('\x00\x00\x00\x04')
-2025-08-12 08:07:23,259 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:23] "[35m[1m\x00\x00\x00\x00DB2DAS      \x01\x04\x00\x00\x00\x109z\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x0c\x00\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x0c\x00\x00\x00\x04[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:28,298 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:28] code 400, message Bad request version ('\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00ÿ\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00ä\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x7f')
-2025-08-12 08:07:28,298 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:28] "[35m[1m\x01Â\x00\x00\x00\x04\x00\x00¶\x01\x00\x00SQLDB2RA\x00\x01\x00\x00\x04\x01\x01\x00\x05\x00\x1d\x00\x88\x00\x00\x00\x01\x00\x00\x80\x00\x00\x00\x01\x09\x00\x00\x00\x01\x00\x00@\x00\x00\x00\x01\x09\x00\x00\x00\x01\x00\x00@\x00\x00\x00\x01\x08\x00\x00\x00\x04\x00\x00@\x00\x00\x00\x01\x04\x00\x00\x00\x01\x00\x00@\x00\x00\x00@\x04\x00\x00\x00\x04\x00\x00@\x00\x00\x00\x01\x04\x00\x00\x00\x04\x00\x00@\x00\x00\x00\x01\x04\x00\x00\x00\x04\x00\x00@\x00\x00\x00\x01\x04\x00\x00\x00\x02\x00\x00@\x00\x00\x00\x01\x04\x00\x00\x00\x04\x00\x00@\x00\x00\x00\x01\x00\x00\x00\x00\x01\x00\x00@\x00\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x80\x00\x00\x00\x01\x04\x00\x00\x00\x04\x00\x00\x80\x00\x00\x00\x01\x04\x00\x00\x00\x03\x00\x00\x80\x00\x00\x00\x01\x04\x00\x00\x00\x04\x00\x00\x80\x00\x00\x00\x01\x08\x00\x00\x00\x01\x00\x00@\x00\x00\x00\x01\x04\x00\x00\x00\x04\x00\x00@\x00\x00\x00\x01\x10\x00\x00\x00\x01\x00\x00\x80\x00\x00\x00\x01\x10\x00\x00\x00\x01\x00\x00\x80\x00\x00\x00\x01\x04\x00\x00\x00\x04\x00\x00@\x00\x00\x00\x01\x09\x00\x00\x00\x01\x00\x00@\x00\x00\x00\x01\x09\x00\x00\x00\x01\x00\x00\x80\x00\x00\x00\x01\x04\x00\x00\x00\x03\x00\x00\x80\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x04\x00\x00\x01\x00\x00\x80\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00@\x00\x00\x00\x01\x00\x00\x00\x00\x01\x00\x00@\x00\x00\x00\x00        \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00ÿ\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00ä\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x7f[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:33,364 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:33] code 400, message Bad request version ('1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
-2025-08-12 08:07:33,364 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:33] "[35m[1mClient string for PARC version 1 Wire Encryption version 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:33,604 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:33] code 400, message Bad HTTP/0.9 request type ('<\x00K\x00\x00\x00')
-2025-08-12 08:07:33,604 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:33] "[35m[1m<\x00K\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00ÿÿÿÿ\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:34,044 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:34] code 400, message Bad request syntax ('\x124\x00\x01')
-2025-08-12 08:07:34,044 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:34] "[35m[1m\x124\x00\x01[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:39,285 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:39] code 400, message Bad request syntax ('\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00')
-2025-08-12 08:07:39,285 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:39] "[35m[1m\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:39,523 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:39] code 400, message Bad request syntax ('serverstatus')
-2025-08-12 08:07:39,524 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:39] "[35m[1mserverstatus[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:44,603 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:44] code 400, message Bad HTTP/0.9 request type ('Âååå\x9e')
-2025-08-12 08:07:44,604 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:44] "[35m[1mÂååå\x9e ×¤¦ÐÕÝÜÈÖÝ×ÕÈÑÖ\x83\x80ÈÝ¤Ñ¡È¤ÒÕ×Ý£¤¡Ý¦×Ý\x98å[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:44,844 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:44] code 400, message Bad request syntax ('#ST')
-2025-08-12 08:07:44,845 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:44] "[35m[1m#ST[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:49,926 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:49] code 400, message Bad request version ('\x00\x00\x00\x03\x00\x05nmap\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00j\x00\x00\x00\x7f')
-2025-08-12 08:07:49,927 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:49] "[35m[1m\x00\x94\x01<\x00\x00\x00d\x00e\x00\x00\x00=\x00\x06IEEEM\x00\x00lsqlexec\x00\x00\x00\x00\x00\x00\x069.280\x00\x00\x0cRDS#R000000\x00\x00\x05sqli\x00\x00\x00\x013\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x05nmap\x00\x00\x05nmap\x00ol\x00\x00\x00\x00\x00\x00\x00\x00\x00=tlitcp\x00\x00\x00\x00\x00\x01\x00h\x00\x0b\x00\x00\x00\x03\x00\x05nmap\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00j\x00\x00\x00\x7f[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:55,086 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:55] code 400, message Bad request syntax ('\x002Ð\x01\x00\x01\x00,\x10A\x00\x04\x11^\x00\x04\x11m\x00\x04\x11Z\x00\x18\x14\x04\x14\x03\x00\x07$\x07\x00\x08$\x0f\x00\x08\x14@\x00\x08\x14t\x00\x08\x00\x04\x11G')
-2025-08-12 08:07:55,086 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:55] "[35m[1m\x002Ð\x01\x00\x01\x00,\x10A\x00\x04\x11^\x00\x04\x11m\x00\x04\x11Z\x00\x18\x14\x04\x14\x03\x00\x07$\x07\x00\x08$\x0f\x00\x08\x14@\x00\x08\x14t\x00\x08\x00\x04\x11G[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:55,332 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:07:55] code 400, message Bad HTTP/0.9 request type ('TSH')
-2025-08-12 08:07:55,332 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:55] "[35m[1mTSH \x00\x00\x00ì\x01\x011\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x11\x04¸\x00\x00ID  [0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:07:55,969 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:07:55] "[33mGET /server-info HTTP/1.1[0m" 404 -
-2025-08-12 08:08:01,209 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:01] code 400, message Bad request syntax ('A\x00\x00\x00:0\x00\x00ÿÿÿÿÔ\x07\x00\x00\x00\x00\x00\x00test.$cmd\x00\x00\x00\x00\x00ÿÿÿÿ\x1b\x00\x00\x00\x01serverStatus\x00\x00\x00\x00\x00\x00\x00ð?\x00')
-2025-08-12 08:08:01,209 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:01] "[35m[1mA\x00\x00\x00:0\x00\x00ÿÿÿÿÔ\x07\x00\x00\x00\x00\x00\x00test.$cmd\x00\x00\x00\x00\x00ÿÿÿÿ\x1b\x00\x00\x00\x01serverStatus\x00\x00\x00\x00\x00\x00\x00ð?\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:01,450 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:01] code 400, message Bad request syntax ('*1')
-2025-08-12 08:08:01,450 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:01] "[35m[1m*1[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:06,532 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:06] code 400, message Bad request syntax ('\x00\x00\x00\x01\x07')
-2025-08-12 08:08:06,532 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:06] "[35m[1m\x00\x00\x00\x01\x07[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:06,774 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:06] code 400, message Bad HTTP/0.9 request type ('show')
-2025-08-12 08:08:06,774 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:06] "[35m[1mshow info[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:11,853 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:11] code 400, message Bad request syntax ('\x80\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15ðÑb\x00\x00\x00\x00\x00\x00\x00\x00')
-2025-08-12 08:08:11,853 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:11] "[35m[1m\x80\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15ðÑb\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:16,891 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:16] code 400, message Bad request syntax ('\x00\x01n')
-2025-08-12 08:08:16,891 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:16] "[35m[1m\x00\x01n[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:22,097 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:22] code 400, message Bad request syntax ('vp3')
-2025-08-12 08:08:22,097 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:22] "[35m[1mvp3[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:27,148 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:27] code 400, message Bad request syntax ('\x94\x00ÍïÑa\x91\x03')
-2025-08-12 08:08:27,148 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:27] "[35m[1m\x94\x00ÍïÑa\x91\x03[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:32,191 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:32] code 400, message Bad request syntax ('þ\x01')
-2025-08-12 08:08:32,191 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:32] "[35m[1mþ\x01[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:32,429 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:32] "[33mGET /version HTTP/1.1[0m" 404 -
-2025-08-12 08:08:37,520 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:37] code 400, message Bad request syntax ('\x00\x00\x07\x00\x08\x00\x03\x00\x04\x00\x05\x00\x06')
-2025-08-12 08:08:37,520 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:37] "[35m[1m\x00\x00\x07\x00\x08\x00\x03\x00\x04\x00\x05\x00\x06[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:42,678 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:42] code 400, message Bad request syntax ('ÿû\x18ÿú\x18\x00IBM-3279-4-Eÿðÿû\x19ÿý\x19ÿû\x00ÿý\x00')
-2025-08-12 08:08:42,678 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:42] "[35m[1mÿû\x18ÿú\x18\x00IBM-3279-4-Eÿðÿû\x19ÿý\x19ÿû\x00ÿý\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:47,917 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:47] code 400, message Bad request syntax ('GIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00')
-2025-08-12 08:08:47,917 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:47] "[35m[1mGIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:53,155 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:53] code 400, message Bad request syntax ('VERSION')
-2025-08-12 08:08:53,155 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:53] "[35m[1mVERSION[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:08:58,196 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:08:58] code 400, message Bad request syntax ('CNXN\x00\x00\x00\x01\x00\x10\x00\x00\x07\x00\x00\x002\x02\x00\x00¼±§±host::\x00')
-2025-08-12 08:08:58,196 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:08:58] "[35m[1mCNXN\x00\x00\x00\x01\x00\x10\x00\x00\x07\x00\x00\x002\x02\x00\x00¼±§±host::\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:09:03,305 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:09:03] code 400, message Bad HTTP/0.9 request type ('\x00\x00\x00\x10\x00\x00\x00')
-2025-08-12 08:09:03,305 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:09:03] "[35m[1m\x00\x00\x00\x10\x00\x00\x00\x0c{"code":106}[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:09:08,705 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:09:08] code 400, message Bad request syntax ('\x0c\x00\x01\x00\x00\x00ImYorDad0u\x00\x00')
-2025-08-12 08:09:08,705 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:09:08] "[35m[1m\x0c\x00\x01\x00\x00\x00ImYorDad0u\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:09:13,903 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:09:13] code 400, message Bad HTTP/0.9 request type ('ÚÚ\x01\x00\x00\x00\x14\x00\x10\x03\x08\x00\x00\x00')
-2025-08-12 08:09:13,903 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:09:13] "[35m[1mÚÚ\x01\x00\x00\x00\x14\x00\x10\x03\x08\x00\x00\x00\x0bM\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:11:18,159 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:11:18] code 400, message Bad request version ("%\xad63)ÔJx\x16âJ\x17\x87\x9a\x00\x9c\x13\x02\x13\x03\x13\x01\x003\x009\x005\x00/À,À0\x00£\x00\x9fÌ©Ì¨ÌªÀ¯À\xadÀ£À\x9fÀ]ÀaÀWÀSÀ+À/\x00¢\x00\x9eÀ®À¬À¢À\x9eÀ\\À`ÀVÀRÀ$À(\x00k\x00jÀsÀw\x00Ä\x00ÃÀ#À'\x00g\x00@ÀrÀv\x00¾\x00½À")
-2025-08-12 08:11:18,159 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:11:18] "[35m[1m\x16\x03\x01\x02\x00\x01\x00\x01ü\x03\x039\x17Íëè(\x16HiìÜC\x1e\x11ª\x83ýþ¼îév\x07\x13¬\x09\x06L\x1dk)r \x00Ìxn÷Y\x80\x0bþÄÛa@£\x0eÁ`\x1e%­63)ÔJx\x16âJ\x17\x87\x9a\x00\x9c\x13\x02\x13\x03\x13\x01\x003\x009\x005\x00/À,À0\x00£\x00\x9fÌ©Ì¨ÌªÀ¯À­À£À\x9fÀ]ÀaÀWÀSÀ+À/\x00¢\x00\x9eÀ®À¬À¢À\x9eÀ\\À`ÀVÀRÀ$À(\x00k\x00jÀsÀw\x00Ä\x00ÃÀ#À'\x00g\x00@ÀrÀv\x00¾\x00½À[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:11:35,039 - werkzeug - ERROR - 101.133.225.252 - - [12/Aug/2025 08:11:35] code 400, message Bad HTTP/0.9 request type ('\x80\x00\x00(\x01\x81\x86¦\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86')
-2025-08-12 08:11:35,040 - werkzeug - INFO - 101.133.225.252 - - [12/Aug/2025 08:11:35] "[35m[1m\x80\x00\x00(\x01\x81\x86¦\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
-2025-08-12 08:45:08,059 - werkzeug - INFO - 147.185.132.112 - - [12/Aug/2025 08:45:08] "[33mGET / HTTP/1.1[0m" 404 -
-2025-08-12 12:37:24,459 - werkzeug - ERROR - 52.53.190.110 - - [12/Aug/2025 12:37:24] code 400, message Bad request version ("RB|é\x14\x00>\x13\x02\x13\x03\x13\x01À,À0\x00\x9fÌ©Ì¨ÌªÀ+À/\x00\x9eÀ$À(\x00kÀ#À'\x00gÀ")
-2025-08-12 12:37:24,459 - werkzeug - INFO - 52.53.190.110 - - [12/Aug/2025 12:37:24] "[35m[1m\x16\x03\x01\x01&\x01\x00\x01"\x03\x03Q5»\x09SfO±pj¼¥ \x0e\x07#À\x9aµQ¿l\x92î\x81\x8bMånqßë 0`§A­>¤l¯|\x96\x0c$[îS\x13Ô;\x9b¾\x88\x9fþd\x91 RB|é\x14\x00>\x13\x02\x13\x03\x13\x01À,À0\x00\x9fÌ©Ì¨ÌªÀ+À/\x00\x9eÀ$À(\x00kÀ#À'\x00gÀ[0m" HTTPStatus.BAD_REQUEST -
+2025-08-27 17:39:15,585 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-27 17:39:15,586 - werkzeug - INFO -  * Restarting with stat
+2025-08-27 17:39:18,178 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-27 17:39:18,182 - werkzeug - WARNING -  * Debugger is active!
+2025-08-27 17:39:18,182 - werkzeug - INFO -  * Debugger PIN: 686-298-917
+2025-08-27 17:47:38,630 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/agents/camel_single_agent.py', reloading
+2025-08-27 17:47:39,157 - werkzeug - INFO -  * Restarting with stat
+2025-08-27 17:47:41,715 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-27 17:47:41,718 - werkzeug - WARNING -  * Debugger is active!
+2025-08-27 17:47:41,719 - werkzeug - INFO -  * Debugger PIN: 686-298-917
+2025-08-27 17:47:43,738 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/agents/camel_single_agent.py', reloading
+2025-08-27 17:47:44,272 - werkzeug - INFO -  * Restarting with stat
+2025-08-27 17:47:46,879 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-27 17:47:46,882 - werkzeug - WARNING -  * Debugger is active!
+2025-08-27 17:47:46,882 - werkzeug - INFO -  * Debugger PIN: 686-298-917
+2025-08-27 17:47:54,930 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/agents/camel_roleplay_agent.py', reloading
+2025-08-27 17:47:55,460 - werkzeug - INFO -  * Restarting with stat
+2025-08-27 17:47:58,135 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-27 17:47:58,138 - werkzeug - WARNING -  * Debugger is active!
+2025-08-27 17:47:58,138 - werkzeug - INFO -  * Debugger PIN: 686-298-917
+2025-08-27 17:48:40,360 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/tests/test_manage_kb.py', reloading
+2025-08-27 17:48:40,904 - werkzeug - INFO -  * Restarting with stat
+2025-08-27 17:48:43,495 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-27 17:48:43,498 - werkzeug - WARNING -  * Debugger is active!
+2025-08-27 17:48:43,498 - werkzeug - INFO -  * Debugger PIN: 686-298-917
+2025-08-27 17:54:23,164 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/dataprocess/clean_log.py', reloading
+2025-08-27 17:54:23,708 - werkzeug - INFO -  * Restarting with stat
+2025-08-27 17:54:26,360 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-27 17:54:26,363 - werkzeug - WARNING -  * Debugger is active!
+2025-08-27 17:54:26,363 - werkzeug - INFO -  * Debugger PIN: 686-298-917
+2025-08-27 17:58:15,479 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/dataprocess/clean_log.py', reloading
+2025-08-27 17:58:16,024 - werkzeug - INFO -  * Restarting with stat
+2025-08-27 17:58:18,659 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-27 17:58:18,663 - werkzeug - WARNING -  * Debugger is active!
+2025-08-27 17:58:18,663 - werkzeug - INFO -  * Debugger PIN: 686-298-917
+2025-08-27 17:58:41,788 - werkzeug - INFO -  * Detected change in '/usr/sarah/Camel_agent/dataprocess/clean_log.py', reloading
+2025-08-27 17:58:42,315 - werkzeug - INFO -  * Restarting with stat
+2025-08-27 17:58:44,967 - API_Server - INFO - Flask服务已启动，正在等待后台智能体初始化完成...
+2025-08-27 17:58:44,970 - werkzeug - WARNING -  * Debugger is active!
+2025-08-27 17:58:44,970 - werkzeug - INFO -  * Debugger PIN: 686-298-917

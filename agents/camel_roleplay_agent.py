@@ -126,7 +126,11 @@ class CamelRoleplayAgent(BaseAgent):
 
         # 从Document对象中提取content和source信息
         content = "\n\n".join([f"片段{i+1}: {doc.page_content}" for i, doc in enumerate(contexts)])
-        sources = list(set([doc.metadata.get("source", "未知来源") for doc in contexts]))
+        try:
+            sources = list(set([doc.metadata.get("source", "未知来源") for doc in contexts]))
+        except Exception as e:
+            logger.warning(f"提取文档来源时出错: {e}")
+            sources = ["未知来源"]
 
         rag_contexts = (
             f"问题：{query}\n\n"

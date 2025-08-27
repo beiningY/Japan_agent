@@ -20,8 +20,9 @@ def clean_log_file(file_path):
             "chunk_id": filename,
             "chapter": "操作日志",
             "title1": title,
+            "source": file_path,
             "content": clean_text,
-            "type": "log"
+            "type": log
         }
         chunks.append(chunk)
     return chunks   
