@@ -260,9 +260,9 @@ class LangRAG:
         # results = self.vectorstore.similarity_search_with_score(query, k=k)
         retrieve_results = self.vectorstore.similarity_search(query, k=k)
         logger.info(f"检索到相关片段:{retrieve_results}")
-        rerank_results = self.rerank(query, retrieve_results, k)
-        logger.info(f"重排序后相关片段 {rerank_results} ")
-        return rerank_results
+        #rerank_results = self.rerank(query, retrieve_results, k)
+        #logger.info(f"重排序后相关片段 {rerank_results} ")
+        return retrieve_results
 
 
     def release(self):
