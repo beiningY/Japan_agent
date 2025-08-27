@@ -10,5 +10,5 @@ __pycache__/
 models/
 
 # 忽略向量数据库
-#storage.sqlite
+data/vector_data/collection/bank/
 *.log
