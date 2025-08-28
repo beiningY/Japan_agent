@@ -19,6 +19,7 @@ import logging
 from openai import OpenAI
 import json
 import dotenv
+from models.model_manager import model_manager
 dotenv.load_dotenv()
 
 logger = logging.getLogger("Langchain_RAG")
@@ -53,34 +54,64 @@ class LangRAG:
         self._initialize()
 
     def _initialize(self):
-        """初始化 embedding 模型和向量客户端"""
-        logger.info(f"加载 Embedding 模型: {self.embedding_model_path}")
-        self.embeddings = HuggingFaceEmbeddings(
-            model_name=self.embedding_model_path,
-            encode_kwargs={"batch_size": 8}
-        )
-
-        logger.info(f"连接向量数据库: {self.persist_path}")
-        self.client = QdrantClient(path=self.persist_path)
+        """使用全局模型管理器初始化模型和向量客户端"""
+        logger.info("使用全局模型管理器获取预加载的模型...")
+        
+        # 详细检查全局模型管理器状态
+        logger.info(f"模型管理器状态检查: {id(model_manager)}")
+        is_init = model_manager.is_initialized()
+        logger.info(f"全局模型管理器初始化状态: {is_init}")
+        
+        if not is_init:
+            logger.warning("全局模型管理器未初始化，使用传统方式加载模型")
+            # 降级到传统方式
+            logger.info(f"加载 Embedding 模型: {self.embedding_model_path}")
+            self.embeddings = HuggingFaceEmbeddings(
+                model_name=self.embedding_model_path,
+                encode_kwargs={"batch_size": 8}
+            )
+            logger.info(f"连接向量数据库: {self.persist_path}")
+            self.client = QdrantClient(path=self.persist_path)
+        else:
+            # 使用全局模型管理器
+            try:
+                self.embeddings = model_manager.get_embedding_model()
+                self.client = model_manager.get_qdrant_client()
+                logger.info("从全局模型管理器获取模型成功")
+            except Exception as e:
+                logger.error(f"从全局模型管理器获取模型失败: {e}")
+                logger.warning("降级到传统方式加载模型")
+                self.embeddings = HuggingFaceEmbeddings(
+                    model_name=self.embedding_model_path,
+                    encode_kwargs={"batch_size": 8}
+                )
+                self.client = QdrantClient(path=self.persist_path)
+        
         self._connect_or_create_collection()
 
     def _connect_or_create_collection(self):
         """创建或连接到 collection"""
-        try:
-            self.client.get_collection(self.collection_name)
-            logger.info(f"已连接到集合: {self.collection_name}")
-        except:
-            logger.info(f"创建新集合: {self.collection_name}")
-            self.client.create_collection(
-                collection_name=self.collection_name,
-                vectors_config=VectorParams(size=self.vector_size, distance=Distance.COSINE)
-            )
+        # 如果使用全局模型管理器，直接获取 vectorstore
+        if model_manager.is_initialized():
+            self.vectorstore = model_manager.get_vectorstore(self.collection_name)
+            logger.info(f"从全局模型管理器获取向量存储: {self.collection_name}")
+        else:
+            # 传统方式创建 vectorstore
+            try:
+                self.client.get_collection(self.collection_name)
+                logger.info(f"已连接到集合: {self.collection_name}")
+            except:
+                logger.info(f"创建新集合: {self.collection_name}")
+                self.client.create_collection(
+                    collection_name=self.collection_name,
+                    vectors_config=VectorParams(size=self.vector_size, distance=Distance.COSINE)
+                )
 
-        self.vectorstore = QdrantVectorStore(
-            client=self.client,
-            collection_name=self.collection_name,
-            embedding=self.embeddings,
-        )
+            self.vectorstore = QdrantVectorStore(
+                client=self.client,
+                collection_name=self.collection_name,
+                embedding=self.embeddings,
+            )
 
     def initialize_from_folder(self, folder_path: str):
         """首次构建知识库：从文件夹加载所有文档"""

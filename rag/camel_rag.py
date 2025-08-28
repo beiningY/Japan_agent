@@ -13,68 +13,6 @@ import gc
 logger = logging.getLogger("Camel_RAG")
 logger.setLevel(logging.INFO)
 
-class ModelManager:
-    """避免重复加载模型"""
-    _instance = None
-    _embedding_model = None
-    _tokenizer = None
-    _config = None
-    
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-    
-    def get_embedding_model(self):
-        if self._embedding_model is None:
-            self._load_config()
-            logger.info("正在加载embedding模型...")
-            self._embedding_model = SentenceTransformerEncoder(model_name="models/multilingual-e5-large")
-            logger.info("embedding模型加载完成")
-        return self._embedding_model
-    
-    def get_tokenizer(self):
-        if self._tokenizer is None:
-            self._load_config()
-            logger.info("正在加载tokenizer模型...")
-            self._tokenizer = AutoTokenizer.from_pretrained("models/multilingual-e5-large")
-            logger.info("tokenizer模型加载完成")
-        return self._tokenizer
-    
-    def _load_config(self):
-        if self._config is None:
-            with open("config/default_config.json", "r", encoding="utf-8") as f:
-                self._config = json.load(f)
-        return self._config
-    
-    def get_config(self):
-        return self._load_config()
-    
-    def del_model(self):
-        try:
-            if self._embedding_model is not None:
-                logger.info("尝试释放embedding模型")
-                # 尝试释放底层模型
-                if hasattr(self._embedding_model, "model"):
-                    model = self._embedding_model.model
-                    model.cpu()
-                    del model
-                del self._embedding_model
-                self._embedding_model = None
-            else:
-                logger.info("embedding模型为None，无需释放")
-
-            # 同样清理 tokenizer（可选）
-            self._tokenizer = None
-
-        except Exception as e:
-            logger.warning(f"释放模型出错: {e}")
-        finally:
-            gc.collect()
-            torch.cuda.empty_cache()
-            logger.info("模型释放完毕，已尝试清理显存")
-
-
 class CamelRAG:
     def __init__(self, collection_name):
         self.collection_name = collection_name

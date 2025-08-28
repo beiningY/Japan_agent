@@ -4,6 +4,7 @@ from api.routes.qa_sse import sse
 import logging
 import threading
 import os
+from models.model_manager import model_manager
 
 app = Flask(__name__)
 logging.basicConfig(
@@ -62,13 +63,33 @@ def get_kb_list():
     logger.info("返回列表")
     return jsonify({"status": "success", "data": result})
 
+def initialize_models():
+    """初始化全局Embedding模型管理器"""
+    try:
+        logger.info("开始初始化全局Embedding模型管理器...")
+        model_manager.initialize_models(
+            embedding_model_path="models/multilingual-e5-large",
+            vector_persist_path="data/vector_data",
+            vector_size=1024
+        )
+        logger.info("全局Embedding模型管理器初始化完成！")
+    except Exception as e:
+        logger.error(f"Embedding模型初始化失败: {e}")
+        # 可以选择继续运行（降级到传统模式）或退出
+        logger.warning("将使用传统模式（每次调用时加载embedding模型）")
+
 # --- 启动服务 ---
 if __name__ == '__main__':
-    # 启动后台初始化线程
-    init_thread = threading.Thread()
-    init_thread.daemon = True 
-    init_thread.start()
+    # 检查是否是Flask的重启进程
+    import os
+    if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
+        # 只在主进程中初始化模型，避免debug重启时重复初始化
+        logger.info("主进程启动，初始化Embedding模型...")
+        initialize_models()
+    else:
+        # 这是Flask重启后的子进程，不需要重新初始化
+        logger.info("Flask重启进程，跳过模型初始化")
     
     # 启动 Flask 应用
-    logger.info("Flask服务已启动，正在等待后台智能体初始化完成...")
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    logger.info("启动Flask服务...")
+    app.run(host='0.0.0.0', port=5001, debug=False, use_reloader=False)
