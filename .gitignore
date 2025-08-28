@@ -7,7 +7,7 @@ __pycache__/
 *.env
 
 # 忽略模型目录
-models/
+models/multilingual-e5-large/
 
 # 忽略向量数据库
 data/vector_data/collection/bank/
