@@ -5,6 +5,7 @@ from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from rag.camel_rag import CamelRAG
 from rag.lang_rag import LangRAG
+from concurrent.futures import Future
 import os
 from rag.data_with_mcp import main as db
 logger = logging.getLogger("CamelSingleAgent")
@@ -48,8 +49,10 @@ class CamelSingleAgent(BaseAgent):
             answer = "抱歉，知识库中未找到相关信息。"
             logger.info(f"回答: {answer}")
             return answer
-        
-        # 从Document对象中提取content和source信息
+        return self._build_rag_context_from_docs(contexts, query)
+
+    def _build_rag_context_from_docs(self, contexts, query: str) -> str:
+        """根据检索到的文档构建 prompt 上下文"""
         content = "\n\n".join([f"片段{i+1}: {doc.page_content}" for i, doc in enumerate(contexts)])
         try:
             sources = list(set([doc.metadata.get("source", "未知来源") for doc in contexts]))
@@ -82,9 +85,53 @@ class CamelSingleAgent(BaseAgent):
         return result
     
     def stream(self, query: str, topk: int | None = None):
-        """流式输出查询结果"""
-        result = self.run(query, topk)
+        """流式输出查询结果（在 RAG 步骤使用队列 + Future，先发送排队状态）"""
+        if not self.rag:
+            # 无 RAG，直接执行
+            result = self.run(query, topk)
+            yield {
+                "agent_type": "single_agent_rag",
+                "agent_response": result
+            }
+            return
+
+        # 1) 提交 RAG 检索任务（异步）
+        request_id, future = self.rag.retrieve_async(query, k=topk or self.config.get("vector_top_k", 5))
+
+        # 2) 先向上游发送“排队中”事件
         yield {
             "agent_type": "single_agent_rag",
+            "status": "queued",
+            "request_id": request_id,
+            "message": "RAG 检索任务已排队，等待执行"
+        }
+
+        # 3) 可选：发送“开始检索”事件（在等待前发送提示）
+        yield {
+            "agent_type": "single_agent_rag",
+            "status": "started",
+            "request_id": request_id,
+            "message": "开始进行 RAG 检索"
+        }
+
+        # 4) 等待 RAG 检索完成，构建上下文并调用 LLM
+        contexts = future.result()
+        if not contexts:
+            # 无检索结果也要给出可读回复
+            prompt_context = "抱歉，知识库中未找到相关信息。"
+        else:
+            prompt_context = self._build_rag_context_from_docs(contexts, query)
+
+        response = self.agent.step(prompt_context)
+        result = response.msg.content
+
+        # 5) 释放 RAG 资源
+        self.rag.release()
+
+        # 6) 返回最终结果
+        yield {
+            "agent_type": "single_agent_rag",
+            "status": "completed",
+            "request_id": request_id,
             "agent_response": result
         }

@@ -5,6 +5,7 @@ import logging
 import threading
 import os
 from models.model_manager import model_manager
+from queue_rag.queue_server import start_rag_service, is_running
 
 app = Flask(__name__)
 logging.basicConfig(
@@ -78,6 +79,17 @@ def initialize_models():
         # 可以选择继续运行（降级到传统模式）或退出
         logger.warning("将使用传统模式（每次调用时加载embedding模型）")
 
+    # 启动队列服务（单线程，保证GPU串行）
+    try:
+        if not is_running():
+            logger.info("启动RAG队列服务（单线程，FIFO）...")
+            start_rag_service(num_workers=1)
+            logger.info("RAG队列服务启动完成")
+        else:
+            logger.info("RAG队列服务已在运行，跳过启动")
+    except Exception as e:
+        logger.error(f"RAG队列服务启动失败: {e}")
+
 # --- 启动服务 ---
 if __name__ == '__main__':
     # 检查是否是Flask的重启进程
@@ -92,4 +104,4 @@ if __name__ == '__main__':
     
     # 启动 Flask 应用
     logger.info("启动Flask服务...")
-    app.run(host='0.0.0.0', port=5001, debug=False, use_reloader=False)
+    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)

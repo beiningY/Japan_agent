@@ -6,12 +6,12 @@ import requests
 from urllib.parse import urlencode
 
 def test_agent_config():
-    url = "http://localhost:5001/sse/agent_config"
+    url = "http://127.0.0.1:5001/sse/agent_config"
     response = requests.get(url)
     print(response.json())
 
 def test_stream_qa():
-    url = "http://localhost:5001/sse/stream_qa"
+    url = "http://127.0.0.1:5001/sse/stream_qa"
     config = {
             "mode": "auto",
             "rag": {
@@ -53,5 +53,5 @@ def test_stream_qa():
     for event in client.events():
         print(f"收到消息: {event.data}")
 if __name__ == "__main__":
-    # test_agent_config()
-    test_stream_qa()
+    test_agent_config()
+    #test_stream_qa()

@@ -20,6 +20,9 @@ from openai import OpenAI
 import json
 import dotenv
 from models.model_manager import model_manager
+from queue_rag.queue_server import run_in_queue, run_in_queue_async
+from concurrent.futures import Future
+from typing import Tuple
 dotenv.load_dotenv()
 
 logger = logging.getLogger("Langchain_RAG")
@@ -288,12 +291,29 @@ class LangRAG:
         """检索最相关的文档片段"""
         logger.info(f"检索中: '{query}' (top-{k})")
         query = f"query: {query}"
-        # results = self.vectorstore.similarity_search_with_score(query, k=k)
-        retrieve_results = self.vectorstore.similarity_search(query, k=k)
+        # 将相似度检索放入队列串行执行，确保 GPU/Embedding 串行化
+        def _do_search(text: str, top_k: int):
+            return self.vectorstore.similarity_search(text, k=top_k)
+
+        retrieve_results = run_in_queue(_do_search, query, k)
         logger.info(f"检索到相关片段:{retrieve_results}")
         #rerank_results = self.rerank(query, retrieve_results, k)
         #logger.info(f"重排序后相关片段 {rerank_results} ")
         return retrieve_results
+
+    def retrieve_async(self, query: str, k: int = 5) -> Tuple[str, Future]:
+        """
+        异步检索：提交任务后立即返回 (request_id, future)，由调用方在未来等待结果。
+        便于在 SSE 中先推送“排队中/开始检索”等状态，再在 future.result() 就绪后继续。
+        """
+        logger.info(f"(async) 检索中: '{query}' (top-{k})")
+        text = f"query: {query}"
+
+        def _do_search(text: str, top_k: int):
+            return self.vectorstore.similarity_search(text, k=top_k)
+
+        request_id, future = run_in_queue_async(_do_search, text, k)
+        return request_id, future
 
 
     def release(self):
