@@ -27,6 +27,7 @@ def test_stream_qa():
             "roleplay": {
             "temperature": 0.4,
             "user_role_name": "user",
+            "system_prompt": "你是一个领域专家，你的任务是根据用户的问题，结合增强检索后的相关知识，给出专业的回答。",
             "assistant_role_name": "assistant",
             "round_limit": 5,
             "max_tokens": 10000,

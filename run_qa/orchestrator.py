@@ -19,8 +19,8 @@ class SingleTurnConfig(BaseModel):
     """
     对于single agent进行配置和选择
     """
-    temperature: Optional[float] = 0.4
     system_prompt: Optional[str] = "你是一个领域专家，你的任务是根据用户的问题，结合增强检索后的相关知识，给出专业的回答。"
+    temperature: Optional[float] = 0.4
     max_tokens: Optional[int] = 4096
 
 
@@ -28,6 +28,7 @@ class RoleplayTurnConfig(BaseModel):
     """
     对于multi agent进行配置和选择
     """    
+    system_prompt: Optional[str] = "你是一个领域专家，你的任务是根据用户的问题，结合增强检索后的相关知识，给出专业的回答。"
     temperature: Optional[float] = 0.4
     user_role_name: Optional[str] = "user"
     assistant_role_name: Optional[str] = "assistant"
@@ -70,6 +71,7 @@ def _run_roleplay(query: str, cfg: OrchestrationConfig) -> Generator[Dict[str, A
         temperature=cfg.roleplay.temperature,
         user_role_name=cfg.roleplay.user_role_name,
         assistant_role_name=cfg.roleplay.assistant_role_name,
+        system_message=cfg.roleplay.system_prompt,       
         max_tokens=cfg.roleplay.max_tokens,
         with_task_specify=cfg.roleplay.with_task_specify,
         with_task_planner=cfg.roleplay.with_task_planner,

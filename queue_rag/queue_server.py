@@ -23,8 +23,6 @@ request_queue = queue.Queue(maxsize=600)
 stop_event = threading.Event()
 
 # 存储每个请求结果的字典，通过请求ID索引
-
-# 例如一个共享内存、数据库或专门的结果队列
 results_storage: Dict[str, Any] = {}
 
 # 存储异常，便于调用方获知错误
@@ -36,7 +34,7 @@ _running_lock = threading.Lock()
 
 class RAGWorker(threading.Thread):
     """
-    RAG 工作线程，负责从队列中取出请求并执行 RAG 推理。
+    RAG队列管理的工作线程，负责从队列中取出请求并执行 RAG 推理。
     """
     def __init__(self, worker_id):
         super().__init__()
@@ -90,6 +88,8 @@ class RAGWorker(threading.Thread):
 
         logger.info(f"{self.name} 停止。")
 
+
+# 外部调用开始rag队列管理的主函数
 def start_rag_service(num_workers: int = 1):
     """
     启动 RAG 服务，包括创建并启动指定数量的工作线程。
@@ -110,6 +110,12 @@ def start_rag_service(num_workers: int = 1):
         logger.info("RAG 服务启动完毕。")
         return _workers
 
+# 外部调用检查rag队列管理的主函数
+def is_running() -> bool:
+    """检查队列服务是否在运行"""
+    return any(w.is_alive() for w in _workers)
+
+# 外部调用停止rag队列管理的主函数
 def stop_rag_service(workers: Optional[List[threading.Thread]] = None):
     """
     停止 RAG 服务和所有工作线程。
@@ -127,9 +133,7 @@ def stop_rag_service(workers: Optional[List[threading.Thread]] = None):
     _workers.clear()
     logger.info("RAG 服务已停止。")
 
-def is_running() -> bool:
-    """检查队列服务是否在运行"""
-    return any(w.is_alive() for w in _workers)
+# 外部调用提交任务到队列的主函数
 
 def submit_task(task_callable: Callable[..., Any], *args: Any, **kwargs: Any) -> str:
     """
@@ -147,6 +151,7 @@ def submit_task(task_callable: Callable[..., Any], *args: Any, **kwargs: Any) ->
     request_queue.put(request_data)
     return request_id
 
+# 外部调用提交任务到队列的主函数
 def submit_task_future(task_callable: Callable[..., Any], *args: Any, **kwargs: Any) -> Tuple[str, Future]:
     """
     提交一个通用任务到队列，并返回 (request_id, future)。
@@ -165,6 +170,7 @@ def submit_task_future(task_callable: Callable[..., Any], *args: Any, **kwargs: 
     request_queue.put(request_data)
     return request_id, future
 
+# 外部调用获取任务结果的主函数
 def get_task_result(request_id: str, timeout: Optional[float] = None) -> Any:
     """
     获取指定请求 ID 的任务结果。若发生异常，则抛出异常；若超时，抛出 TimeoutError。
@@ -180,6 +186,7 @@ def get_task_result(request_id: str, timeout: Optional[float] = None) -> Any:
             raise TimeoutError("Timeout: 结果未在指定时间内返回。")
         time.sleep(0.05)
 
+# 外部调用便捷方法：提交任务并同步等待结果返回的主函数
 def run_in_queue(task_callable: Callable[..., Any], *args: Any, timeout: Optional[float] = None, **kwargs: Any) -> Any:
     """
     便捷方法：提交任务并同步等待结果返回。

@@ -112,7 +112,7 @@ class ModelManager:
             self.embedding_model = HuggingFaceEmbeddings(
                 model_name=model_path,
                 model_kwargs=model_kwargs,
-                encode_kwargs={"batch_size": 4}  # 减小batch_size以节省显存
+                encode_kwargs={"batch_size": 4}  # batch_size为4
             )
             logger.info(f"Embedding 模型加载成功，运行设备: {model_kwargs.get('device', 'auto')}")
         except Exception as e:
