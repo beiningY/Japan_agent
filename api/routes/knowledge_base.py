@@ -3,54 +3,10 @@ import os
 import logging
 logger = logging.getLogger("api_knowledgebase")
 logger.setLevel(logging.INFO)
+from run_qa.lang_kb_qa import create_kb, delete_kb, add_file, delete_file
 
 knowledgebase = Blueprint("knowledge_base", __name__, url_prefix="/knowledge_base")
 
-# 预定义知识库配置
-KB_CONFIG = {
-    "cede3e0b-6447-4418-9c80-97129710beb5": {
-        "name": "银行相关",
-        "path": "data/raw_data/bank"
-    },
-    "25241d69-33fd-465d-8fd1-18d34865248c": {
-        "name": "陆上养殖",
-        "path": "data/raw_data/japan_shrimp"
-    }
-}
-@knowledgebase.route("/get_list", methods=["GET"])
-def get_kb_list():
-    # 从查询参数获取 kb_ids（格式：?kb_ids=id1,id2,id3）
-    kb_ids_str = request.args.get("kb_ids", "")
-    if not kb_ids_str:
-        return jsonify({"error": "缺少 kb_ids 参数"}), 400
-    
-    kb_ids = kb_ids_str.split(",")
-    result = []
-    
-    for kb_id in kb_ids:
-        if kb_id not in KB_CONFIG:
-            return jsonify({"error": f"无效的 kb_id: {kb_id}"}), 404
-            logger.info("运行失败")
-        kb_path = KB_CONFIG[kb_id]["path"]
-        if not os.path.isdir(kb_path):
-            return jsonify({"error": f"知识库路径不存在: {kb_path}"}), 404
-            logger.info("运行失败")
-        try:
-            files = [
-                f for f in os.listdir(kb_path) 
-                if not f.startswith('.') and not f.startswith('__')
-            ]
-            
-            result.append({
-                "kb_id": kb_id,
-                "kb_name": KB_CONFIG[kb_id]["name"],
-                "files": files
-            })
-        except Exception as e:
-            return jsonify({"error": f"读取文件列表失败: {str(e)}"}), 500
-            logger.info("运行失败")
-    logger.info("返回列表")
-    return jsonify({"status": "success", "data": result})
 
 @knowledgebase.route('/upload_file', methods=['POST'])
 def upload_file():
@@ -89,3 +45,41 @@ def upload_file():
             "message": "服务器处理文件失败"
         }), 500
 
+@knowledgebase.route('/create_kb', methods=['GET'])
+def create_kb():
+    kb_name = request.args.get('kb_name')
+    try:
+        create_kb(kb_name)
+        return jsonify({"status": "success", "message": "知识库创建成功"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@knowledgebase.route('/delete_kb', methods=['GET'])
+def delete_kb():
+    kb_name = request.args.get('kb_name')
+    try:
+        delete_kb(kb_name)
+        return jsonify({"status": "success", "message": "知识库删除成功"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@knowledgebase.route('/embedding_file', methods=['GET'])
+def embedding_file():
+    # 需要对应知识库类别名称和文件路径
+    kb_name = request.args.get('kb_name')
+    file_path = request.args.get('file_path')
+    try:
+        add_file(file_path, kb_name)
+        return jsonify({"status": "success", "message": "文件向量化成功"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@knowledgebase.route('/delete_file', methods=['GET'])
+def delete_file():
+    kb_name = request.args.get('kb_name')
+    file_path = request.args.get('file_path')
+    try:
+        delete_file(file_path, kb_name)
+        return jsonify({"status": "success", "message": "文件删除成功"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500

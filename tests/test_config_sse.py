@@ -53,5 +53,5 @@ def test_stream_qa():
     for event in client.events():
         print(f"收到消息: {event.data}")
 if __name__ == "__main__":
-    test_agent_config()
-    #test_stream_qa()
+    # test_agent_config()
+    test_stream_qa()

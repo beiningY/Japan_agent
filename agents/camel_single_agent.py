@@ -80,8 +80,6 @@ class CamelSingleAgent(BaseAgent):
             context = query
         response = self.agent.step(context)
         result = response.msg.content
-        if self.rag:
-            self.rag.release()
         return result
     
     def stream(self, query: str, topk: int | None = None):
@@ -124,9 +122,6 @@ class CamelSingleAgent(BaseAgent):
 
         response = self.agent.step(prompt_context)
         result = response.msg.content
-
-        # 5) 释放 RAG 资源
-        self.rag.release()
 
         # 6) 返回最终结果
         yield {
