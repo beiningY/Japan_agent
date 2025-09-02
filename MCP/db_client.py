@@ -1,52 +1,34 @@
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langgraph.prebuilt import create_react_agent
 import asyncio
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
-from mcp.shared.exceptions import McpError
-from langchain_mcp_adapters.tools import load_mcp_tools
+import dotenv
+dotenv.load_dotenv()
 import logging
-
 logger = logging.getLogger("db_client")
 logger.setLevel(logging.INFO)
 
-# MCP 服务器路径（可放到 .env）
-MCP_SERVER_SCRIPT_PATH = "/usr/henry/cognitive-center/mcp_server/main.py"
-
-SQL_MCP_SERVER_PARAMS = StdioServerParameters(
-    command="python",
-    args=[MCP_SERVER_SCRIPT_PATH],
-    env={
-        "MCP_SERVER_NAME": "cognitive-mcp-server",
-        "MCP_LOG_LEVEL": "INFO",
+async def client():
+    client_mcp = MultiServerMCPClient(
+        {
+            "db-mcp-server": {
+                "command": "python",
+                "args": ["/usr/sarah/Camel_agent/MCP/db_server.py"],
+                "transport": "stdio",
+            }
+        }
+    )
+    tools = await client_mcp.get_tools()
+    logger.info(f"查询到的工具: {tools}")
+    tool_names_to_use = {
+    "list_sql_tables",
+    #"get_tables_schema",
+    #"read_sql_query",
     }
-)
+    allowed_tools = [t for t in tools if t.name in tool_names_to_use]
+    return allowed_tools
+    # agent = create_react_agent("openai:gpt-4o-mini", allowed_tools)
+    # response = await agent.ainvoke({"messages": "传感器测量的六月二十八号凌晨的温度是多少"})
+    # logger.info(response)
 
-async def load_sql_tools():
-    """连接 MCP 并返回 SQL 工具列表"""
-    try:
-        async with stdio_client(SQL_MCP_SERVER_PARAMS) as (read, write):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
-                logger.info("✅ 成功连接到cognitive-mcp-server")
-
-                mcp_tools = await load_mcp_tools(session)
-                discovered_tool_names = [t.name for t in mcp_tools]
-                logger.info(f"📌 发现工具: {discovered_tool_names}")
-
-                tool_names_to_use = {
-                    "list_sql_tables",
-                    "get_sql_schema",
-                    "read_sql_query",
-                }
-                allowed_tools = [t for t in mcp_tools if t.name in tool_names_to_use]
-
-                if len(allowed_tools) != len(tool_names_to_use):
-                    logger.error(f"⚠️ MCP 错误: 没有找到sql agent全部的需求工具. "
-                          f"Expected {tool_names_to_use}, Found {[t.name for t in allowed_tools]}")
-
-                return allowed_tools
-    except McpError as e:
-        logger.error(f"❌ MCP 错误: {e}")
-        raise
-    except Exception as e:
-        logger.error(f"❌ MCP错误: {e}")
-        raise
+if __name__ == "__main__":
+    asyncio.run(client())

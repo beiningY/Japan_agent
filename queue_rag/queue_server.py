@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 
 
 # 如果请求可进入队列则返回等待 如果队列满了则返回拒绝
-# maxsize表示列表的大小
+# maxsize表示列表的大小 做有界FIFO任务队列
 request_queue = queue.Queue(maxsize=600)
 
 # 停止所有工作线程的事件标志

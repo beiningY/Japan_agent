@@ -10,10 +10,10 @@ from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.prebuilt import create_react_agent
 from langgraph.prebuilt.chat_agent_executor import AgentState
-from MCP.db_client import load_sql_tools
+from MCP.db_client import client
 from langchain_core.tools import tool
-
-
+import asyncio
+import os
 logger = logging.getLogger("sql_agent")
 logger.setLevel(logging.INFO)
 
@@ -46,6 +46,21 @@ async def init_agent():
     llm = ChatOpenAI(model="gpt-4o", temperature=0.4)
 
     # 设置text2sql的系统消息
+    """
+    system
+    You are an agent designed to interact with a SQL database.
+    Given an input question, create a syntactically correct {dialect} query to run, then look at the results of the query and return the answer.
+    Unless the user specifies a specific number of examples they wish to obtain, always limit your query to at most {top_k} results.
+    You can order the results by a relevant column to return the most interesting examples in the database.
+    Never query for all the columns from a specific table, only ask for the relevant columns given the question.
+    You have access to tools for interacting with the database.
+    Only use the below tools. Only use the information returned by the below tools to construct your final answer.
+    You MUST double check your query before executing it. If you get an error while executing a query, rewrite the query and try again.
+    DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the database.
+    To start you should ALWAYS look at the tables in the database to see what you can query.
+    Do NOT skip this step.
+    Then you should query the schema of the most relevant tables.
+    """
     prompt_template = hub.pull("langchain-ai/sql-agent-system-prompt")
     SYSTEM_PROMPT = prompt_template.messages[0].prompt.template.format(
     dialect="MySQL", top_k=10
@@ -54,7 +69,7 @@ async def init_agent():
         return agent_graph
 
     logger.info("智能体初始化...")
-    allowed_tools = await load_sql_tools()
+    allowed_tools = await client()
     agent_graph = create_react_agent(
         llm,
         allowed_tools,
@@ -73,11 +88,36 @@ def format_messages(messages: List[AnyMessage]) -> str:
         if isinstance(message, HumanMessage):
             logger.info(f"User: {message.content}")
         elif isinstance(message, AIMessage):
-            if message.content:  # 只有有内容时才认为是回答
+            if message.content: 
                 final_answer = message.content
             logger.info(f"AI: {message.content or '[Tool call / intermediate step]'}")
         elif isinstance(message, ToolMessage):
             logger.info(f"Tool[{message.name}]: {message.content}")
 
-    # 如果有最终回答，返回它；否则返回空字符串
     return f"根据sql查询后智能体的回答是: {final_answer}" if final_answer else ""
+
+async def ask_agent(query: str, sessionId: str) -> str:
+    global agent_graph
+    if agent_graph is None:
+        agent_graph = await init_agent()
+
+    config = user_config(sessionId)
+    input_query = query 
+    inputs = {"messages": [("user", input_query)]}
+    try:
+        final_state = await agent_graph.ainvoke(inputs, config=config)
+        messages = final_state["messages"]
+        response = format_messages(messages)
+    except Exception as e:
+        logger.error(f"会话 {sessionId} 错误: {e}", exc_info=True)
+        response = f"错误: {repr(e)}"
+    return response
+
+async def main(query):
+    session_id = f"session_{os.getpid()}"   
+    response = await ask_agent(query, session_id)
+    return response
+
+if __name__ == "__main__":
+    query = "请问有哪些数据"
+    asyncio.run(main(query))

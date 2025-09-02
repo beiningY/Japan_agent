@@ -135,7 +135,7 @@ class LangRAG:
         """删除知识库,包括删除向量知识库以及原文件夹"""
         self.client.delete_collection(self.collection_name)
         logger.info(f"知识库{self.collection_name}删除完成")
-        # shutil.rmtree(f"{raw_data_path}/{self.collection_name}")
+        shutil.rmtree(f"{raw_data_path}/{self.collection_name}")
         logger.info(f"文件夹{raw_data_path}/{self.collection_name}删除完成")
         return True
     
