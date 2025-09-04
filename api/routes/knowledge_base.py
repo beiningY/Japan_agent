@@ -1,9 +1,14 @@
 from flask import Blueprint, jsonify, request
 import os
 import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger("api_knowledgebase")
 logger.setLevel(logging.INFO)
-from run_qa.lang_kb_qa import create_kb, delete_kb, add_file, delete_file
+from run_qa import create, delete, add_file, deletefile
 
 knowledgebase = Blueprint("knowledge_base", __name__, url_prefix="/knowledge_base")
 
@@ -49,7 +54,7 @@ def upload_file():
 def create_kb():
     kb_name = request.args.get('kb_name')
     try:
-        create_kb(kb_name)
+        create(kb_name)
         return jsonify({"status": "success", "message": "知识库创建成功"}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -58,7 +63,7 @@ def create_kb():
 def delete_kb():
     kb_name = request.args.get('kb_name')
     try:
-        delete_kb(kb_name)
+        delete(kb_name)
         return jsonify({"status": "success", "message": "知识库删除成功"}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -67,9 +72,9 @@ def delete_kb():
 def embedding_file():
     # 需要对应知识库类别名称和文件路径
     kb_name = request.args.get('kb_name')
-    file_path = request.args.get('file_path')
+    file_name = request.args.get('file_name')
     try:
-        add_file(file_path, kb_name)
+        add_file(file_name, kb_name)
         return jsonify({"status": "success", "message": "文件向量化成功"}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -77,9 +82,9 @@ def embedding_file():
 @knowledgebase.route('/delete_file', methods=['GET'])
 def delete_file():
     kb_name = request.args.get('kb_name')
-    file_path = request.args.get('file_path')
+    file_name = request.args.get('file_name')
     try:
-        delete_file(file_path, kb_name)
+        deletefile(file_name, kb_name)
         return jsonify({"status": "success", "message": "文件删除成功"}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

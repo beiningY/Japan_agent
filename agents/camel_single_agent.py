@@ -116,8 +116,10 @@ class CamelSingleAgent(BaseAgent):
         contexts = future.result()
         if not contexts:
             # 无检索结果也要给出可读回复
+            logger.info("抱歉，知识库中未找到相关信息。")
             prompt_context = "抱歉，知识库中未找到相关信息。"
         else:
+            logger.info(f"检索到的是{contexts}")
             prompt_context = self._build_rag_context_from_docs(contexts, query)
 
         response = self.agent.step(prompt_context)

@@ -38,7 +38,7 @@ class LangRAG:
 
     def __init__(
         self,
-        persist_path: str = "vector_store",
+        persist_path: str = "data/vector_data",
         collection_name: str = "all_data",
         embedding_model_path: str = "models/multilingual-e5-large",
         vector_size: int = 1024,
@@ -135,8 +135,10 @@ class LangRAG:
         """删除知识库,包括删除向量知识库以及原文件夹"""
         self.client.delete_collection(self.collection_name)
         logger.info(f"知识库{self.collection_name}删除完成")
-        shutil.rmtree(f"{raw_data_path}/{self.collection_name}")
-        logger.info(f"文件夹{raw_data_path}/{self.collection_name}删除完成")
+        shutil.rmtree(f"{raw_data_path}")
+        logger.info(f"文件夹{raw_data_path}")
+        model_manager.vectorstores.pop(self.collection_name)
+        logger.info(f"model_manager中的向量存储实例已删除: {self.collection_name}")
         return True
     
     #=================可添加到知识库的文档类型 txt pdf xlsx docx csv ========
@@ -156,9 +158,8 @@ class LangRAG:
         self.vectorstore.add_documents(chunks)
         logger.info("知识库文件夹添加完成")
 
-    def add_file(self, file_path: str):
+    def add_file(self, file_name: str):
         # 获取文件名
-        file_name = os.path.basename(file_path)
         loader = UnstructuredFileLoader(file_path)
         docs = loader.load()
         logger.info(f"使用loader的docs{docs}")
@@ -181,8 +182,7 @@ class LangRAG:
         self.vectorstore.add_documents(id_chunks,ids=ids)
         logger.info("知识库文件添加完成")
 
-    def delete_file(self, file_path: str):
-        file_name = os.path.basename(file_path)
+    def delete_file(self, file_name: str):
         # 先查出 file_id 对应的所有 chunk id
         results = self.vectorstore.similarity_search(
             query="",

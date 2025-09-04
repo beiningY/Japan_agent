@@ -18,12 +18,14 @@ logging.basicConfig(
 logger = logging.getLogger("Default_KB_QA")
 logger.setLevel(logging.INFO)
 
-def create_kb(kb_name: str):
+def create(kb_name: str):
     """
     新建知识库+首次上传文件夹
     首先必须确保原始文件夹里存在已经上传的文件
     """
     kb_path = os.path.join("data/raw_data",kb_name)
+    if not os.path.exists(kb_path):
+        os.makedirs(kb_path, exist_ok=True)
     kb = LangRAG(
         persist_path="data/vector_data",
         collection_name=kb_name
@@ -33,12 +35,13 @@ def create_kb(kb_name: str):
     kb.release()
     return kb
 
-def delete_kb(kb_name: str):
+def delete(kb_name: str):
     kb = LangRAG(
         persist_path="data/vector_data",
         collection_name=kb_name
     )
-    kb.delete_collection(kb_name)
+    kb_path = os.path.join("data/raw_data",kb_name)
+    kb.delete_collection(kb_path)
     kb.release()
     logger.info(f"知识库{kb_name}删除完成")
     return True
@@ -86,7 +89,6 @@ def ask(question: str, k: int = 5, kb_name: str="all_data", model: str="gpt-4o-m
     response = llm.invoke(messages)
     answer = response.content
     logger.info(f"回答: {answer}")
-    kb.release()
     return answer
 
 
@@ -96,19 +98,19 @@ def get_kb_list():
         collection_name = "all_data"
     )
     return kb_list.get_kb_list()
-def add_file(file_path: str, kb_name: str="all_data"):
+def add_file(file_name: str, kb_name: str="all_data"):
     kb = LangRAG(
         persist_path = "data/vector_data",
         collection_name = kb_name
     )
-    kb.add_file(file_path)
+    kb.add_file(file_name)
     return True
-def delete_file(file_path: str, kb_name: str="all_data"):
+def deletefile(file_name: str, kb_name: str="all_data"):
     kb = LangRAG(
         persist_path = "data/vector_data",
         collection_name = kb_name
     )
-    kb.delete_file(file_path)
+    kb.delete_file(file_name)
     return True
 if __name__ == "__main__":
     kb_name = "all_data"

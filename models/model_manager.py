@@ -163,17 +163,24 @@ class ModelManager:
     
     def get_vectorstore(self, collection_name: str = "all_data") -> QdrantVectorStore:
         """获取向量存储实例"""
+
         if collection_name in self.vectorstores:
+            logger.info(f"向量存储实例已存在: {collection_name}")
             return self.vectorstores[collection_name]
         
         # 创建新的向量存储实例
+        logger.info(f"开始获取向量数据库客户端")
         client = self.qdrant_clients.get("default")
+        logger.info(f"获取到向量数据库客户端")
         if client is None:
+            logger.error(f"向量数据库客户端未初始化")
             raise RuntimeError("向量数据库客户端未初始化")
         
         if self.embedding_model is None:
+            logger.error(f"Embedding 模型未初始化")
             raise RuntimeError("Embedding 模型未初始化")
-        
+
+        logger.info(f"开始连接集合: {collection_name}")
         # 检查集合是否存在，不存在则创建
         try:
             client.get_collection(collection_name)

@@ -176,6 +176,7 @@ def test_stream_qa():
             "user_role_name": "user",
             "assistant_role_name": "assistant",
             "round_limit": 5,
+            "system_prompt": "你是一个领域专家，你的任务是根据用户的问题，结合增强检索后的相关知识，给出专业的回答。",
             "max_tokens": 10000,
             "with_task_specify": False,
             "with_task_planner": False
@@ -184,7 +185,7 @@ def test_stream_qa():
     params = {
         "session_id": str(uuid.uuid4()),
         "agent_type": "japan",
-        "query": "ph值如何调整？",
+        "query": "当前监测显示：DO=3.4 mg/L，比昨日下降了 0.8 单位，pH=8.0，水温 28.5°C。请问是否需要立即调整供氧或循环策略？如果需要，应优先采取哪些操作？",
         "config": json.dumps(config, ensure_ascii=False)  
     }
     if params:
