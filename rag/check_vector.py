@@ -5,7 +5,7 @@ client = QdrantClient(path="data/vector_data")
 
 from qdrant_client.http import models as rest
 
-
+"""
 collection_name = "japan_shrimp"
 
 # 分批 scroll 读取所有点
@@ -48,9 +48,7 @@ while True:
     if not scroll_cursor:
         break
 
-print("所有点的字段已改` ✅")
-
-
+print("所有点的字段已改` ✅")"""
 
 # 1. 查看有哪些 collections
 print("=== Collections 列表 ===")
@@ -58,24 +56,29 @@ print(client.get_collections())
 
 # 2. 指定要对比的 collection 名称
 camel_collection = "japan_shrimp"
-langchain_collection = "bank"
 # 3. 查看 collection 配置 (vector size / distance 等)
 print("\n=== ALL Collection Info ===")
 print(client.get_collection(camel_collection))
-print("\n=== LangChain Collection Info ===")
-print(client.get_collection(langchain_collection))
 
-# 4. 查看每个 collection 的前几条数据
+# 4. 查看前几条数据（包含向量）
 print("\n=== CAMEL 数据样例 ===")
-camel_points = client.scroll(collection_name=camel_collection, limit=10)[0]
+camel_points, next_page = client.scroll(
+    collection_name=camel_collection,
+    limit=10,
+    with_payload=True,   # 默认 True，可以省略
+    with_vectors=True    # 关键参数：把向量也取出来
+)
+
 for p in camel_points:
-    print(p.payload)
-
-
-
-print("\n=== LangChain 数据样例 ===")
-langchain_points = client.scroll(collection_name=langchain_collection, limit=3)[0]
-for p in langchain_points:
-    print(p.payload)
+    print("ID:", p.id)
+    print("Payload:", p.payload)
+    if isinstance(p.vector, dict):
+        # 如果 collection 有多个向量命名空间，vector 是 dict
+        vec = list(p.vector.values())[0]
+    else:
+        vec = p.vector
+    print("Vector 维度:", len(vec))
+    print("Vector (前50维):", vec[:50], "...")
+    print("-" * 60)
 
 

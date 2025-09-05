@@ -27,19 +27,24 @@ def sse_format(data: str):
 
 @sse.route('/stream_qa', methods=['GET', 'POST'])
 def stream():
-    # 获取参数（支持GET和POST）
-    if request.method == 'GET':
-        session_id = request.args.get('session_id', str(uuid.uuid4()))
-        query = request.args.get('query', '请介绍日本陆上养殖项目')
-        agent_type = request.args.get('agent_type', 'japan')
-        agent_config = json.loads(request.args.get('config', None))
-    else:  # POST
-        data = request.get_json() or {}
-        session_id = data.get('session_id', str(uuid.uuid4()))
-        query = data.get('query', '请介绍日本陆上养殖项目')
-        agent_type = data.get('agent_type', 'japan')
-        agent_config = json.loads(data.get('config', None))
-    # 记录接收到的参数
+    try:
+        if request.method == 'GET':
+            logger.info(f"收到SSE请求{request}")
+            session_id = request.args.get('session_id', str(uuid.uuid4()))
+            query = request.args.get('query', '请介绍日本陆上养殖项目')
+            agent_type = request.args.get('agent_type', 'japan')
+            agent_config = json.loads(request.args.get('config', None))
+
+        else:  # POST
+            logger.info(f"收到SSE请求{request.get_json()}")
+            data = request.get_json() or {}
+            session_id = data.get('session_id', str(uuid.uuid4()))
+            query = data.get('query', '请介绍日本陆上养殖项目')
+            agent_type = data.get('agent_type', 'japan')
+            agent_config = json.loads(data.get('config', None))
+    except Exception as e:
+        logger.error(f"收到SSE请求失败{e}")
+        return jsonify({"error": "收到SSE请求失败"}), 400
     logger.info(f"收到SSE请求 - Session ID: {session_id}, Query: {query}, Agent Type: {agent_type}")
     def generate():
         try:
@@ -71,8 +76,8 @@ def stream():
 
         # 开始处理消息并发送数据
         try:    
-            # 准备配置参数
-            config = agent_config if agent_config is not None else None
+            config = agent_config
+        
             for i, data in enumerate(agent_function(query, config)):
                 if data:
                     message = {

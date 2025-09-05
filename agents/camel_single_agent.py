@@ -35,7 +35,7 @@ class CamelSingleAgent(BaseAgent):
             system_message=self.system_message,
             model=ModelFactory.create(
                 model_platform=ModelPlatformType.OPENAI,
-                model_type=ModelType.GPT_4O_MINI,
+                model_type=ModelType.GPT_4O,
                 api_key=self.api_key,
                 model_config_dict={"temperature": self.temperature, "max_tokens": self.max_tokens},
             )
