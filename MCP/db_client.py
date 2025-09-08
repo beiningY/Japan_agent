@@ -21,8 +21,8 @@ async def client():
     logger.info(f"查询到的工具: {tools}")
     tool_names_to_use = {
     "list_sql_tables",
-    #"get_tables_schema",
-    #"read_sql_query",
+    "get_tables_schema",
+    "read_sql_query",
     }
     allowed_tools = [t for t in tools if t.name in tool_names_to_use]
     return allowed_tools

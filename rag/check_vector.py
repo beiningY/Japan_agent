@@ -80,5 +80,3 @@ for p in camel_points:
     print("Vector 维度:", len(vec))
     print("Vector (前50维):", vec[:50], "...")
     print("-" * 60)
-
-

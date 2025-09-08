@@ -20,10 +20,10 @@ logger.setLevel(logging.INFO)
 
 agent_graph = None
 agent_memory = InMemorySaver()
-recursion_limit = 3
+
 
 def user_config(sessionId):
-    return {"configurable": {"thread_id": sessionId, "recursion_limit": recursion_limit}}
+    return {"configurable": {"thread_id": sessionId, "recursion_limit": 30}}
 
 def pre_model_hook(state: AgentState) -> dict[str, list[AnyMessage]]:
     """在调用LLM之前，对历史消息进行修剪和整理"""
@@ -43,7 +43,7 @@ async def init_agent():
     global agent_graph
     global agent_memory
     # LLM
-    llm = ChatOpenAI(model="gpt-4o", temperature=0.4)
+    llm = ChatOpenAI(model="gpt-4o")
 
     # 设置text2sql的系统消息
     """
@@ -119,5 +119,5 @@ async def main(query):
     return response
 
 if __name__ == "__main__":
-    query = "请问有哪些数据"
+    query = "ponds表的结构是什么样的"
     asyncio.run(main(query))
