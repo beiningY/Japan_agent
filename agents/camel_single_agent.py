@@ -7,7 +7,8 @@ from rag.camel_rag import CamelRAG
 from rag.lang_rag import LangRAG
 from concurrent.futures import Future
 import os
-from rag.data_with_mcp import main as db
+from agents.sql_agent import main as sql_agent
+import asyncio
 logger = logging.getLogger("CamelSingleAgent")
 logger.setLevel(logging.INFO)
 class CamelSingleAgent(BaseAgent):
@@ -67,7 +68,7 @@ class CamelSingleAgent(BaseAgent):
             f"如果记忆的上下文被截断请无视，必须根据用户问题和可参考的知识库内容给出合理的答案。"
         )
         if self.data_with_mcp:
-            db_response = db(query)
+            db_response = asyncio.run(sql_agent(query))
             rag_contexts = f"{rag_contexts}\n\n以下是查询数据库后给出的数据和答案，请参考：\n{db_response}"
         return rag_contexts
 

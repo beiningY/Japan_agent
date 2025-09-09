@@ -43,7 +43,7 @@ async def init_agent():
     global agent_graph
     global agent_memory
     # LLM
-    llm = ChatOpenAI(model="gpt-4o")
+    llm = ChatOpenAI(model="gpt-4o", temperature=0.4)
 
     # 设置text2sql的系统消息
     """
@@ -119,5 +119,5 @@ async def main(query):
     return response
 
 if __name__ == "__main__":
-    query = "ponds表的结构是什么样的"
+    query = "请问传感器可以测量哪些数据"
     asyncio.run(main(query))
