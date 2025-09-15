@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "default_policy": {
+    "unknown_tool_action": "deny"
+  },
+  "tools": {
+    "list_sql_tables": {
+      "required_permission": "db:schema",
+      "sensitivity": "LOW",
+      "allowed_roles": ["admin", "security_auditor", "dba", "developer", "readonly"],
+      "rate_limit_per_minute": 60,
+      "approval_required": false
+    },
+    "get_tables_schema": {
+      "required_permission": "db:schema",
+      "sensitivity": "LOW",
+      "allowed_roles": ["admin", "security_auditor", "dba", "developer"],
+      "rate_limit_per_minute": 60,
+      "approval_required": false
+    },
+    "read_sql_query": {
+      "required_permission": "db:read",
+      "sensitivity": "MEDIUM",
+      "allowed_roles": ["admin", "security_auditor", "dba", "developer"],
+      "rate_limit_per_minute": 30,
+      "approval_required": false,
+      "allowed_params": {
+        "query": {
+          "deny_patterns": [
+            "(?i)\\bDROP\\b",
+            "(?i)\\bTRUNCATE\\b",
+            "(?i)\\bALTER\\b",
+            ";\\s*(?i)(DROP|DELETE|UPDATE|INSERT)"
+          ]
+        }
+      }
+    },
+    "write_sql_query": {
+      "required_permission": "db:write",
+      "sensitivity": "HIGH",
+      "allowed_roles": ["admin", "dba"],
+      "rate_limit_per_minute": 10,
+      "approval_required": true
+    },
+    "security_code_review": {
+      "required_permission": "security:code_review",
+      "sensitivity": "MEDIUM",
+      "allowed_roles": ["admin", "security_auditor", "developer"],
+      "rate_limit_per_minute": 30,
+      "approval_required": false
+    },
+    "security_sql_review": {
+      "required_permission": "security:sql_review",
+      "sensitivity": "LOW",
+      "allowed_roles": ["admin", "security_auditor", "dba", "developer"],
+      "rate_limit_per_minute": 60,
+      "approval_required": false
+    },
+    "security_config_review": {
+      "required_permission": "security:config_review",
+      "sensitivity": "MEDIUM",
+      "allowed_roles": ["admin", "security_auditor"],
+      "rate_limit_per_minute": 30,
+      "approval_required": false
+    }
+  }
+}
+
