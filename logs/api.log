@@ -47,3 +47,6 @@ nohup: ignoring input
 2025-09-15 17:44:39,861 - werkzeug - ERROR - 80.82.77.202 - - [15/Sep/2025 17:44:39] code 400, message Bad request version ('À\x13À')
 2025-09-15 17:44:39,861 - werkzeug - INFO - 80.82.77.202 - - [15/Sep/2025 17:44:39] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x9e\x07j\x19¬éwpaÔh\x08\x93\x1f\x10NZ\x940\x12ô¥\x90\x05\x97DÝ\x99\x19\x08Uí \x01»,.b­µÍf\x99ïD'Íÿ×úóå\x1a\x04cÔKS±\x99#Î/ã¼\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
 2025-09-15 17:44:40,343 - werkzeug - INFO - 80.82.77.202 - - [15/Sep/2025 17:44:40] "[33mGET /aab9 HTTP/1.1[0m" 404 -
+2025-09-15 18:03:20,134 - werkzeug - ERROR - 96.126.104.20 - - [15/Sep/2025 18:03:20] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00ò\x01\x00\x00î\x03\x03\x11Ú¶')
+2025-09-15 18:03:20,134 - werkzeug - INFO - 96.126.104.20 - - [15/Sep/2025 18:03:20] "[35m[1m\x16\x03\x01\x00ò\x01\x00\x00î\x03\x03\x11Ú¶ \x15[0m" HTTPStatus.BAD_REQUEST -
+2025-09-15 18:03:20,488 - werkzeug - INFO - 96.126.104.20 - - [15/Sep/2025 18:03:20] "[33mGET /signin HTTP/1.1[0m" 404 -

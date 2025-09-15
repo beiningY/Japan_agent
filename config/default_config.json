@@ -1,0 +1,10 @@
+{
+    "temperature": 0.4,
+    "system_message": "你是一个领域专家，你的任务是根据用户的问题，给出专业的回答。",
+    "max_tokens": 4096,
+    "vector_top_k": 5,
+    "collection_name": "japan_shrimp",
+    "similarity_threshold": 0.6,
+    "embedding_model": "models/multilingual-e5-large",
+    "tokenizer_model": "models/multilingual-e5-large"
+  }
