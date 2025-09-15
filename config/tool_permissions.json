@@ -1,0 +1,63 @@
+{
+  "tool_permissions": {
+    "database_tools": {
+      "list_sql_tables": {"level":"allow", "user": ["admin", "system"]},
+      "get_tables_schema": {"level":"allow", "user": ["admin", "system"]},
+      "read_sql_query": {"level":"allow", "user": ["admin", "system"]},
+      "require_approval": true,
+      "security_level": "HIGH"
+    },
+    "file_operations": {
+      "allowed_paths": [
+        "logs/", 
+        "models/",
+        "data/"
+      ],
+      "blocked_paths": [
+        "/bin/",
+        "/sys/",
+        "config/"
+      ],
+      "allowed_extensions": [".txt", ".json", ".csv", ".py"],
+      "blocked_extensions": [".exe", ".sh", ".config", ".env", ".gitignore", ".git", ".log"],
+      "require_approval": true,
+      "security_level": "HIGH"
+    },
+    "model_operations": {
+      "allowed_models": [
+        "gpt-4o",
+        "gpt-4o-mini"
+      ],
+      "require_approval": false,
+      "security_level": "LOW"
+    },
+    "rag_operations": {
+      "allowed_collections": ["japan_shrimp", "bank"],
+      "require_approval": false,
+      "security_level": "LOW"
+    }
+  },
+  "knowledge_base_operations": {
+    "create_collection": {
+      "required_approvers": 2,
+      "approval_timeout_minutes": 30,
+      "escalation_roles": ["admin", "system"]
+    },
+    "delete_collection": {
+      "required_approvers": 1,
+      "approval_timeout_minutes": 15,
+      "escalation_roles": ["admin"]
+    },
+    "create_file": {
+      "required_approvers": 2,
+      "approval_timeout_minutes": 60,
+      "escalation_roles": ["system"]
+    },
+    "delete_file": {
+      "required_approvers": 1,
+      "approval_timeout_minutes": 15,
+      "escalation_roles": ["admin"]
+    }
+  }
+}
+
