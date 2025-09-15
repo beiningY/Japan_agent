@@ -1,0 +1,26 @@
+{
+    "agents": {
+      "DataAgent": {
+        "allowed_tools": ["list_sql_tables", "get_tables_schema", "read_sql_query"],
+        "restricted_tools": []
+      },
+      "KnowledgeAgent": {
+        "allowed_tools": ["create_collection", "delete_collection", "create_file", "delete_file"],
+        "restricted_tools": []
+      },
+      "ViewerAgent": {
+        "allowed_tools": ["list_sql_tables", "get_tables_schema"],
+        "restricted_tools": ["read_sql_query", "delete_collection", "delete_file"]
+      }
+    },
+    "tools_info": {
+      "list_sql_tables": {"risk_level": "LOW"},
+      "get_tables_schema": {"risk_level": "LOW"},
+      "read_sql_query": {"risk_level": "HIGH"},
+      "create_collection": {"risk_level": "LOW"},
+      "delete_collection": {"risk_level": "HIGH"},
+      "create_file": {"risk_level": "MEDIUM"},
+      "delete_file": {"risk_level": "HIGH"}
+    }
+  }
+  
