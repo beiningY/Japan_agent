@@ -1,52 +1,29 @@
 nohup: ignoring input
-2025-09-15 10:14:44,040 - API_Server - INFO - 主进程启动，初始化Embedding模型...
-2025-09-15 10:14:44,040 - API_Server - INFO - 开始初始化全局Embedding模型管理器...
-2025-09-15 10:14:44,040 - EmbeddingModelManager - INFO - 开始初始化全局Embedding模型管理器...
-2025-09-15 10:14:44,119 - EmbeddingModelManager - INFO - 已清理GPU显存缓存
-2025-09-15 10:14:44,119 - EmbeddingModelManager - INFO - 加载 Embedding 模型: models/multilingual-e5-large
-2025-09-15 10:14:44,119 - EmbeddingModelManager - INFO - 检测到GPU，尝试使用GPU运行embedding模型
-2025-09-15 10:14:44,768 - datasets - INFO - PyTorch version 1.12.1+cu113 available.
-2025-09-15 10:14:44,769 - datasets - INFO - Duckdb version 1.3.1 available.
-2025-09-15 10:14:44,947 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: models/multilingual-e5-large
-2025-09-15 10:14:47,772 - EmbeddingModelManager - INFO - Embedding 模型加载成功，运行设备: cuda
-2025-09-15 10:14:47,772 - EmbeddingModelManager - INFO - 初始化向量数据库连接: data/vector_data
-2025-09-15 10:14:48,977 - EmbeddingModelManager - INFO - 向量数据库连接初始化成功
-2025-09-15 10:14:48,977 - EmbeddingModelManager - INFO - 全局Embedding模型管理器初始化完成！
-2025-09-15 10:14:48,977 - API_Server - INFO - 全局Embedding模型管理器初始化完成！
-2025-09-15 10:14:48,977 - API_Server - INFO - 启动RAG队列服务（单线程，FIFO）...
-2025-09-15 10:14:48,978 - queue_server - INFO - 正在启动 RAG 服务，将创建 1 个工作线程...
-2025-09-15 10:14:48,978 - queue_server - INFO - 初始化 RAG-Worker-1
-2025-09-15 10:14:48,978 - queue_server - INFO - RAG-Worker-1 启动。
-2025-09-15 10:14:48,978 - queue_server - INFO - RAG 服务启动完毕。
-2025-09-15 10:14:48,978 - API_Server - INFO - RAG队列服务启动完成
-2025-09-15 10:14:48,978 - API_Server - INFO - 启动Flask服务...
+2025-09-17 14:41:24,282 - API_Server - INFO - 主进程启动，初始化Embedding模型...
+2025-09-17 14:41:24,283 - API_Server - INFO - 开始初始化全局Embedding模型管理器...
+2025-09-17 14:41:24,283 - EmbeddingModelManager - INFO - 开始初始化全局Embedding模型管理器...
+2025-09-17 14:41:24,357 - EmbeddingModelManager - INFO - 已清理GPU显存缓存
+2025-09-17 14:41:24,357 - EmbeddingModelManager - INFO - 加载 Embedding 模型: models/multilingual-e5-large
+2025-09-17 14:41:24,357 - EmbeddingModelManager - INFO - 检测到GPU，尝试使用GPU运行embedding模型
+2025-09-17 14:41:25,018 - datasets - INFO - PyTorch version 1.12.1+cu113 available.
+2025-09-17 14:41:25,018 - datasets - INFO - Duckdb version 1.3.1 available.
+2025-09-17 14:41:25,197 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: models/multilingual-e5-large
+2025-09-17 14:41:28,001 - EmbeddingModelManager - INFO - Embedding 模型加载成功，运行设备: cuda
+2025-09-17 14:41:28,001 - EmbeddingModelManager - INFO - 初始化向量数据库连接: data/vector_data
+2025-09-17 14:41:29,214 - EmbeddingModelManager - INFO - 向量数据库连接初始化成功
+2025-09-17 14:41:29,214 - EmbeddingModelManager - INFO - 全局Embedding模型管理器初始化完成！
+2025-09-17 14:41:29,214 - API_Server - INFO - 全局Embedding模型管理器初始化完成！
+2025-09-17 14:41:29,214 - API_Server - INFO - 启动RAG队列服务（单线程，FIFO）...
+2025-09-17 14:41:29,214 - queue_server - INFO - 正在启动 RAG 服务，将创建 1 个工作线程...
+2025-09-17 14:41:29,214 - queue_server - INFO - 初始化 RAG-Worker-1
+2025-09-17 14:41:29,214 - queue_server - INFO - RAG-Worker-1 启动。
+2025-09-17 14:41:29,214 - queue_server - INFO - RAG 服务启动完毕。
+2025-09-17 14:41:29,214 - API_Server - INFO - RAG队列服务启动完成
+2025-09-17 14:41:29,214 - API_Server - INFO - 启动Flask服务...
  * Serving Flask app 'main'
  * Debug mode: on
-2025-09-15 10:14:48,987 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+2025-09-17 14:41:29,219 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:5001
  * Running on http://172.16.171.111:5001
-2025-09-15 10:14:48,987 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
-2025-09-15 11:31:46,925 - werkzeug - ERROR - 198.235.24.220 - - [15/Sep/2025 11:31:46] code 400, message Bad request version ('íô\x15®\x93ýf°*B\x0ffG¯2¥W&g6Ù+@')
-2025-09-15 11:31:46,925 - werkzeug - INFO - 198.235.24.220 - - [15/Sep/2025 11:31:46] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03ÎÀMs\x1dÊ\x04ÃK\x8f\x8f\x023û\x08\x92rð¼Çïã@f\x04ÆôÔ7Ðû\x15 \x9a\x98\x1cíô\x15®\x93ýf°*B\x0ffG¯2¥W&g6Ù+@[0m" HTTPStatus.BAD_REQUEST -
-2025-09-15 11:31:47,355 - werkzeug - ERROR - 198.235.24.220 - - [15/Sep/2025 11:31:47] code 400, message Bad HTTP/0.9 request type ("\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03\x99l(bÅm*dÊ³'\x8b\x0eÁC\x93/\x18.¢,LÙ/\x80\x90^©¯¸$\x91\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À")
-2025-09-15 11:31:47,355 - werkzeug - INFO - 198.235.24.220 - - [15/Sep/2025 11:31:47] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03\x99l(bÅm*dÊ³'\x8b\x0eÁC\x93/\x18.¢,LÙ/\x80\x90^©¯¸$\x91\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
-2025-09-15 13:09:20,506 - werkzeug - INFO - 147.185.132.183 - - [15/Sep/2025 13:09:20] "[33mGET / HTTP/1.1[0m" 404 -
-2025-09-15 13:33:44,699 - werkzeug - INFO - 45.33.109.8 - - [15/Sep/2025 13:33:44] "[33mGET / HTTP/1.1[0m" 404 -
-2025-09-15 13:33:53,870 - werkzeug - INFO - 172.236.127.133 - - [15/Sep/2025 13:33:53] "[33mGET / HTTP/1.1[0m" 404 -
-2025-09-15 14:00:45,787 - werkzeug - ERROR - 96.126.104.20 - - [15/Sep/2025 14:00:45] code 400, message Bad request version ('À\x13À')
-2025-09-15 14:00:45,787 - werkzeug - INFO - 96.126.104.20 - - [15/Sep/2025 14:00:45] "[35m[1m\x16\x03\x01\x00ò\x01\x00\x00î\x03\x03ðô.\x19zº\x1eC\\ÈvÖ\x86gI-ÐrS¡Ò7\x7f°íA`Í&w­« pÊ\x99yÝÇ^«/ýÝ>R;|T\x12¬£`t\x01\x7f6þuåMé%\x97\x04\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
-2025-09-15 14:00:46,116 - werkzeug - INFO - 96.126.104.20 - - [15/Sep/2025 14:00:46] "[33mGET /signin HTTP/1.1[0m" 404 -
-2025-09-15 15:21:35,008 - werkzeug - ERROR - 65.49.20.66 - - [15/Sep/2025 15:21:35] code 400, message Bad request version ('À\x14À')
-2025-09-15 15:21:35,008 - werkzeug - INFO - 65.49.20.66 - - [15/Sep/2025 15:21:35] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03¬l\x8e\x0b5\x8a\x0c\x9aå\x12VY"¸¿È\x16ñ\x14ßHË§b\x90\x8aë#X«<¢\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
-2025-09-15 17:00:13,886 - werkzeug - INFO - 205.210.31.25 - - [15/Sep/2025 17:00:13] "[33mGET / HTTP/1.1[0m" 404 -
-2025-09-15 17:44:03,478 - werkzeug - INFO - 80.82.70.118 - - [15/Sep/2025 17:44:03] "[33mGET / HTTP/1.0[0m" 404 -
-2025-09-15 17:44:38,889 - werkzeug - ERROR - 80.82.77.202 - - [15/Sep/2025 17:44:38] code 400, message Bad request version ('À\x13À')
-2025-09-15 17:44:38,889 - werkzeug - INFO - 80.82.77.202 - - [15/Sep/2025 17:44:38] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03Aø7\x19õÏ§ÒL½Û\x83(åq¼6\x8e$U(\x94\x8c&nØ°¥\x995NÇ \x11\x8fª\x9fÚL./Ès\x85Ç"¶Ùm¿mµ,\x16ákÁÊ\x8fSÀ\x13}\x19º\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
-2025-09-15 17:44:39,370 - werkzeug - INFO - 80.82.77.202 - - [15/Sep/2025 17:44:39] "[33mGET /aaa9 HTTP/1.1[0m" 404 -
-2025-09-15 17:44:39,861 - werkzeug - ERROR - 80.82.77.202 - - [15/Sep/2025 17:44:39] code 400, message Bad request version ('À\x13À')
-2025-09-15 17:44:39,861 - werkzeug - INFO - 80.82.77.202 - - [15/Sep/2025 17:44:39] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x9e\x07j\x19¬éwpaÔh\x08\x93\x1f\x10NZ\x940\x12ô¥\x90\x05\x97DÝ\x99\x19\x08Uí \x01»,.b­µÍf\x99ïD'Íÿ×úóå\x1a\x04cÔKS±\x99#Î/ã¼\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
-2025-09-15 17:44:40,343 - werkzeug - INFO - 80.82.77.202 - - [15/Sep/2025 17:44:40] "[33mGET /aab9 HTTP/1.1[0m" 404 -
-2025-09-15 18:03:20,134 - werkzeug - ERROR - 96.126.104.20 - - [15/Sep/2025 18:03:20] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00ò\x01\x00\x00î\x03\x03\x11Ú¶')
-2025-09-15 18:03:20,134 - werkzeug - INFO - 96.126.104.20 - - [15/Sep/2025 18:03:20] "[35m[1m\x16\x03\x01\x00ò\x01\x00\x00î\x03\x03\x11Ú¶ \x15[0m" HTTPStatus.BAD_REQUEST -
-2025-09-15 18:03:20,488 - werkzeug - INFO - 96.126.104.20 - - [15/Sep/2025 18:03:20] "[33mGET /signin HTTP/1.1[0m" 404 -
+2025-09-17 14:41:29,219 - werkzeug - INFO - [33mPress CTRL+C to quit[0m

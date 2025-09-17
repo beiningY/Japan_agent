@@ -1,4 +1,5 @@
-from agents import CamelSingleAgent, CamelRoleplayAgent, JudgeAgent, SummarizeAgent
+from agents import SingleAgent, CamelRoleplayAgent, JudgeAgent, SummarizeAgent
+
 import logging
 
 logger = logging.getLogger("MultiAgent")
@@ -9,7 +10,7 @@ class MultiAgent:
         try:
             # 创建单智能体
             logger.info(f"单智能体启动，处理查询: {query}")
-            single_agent = CamelSingleAgent()
+            single_agent = SingleAgent()
             result = single_agent.run(query)
             logger.info("单智能体处理完成")
             return result

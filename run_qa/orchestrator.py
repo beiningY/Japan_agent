@@ -2,7 +2,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Dict, Generator, Optional
 from pydantic import BaseModel, Field
-from agents import CamelSingleAgent, CamelRoleplayAgent, JudgeAgent, SummarizeAgent
+from agents import SingleAgent, CamelRoleplayAgent, JudgeAgent, SummarizeAgent
 
 logger = logging.getLogger("Orchestrator")
 
@@ -55,7 +55,7 @@ def _run_single(query: str, cfg: OrchestrationConfig) -> Generator[Dict[str, Any
     """
     生成调用RAG的单轮对话的流式输出
     """
-    agent = CamelSingleAgent(
+    agent = SingleAgent(
         temperature=cfg.single.temperature,
         system_message=cfg.single.system_prompt,
         collection_name=cfg.rag.collection_name,

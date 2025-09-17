@@ -1,0 +1,68 @@
+[
+  {
+    "name": "list_sql_tables",
+    "handler": "db_tools.list_sql_tables",
+    "description": "列出数据库中的所有表",
+    "risk_level": "LOW",
+    "enabled": true
+  },
+  {
+    "name": "get_tables_schema",
+    "handler": "db_tools.get_tables_schema",
+    "description": "获取数据库中表的结构",
+    "risk_level": "LOW",
+    "enabled": true
+  },
+  {
+    "name": "read_sql_query",
+    "handler": "db_tools.read_sql_query",
+    "description": "执行只读的SQL查询来从数据库获取信息",
+    "risk_level": "HIGH",
+    "enabled": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "sql_query": {
+          "type": "string",
+          "description": "要执行的SQL查询语句, e.g., 'SELECT * FROM users LIMIT 10'"
+        }
+      },
+      "required": ["sql_query"]
+    }
+  },
+  {
+    "name": "create_kb",
+    "handler": "kb_tools.create",
+    "description": "创建知识库",
+    "risk_level": "LOW",
+    "enabled": true
+  },
+  {
+    "name": "delete_kb",
+    "handler": "kb_tools.delete",
+    "description": "删除知识库",
+    "risk_level": "HIGH",
+    "enabled": true
+  },
+  {
+    "name": "ask_kb",
+    "handler": "kb_tools.ask",
+    "description": "问答知识库",
+    "risk_level": "LOW",
+    "enabled": true
+  },
+  {
+    "name": "add_file_kb",
+    "handler": "kb_tools.add_file",
+    "description": "添加文件到知识库",
+    "risk_level": "MEDIUM",
+    "enabled": true
+  },
+  {
+    "name": "delete_file_kb",
+    "handler": "kb_tools.deletefile",
+    "description": "删除文件从知识库",
+    "risk_level": "HIGH",
+    "enabled": true
+  }
+]

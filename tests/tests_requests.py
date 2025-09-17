@@ -165,16 +165,11 @@ def test_stream_qa():
             'topk_single': 5,
             'topk_multi': 5
             },
-            'mode': 'auto',
-            'roleplay': {
+            'mode': 'single',
+            'single': {
             'temperature': 0.4,
             'system_prompt': '你是一个领域专家，你的任务是根据用户的问题，结合增强检索后的相关知识，给出专业的回答。',
-            'user_role_name': 'user',
-            'assistant_role_name': 'assistant',
-            'round_limit': 5,
             'max_tokens': 10000,
-            'with_task_specify': False,
-            'with_task_planner': False
             }
         }
     params = {

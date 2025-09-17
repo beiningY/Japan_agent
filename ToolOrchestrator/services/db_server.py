@@ -1,24 +1,24 @@
 import sys
 import os
-import logging
 # 添加项目根目录到 Python 路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import asyncio
 from typing import List
 from mcp.server import FastMCP
-from dataprocess.db_tools import list_sql_tables as _list_sql_tables, get_tables_schema as _get_tables_schema, read_sql_query as _read_sql_query
+from ToolOrchestrator.tools.db_tools import list_sql_tables as _list_sql_tables, get_tables_schema as _get_tables_schema, read_sql_query as _read_sql_query
+import logging
 logger = logging.getLogger("db_server")
 logger.setLevel(logging.INFO)
-# 向中枢或其他智能体提供知识库接口管理增删改查功
+# 向其他智能体提供数据库操作工具
 # 初始化 MCP Server
+
 server = FastMCP(
     name="db-mcp-server",
     instructions="""
     This server provides database management tools.
     """
     )
-
-
+#注册工具
 @server.tool(
     name="list_sql_tables",
     description="列出数据库中的所有表"

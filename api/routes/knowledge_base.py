@@ -8,7 +8,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("api_knowledgebase")
 logger.setLevel(logging.INFO)
-from run_qa import create, delete, add_file, deletefile
+from ToolOrchestrator.tools.kb_tools import create, delete, add_file, deletefile
 
 knowledgebase = Blueprint("knowledge_base", __name__, url_prefix="/knowledge_base")
 
