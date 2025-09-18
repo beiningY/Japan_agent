@@ -1,0 +1,95 @@
+{
+  "agents": {
+    "SingleAgent": {
+      "description": "融合RAG模块直接调用OpenAI的单次响应",
+      "allowed_tools": ["rag"],
+      "restricted_tools": [],
+      "clearance_level": "LOW"
+    },
+    "CamelSingleAgent": {
+      "description": "融合RAG模块在Camel框架下调用的单次响应",
+      "allowed_tools": ["rag"],
+      "restricted_tools": [],
+      "clearance_level": "LOW"
+    },
+    "CamelRoleplayAgent": {
+      "description": "CAMEL角色扮演Agent，具备高级权限",
+      "allowed_tools": ["list_sql_tables", "get_tables_schema", "read_sql_query", "ask_kb", "create_kb", "add_file_kb"],
+      "restricted_tools": [],
+      "clearance_level": "HIGH"
+    },
+    "MultiAgent": {
+      "description": "多Agent系统，具备完整权限",
+      "allowed_tools": ["list_sql_tables", "get_tables_schema", "read_sql_query", "ask_kb", "create_kb", "add_file_kb", "delete_kb", "delete_file_kb"],
+      "restricted_tools": [],
+      "clearance_level": "HIGH"
+    },
+    "SummarizeAgent": {
+      "description": "总结Agent，只具备查询权限",
+      "allowed_tools": ["ask_kb", "list_sql_tables", "get_tables_schema"],
+      "restricted_tools": [],
+      "clearance_level": "LOW"
+    },
+    "JudgeAgent": {
+      "description": "判断Agent，具备查询和分析权限",
+      "allowed_tools": ["ask_kb", "list_sql_tables", "get_tables_schema", "read_sql_query"],
+      "restricted_tools": [],
+      "clearance_level": "MEDIUM"
+    },
+    "SecurityReviewAgent": {
+      "description": "安全审查Agent，具备完整权限用于审查",
+      "allowed_tools": [],
+      "restricted_tools": [],
+      "clearance_level": "HIGH"
+    }
+  },
+  "tools_info": {
+    "list_sql_tables": {
+      "risk_level": "LOW",
+      "description": "列出数据库中的所有表",
+      "requires_review": false
+    },
+    "get_tables_schema": {
+      "risk_level": "LOW", 
+      "description": "获取数据库中表的结构",
+      "requires_review": false
+    },
+    "read_sql_query": {
+      "risk_level": "HIGH",
+      "description": "执行只读的SQL查询来从数据库获取信息",
+      "requires_review": true
+    },
+    "create_kb": {
+      "risk_level": "LOW",
+      "description": "创建知识库",
+      "requires_review": false
+    },
+    "delete_kb": {
+      "risk_level": "HIGH",
+      "description": "删除知识库",
+      "requires_review": true
+    },
+    "ask_kb": {
+      "risk_level": "LOW",
+      "description": "问答知识库",
+      "requires_review": false
+    },
+    "add_file_kb": {
+      "risk_level": "MEDIUM",
+      "description": "添加文件到知识库",
+      "requires_review": false
+    },
+    "delete_file_kb": {
+      "risk_level": "HIGH",
+      "description": "删除文件从知识库",
+      "requires_review": true
+    }
+  },
+  "security_settings": {
+    "default_agent_clearance": "LOW",
+    "require_gpt_review_for_high_risk": true,
+    "log_all_security_checks": true,
+    "enable_audit_trail": true,
+    "max_retries_on_review": 3
+  }
+}
