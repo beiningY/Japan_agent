@@ -4,8 +4,11 @@ from api.routes.qa_sse import sse
 import logging
 import threading
 import os
+import asyncio
 from models.model_manager import model_manager
+from models.collection_manager import collection_manager
 from queue_rag.queue_server import start_rag_service, is_running
+from utils.global_tool_manager import async_initialize_global_tools
 
 app = Flask(__name__)
 logging.basicConfig(
@@ -19,53 +22,10 @@ logger.setLevel(logging.INFO)
 app.register_blueprint(knowledgebase)
 app.register_blueprint(sse)
 
-KB_CONFIG = {
-    "cede3e0b-6447-4418-9c80-97129710beb5": {
-        "name": "银行相关",
-        "path": "data/raw_data/bank"
-    },
-    "25241d69-33fd-465d-8fd1-18d34865248c": {
-        "name": "陆上养殖",
-        "path": "data/raw_data/japan_shrimp"
-    }
-}
-@app.route("/api/get_knowledge_base_list", methods=["GET"])
-def get_kb_list():
-    # 从查询参数获取 kb_ids（格式：?kb_ids=id1,id2,id3）
-    kb_ids_str = request.args.get("kb_ids", "")
-    if not kb_ids_str:
-        return jsonify({"error": "缺少 kb_ids 参数"}), 400
-    
-    kb_ids = kb_ids_str.split(",")
-    result = []
-    
-    for kb_id in kb_ids:
-        if kb_id not in KB_CONFIG:
-            return jsonify({"error": f"无效的 kb_id: {kb_id}"}), 404
-            logger.info("运行失败")
-        kb_path = KB_CONFIG[kb_id]["path"]
-        if not os.path.isdir(kb_path):
-            return jsonify({"error": f"知识库路径不存在: {kb_path}"}), 404
-            logger.info("运行失败")
-        try:
-            files = [
-                f for f in os.listdir(kb_path) 
-                if not f.startswith('.') and not f.startswith('__')
-            ]
-            
-            result.append({
-                "kb_id": kb_id,
-                "kb_name": KB_CONFIG[kb_id]["name"],
-                "files": files
-            })
-        except Exception as e:
-            return jsonify({"error": f"读取文件列表失败: {str(e)}"}), 500
-            logger.info("运行失败")
-    logger.info("返回列表")
-    return jsonify({"status": "success", "data": result})
 
 def initialize_models():
-    """初始化全局Embedding模型管理器"""
+    """初始化全局Embedding模型管理器和集合管理器"""
+    # 初始化Embedding模型
     try:
         logger.info("开始初始化全局Embedding模型管理器...")
         model_manager.initialize_models(
@@ -79,7 +39,41 @@ def initialize_models():
         # 可以选择继续运行（降级到传统模式）或退出
         logger.warning("将使用传统模式（每次调用时加载embedding模型）")
 
-    # 启动队列服务（单线程，保证GPU串行）
+    # 初始化全局集合管理器
+    try:
+        logger.info("开始初始化全局集合管理器...")
+        collection_manager.initialize_collections(
+            persist_path="data/vector_data",
+            vector_size=1024,
+            preload_collections=["japan_shrimp", "bank", "all_data", "knowledge_base"]
+        )
+        logger.info("全局集合管理器初始化完成！")
+    except Exception as e:
+        logger.error(f"集合管理器初始化失败: {e}")
+        logger.warning("将使用传统模式（每次调用时创建集合连接）")
+
+    # 初始化全局MCP工具注册器
+    try:
+        logger.info("开始初始化全局MCP工具注册器...")
+        
+        # 在当前线程中创建新的事件循环来运行异步初始化
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        try:
+            success = loop.run_until_complete(async_initialize_global_tools())
+            if success:
+                logger.info("全局MCP工具注册器初始化完成！")
+            else:
+                logger.error("全局MCP工具注册器初始化失败")
+        finally:
+            loop.close()
+            
+    except Exception as e:
+        logger.error(f"MCP工具注册器初始化失败: {e}")
+        logger.warning("将继续运行，但MCP工具功能可能不可用")
+
+    # 启动队列服务
     try:
         if not is_running():
             logger.info("启动RAG队列服务（单线程，FIFO）...")

@@ -183,13 +183,36 @@ def test_stream_qa():
     
     print(f"连接URL: {url}")
     
-    # 发起请求
-    response = requests.get(url, stream=True)
-    client = sseclient.SSEClient(response)
+    try:
+        # 发起请求，禁用自动重连
+        client = sseclient.SSEClient(url, retry=0)
 
-    print("已连接到 SSE 流，等待消息...")
-    for event in client.events():
-        print(f"收到消息: {event.data}")
+        print("已连接到 SSE 流，等待消息...")
+        message_count = 0
+        for event in client:
+            message_count += 1
+            print(f"收到消息 {message_count}: {event.data}")
+            
+            # 解析消息检查是否完成
+            try:
+                data = json.loads(event.data)
+                if data.get("data", {}).get("status") == "completed":
+                    print("收到完成消息，主动断开连接")
+                    break
+                if "error" in data:
+                    print("收到错误消息，断开连接")
+                    break
+            except json.JSONDecodeError:
+                pass
+        
+                
+    except requests.exceptions.ConnectionError as e:
+        print(f"连接失败: {e}")
+        print("请确保服务器正在运行在 localhost:5001")
+    except Exception as e:
+        print(f"SSE连接出错: {e}")
+    finally:
+        print("SSE连接已结束")
 if __name__ == "__main__":
     #test_upload_files()
     #test_get_operation_logs()

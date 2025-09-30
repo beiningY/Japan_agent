@@ -1,0 +1,194 @@
+{
+  "agents": {
+    "data-agent": {
+      "description": "数据获取与分析Agent，通过MCP调用KB/DB工具",
+      "allowed_tools": [
+        "list_sql_tables",
+        "get_tables_schema",
+        "read_sql_query",
+        "create_collection",
+        "delete_collection",
+        "create_file",
+        "delete_file",
+        "ask",
+        "retrieve"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "MEDIUM"
+    },
+    "SingleAgent": {
+      "description": "融合RAG模块直接调用OpenAI的单次响应",
+      "allowed_tools": [
+        "rag"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "LOW"
+    },
+    "CamelSingleAgent": {
+      "description": "融合RAG模块在Camel框架下调用的单次响应",
+      "allowed_tools": [
+        "rag"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "LOW"
+    },
+    "CamelRoleplayAgent": {
+      "description": "CAMEL角色扮演Agent，具备高级权限",
+      "allowed_tools": [
+        "list_sql_tables",
+        "get_tables_schema",
+        "read_sql_query",
+        "ask_kb",
+        "create_kb",
+        "add_file_kb"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "HIGH"
+    },
+    "MultiAgent": {
+      "description": "多Agent系统，具备完整权限",
+      "allowed_tools": [
+        "list_sql_tables",
+        "get_tables_schema",
+        "read_sql_query",
+        "ask_kb",
+        "create_kb",
+        "add_file_kb",
+        "delete_kb",
+        "delete_file_kb"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "HIGH"
+    },
+    "SummarizeAgent": {
+      "description": "总结Agent，只具备查询权限",
+      "allowed_tools": [
+        "ask_kb",
+        "list_sql_tables",
+        "get_tables_schema"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "LOW"
+    },
+    "JudgeAgent": {
+      "description": "判断Agent，具备查询和分析权限",
+      "allowed_tools": [
+        "ask_kb",
+        "list_sql_tables",
+        "get_tables_schema",
+        "read_sql_query"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "MEDIUM"
+    },
+    "SecurityReviewAgent": {
+      "description": "安全审查Agent，具备完整权限用于审查",
+      "allowed_tools": [],
+      "restricted_tools": [],
+      "clearance_level": "HIGH"
+    },
+    "external_app": {
+      "description": "外部应用，通过HTTP接口直接调用工具",
+      "allowed_tools": [
+        "list_sql_tables",
+        "get_tables_schema",
+        "read_sql_query",
+        "ask",
+        "retrieve",
+        "create_collection",
+        "create_file",
+        "weather_service_get_current_weather"
+      ],
+      "restricted_tools": [
+        "delete_collection",
+        "delete_file"
+      ],
+      "clearance_level": "MEDIUM"
+    },
+    "test_agent": {
+      "description": "外部external Agent - Test Agent",
+      "allowed_tools": [
+        "ask",
+        "retrieve",
+        "list_sql_tables",
+        "get_tables_schema"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "MEDIUM",
+      "agent_type": "external"
+    },
+    "demo_agent": {
+      "description": "外部external Agent - Demo Agent",
+      "allowed_tools": [
+        "ask",
+        "retrieve",
+        "list_sql_tables",
+        "get_tables_schema"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "MEDIUM",
+      "agent_type": "external"
+    },
+    "demo_chatgpt": {
+      "description": "外部chatgpt Agent - Demo ChatGPT Agent",
+      "allowed_tools": [
+        "ask",
+        "retrieve",
+        "list_sql_tables",
+        "get_tables_schema"
+      ],
+      "restricted_tools": [],
+      "clearance_level": "MEDIUM",
+      "agent_type": "external"
+    }
+  },
+  "tools_info": {
+    "list_sql_tables": {
+      "description": "列出数据库中的所有表",
+      "requires_review": false
+    },
+    "get_tables_schema": {
+      "description": "获取数据库中表的结构",
+      "requires_review": false
+    },
+    "read_sql_query": {
+      "description": "执行只读的SQL查询来从数据库获取信息",
+      "requires_review": true
+    },
+    "create_kb": {
+      "description": "创建知识库",
+      "requires_review": false
+    },
+    "delete_kb": {
+      "description": "删除知识库",
+      "requires_review": true
+    },
+    "ask_kb": {
+      "description": "问答知识库",
+      "requires_review": false
+    },
+    "add_file_kb": {
+      "description": "添加文件到知识库",
+      "requires_review": false
+    },
+    "delete_file_kb": {
+      "description": "删除文件从知识库",
+      "requires_review": true
+    }
+  },
+  "security_settings": {
+    "default_agent_clearance": "LOW",
+    "require_gpt_review_for_high_risk": true,
+    "log_all_security_checks": true,
+    "enable_audit_trail": true,
+    "max_retries_on_review": 3,
+    "external_mcp_settings": {
+      "enable_external_mcp_tools": true,
+      "default_external_risk_level": "MEDIUM",
+      "require_manual_approval": true,
+      "enhanced_security_for_external": true,
+      "log_external_mcp_calls": true,
+      "external_tool_timeout": 30
+    }
+  }
+}

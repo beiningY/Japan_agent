@@ -11,7 +11,22 @@
     "handler": "db_tools.get_tables_schema",
     "description": "获取数据库中表的结构",
     "risk_level": "LOW",
-    "enabled": true
+    "enabled": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "table_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "需要查询结构的表名列表"
+        }
+      },
+      "required": [
+        "table_names"
+      ]
+    }
   },
   {
     "name": "read_sql_query",
@@ -22,47 +37,137 @@
     "parameters": {
       "type": "object",
       "properties": {
-        "sql_query": {
-          "type": "string",
-          "description": "要执行的SQL查询语句, e.g., 'SELECT * FROM users LIMIT 10'"
+        "table_queries": {
+          "type": "array",
+          "description": "要执行的SQL查询列表，每项为包含 query 字段的对象",
+          "items": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
         }
       },
-      "required": ["sql_query"]
+      "required": [
+        "table_queries"
+      ]
     }
   },
   {
-    "name": "create_kb",
+    "name": "create_collection",
     "handler": "kb_tools.create",
     "description": "创建知识库",
     "risk_level": "LOW",
-    "enabled": true
+    "enabled": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "collection_name": {
+          "type": "string",
+          "description": "知识库名称"
+        }
+      },
+      "required": [
+        "collection_name"
+      ]
+    }
   },
   {
-    "name": "delete_kb",
+    "name": "delete_collection",
     "handler": "kb_tools.delete",
     "description": "删除知识库",
     "risk_level": "HIGH",
-    "enabled": true
+    "enabled": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "collection_name": {
+          "type": "string",
+          "description": "知识库名称"
+        }
+      },
+      "required": [
+        "collection_name"
+      ]
+    }
   },
   {
-    "name": "ask_kb",
-    "handler": "kb_tools.ask",
-    "description": "问答知识库",
+    "name": "retrieve",
+    "handler": "kb_tools.retrieve",
+    "description": "直接检索 top-k 语义片段,返回结构化 chunks",
     "risk_level": "LOW",
-    "enabled": true
+    "enabled": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "collection_name": {
+          "type": "string",
+          "enum": ["japan_shrimp", "bank"],
+          "description": "已有知识库的名称"
+        },
+        "question": {
+          "type": "string",
+          "description": "根据用户提出的问题所进行rag检索的query"
+        },
+        "k": {
+          "type": "integer",
+          "default": 5,
+          "description": "检索的片段数量"
+        }
+      },
+      "required": [
+        "collection_name",
+        "question"
+      ]
+    }
   },
   {
-    "name": "add_file_kb",
+    "name": "create_file",
     "handler": "kb_tools.add_file",
     "description": "添加文件到知识库",
     "risk_level": "MEDIUM",
-    "enabled": true
+    "enabled": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "collection_name": {
+          "type": "string"
+        },
+        "file_path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_name",
+        "file_path"
+      ]
+    }
   },
   {
-    "name": "delete_file_kb",
+    "name": "delete_file",
     "handler": "kb_tools.deletefile",
     "description": "删除文件从知识库",
     "risk_level": "HIGH",
-    "enabled": true
+    "enabled": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "collection_name": {
+          "type": "string"
+        },
+        "file_path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_name",
+        "file_path"
+      ]
+    }
   }
 ]

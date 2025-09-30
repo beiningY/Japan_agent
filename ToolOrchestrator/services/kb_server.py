@@ -4,7 +4,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from mcp.server import FastMCP
 import asyncio
-from ToolOrchestrator.tools.kb_tools import create, delete, ask, add_file, deletefile
+from ToolOrchestrator.tools.kb_tools import create, delete, ask, add_file, deletefile, retrieve
 import logging
 logger = logging.getLogger("kb_server")
 logger.setLevel(logging.INFO)
@@ -25,33 +25,34 @@ server = FastMCP(
     name="create_collection",
     description="创建一个新的类型的知识库")
 async def create_collection(collection_name: str):
-    return await create(collection_name)
+    return create(collection_name)
 
 @server.tool(
     name="delete_collection",
     description="删除指定的知识库集合")
 async def delete_collection(collection_name: str):
-    return await delete(collection_name)
+    return delete(collection_name)
 
 
 @server.tool(
     name="create_file",
     description="向量化一个文件")
 async def create_file(collection_name: str, file_path: str):
-    return await add_file(collection_name, file_path)
+    return add_file(collection_name, file_path)
 
 @server.tool(
     name="delete_file",
     description="删除一个已向量化的文件")
 async def delete_file(collection_name: str, file_path: str):
-    return await deletefile(collection_name, file_path)
+    return deletefile(collection_name, file_path)
 
 
 @server.tool(
-    name="ask",
-    description="向知识库提问")
-async def ask(collection_name: str, question: str):
-    return await ask(question = question, collection_name = collection_name)
+    name="retrieve",
+    description="从指定知识库检索 top-k 语义相关片段（不经 LLM）"
+)
+async def retrieve_chunks(collection_name: str, question: str, k: int = 5):
+    return retrieve(collection_name=collection_name, question=question, k=k)
  
 if __name__ == "__main__":
     if asyncio.iscoroutine(server.run()):  

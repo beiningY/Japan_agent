@@ -20,6 +20,7 @@ from openai import OpenAI
 import json
 import dotenv
 from models.model_manager import model_manager
+from models.collection_manager import collection_manager
 from queue_rag.queue_server import run_in_queue, run_in_queue_async
 from concurrent.futures import Future
 from typing import Tuple
@@ -57,15 +58,47 @@ class LangRAG:
         self._initialize()
 
     def _initialize(self):
-        """使用全局模型管理器初始化模型和向量客户端"""
-        logger.info("使用全局模型管理器获取预加载的模型...")
+        """使用全局集合管理器初始化"""
+        logger.info("使用全局集合管理器初始化...")
         
-        # 详细检查全局模型管理器状态
-        logger.info(f"模型管理器状态检查: {id(model_manager)}")
-        is_init = model_manager.is_initialized()
-        logger.info(f"全局模型管理器初始化状态: {is_init}")
+        # 检查全局集合管理器状态
+        logger.info(f"集合管理器状态检查: {id(collection_manager)}")
+        is_init = collection_manager.is_initialized()
+        logger.info(f"全局集合管理器初始化状态: {is_init}")
         
         if not is_init:
+            logger.warning("全局集合管理器未初始化，尝试初始化")
+            try:
+                collection_manager.initialize_collections(
+                    persist_path=self.persist_path,
+                    vector_size=self.vector_size,
+                    preload_collections=[self.collection_name]
+                )
+                logger.info("全局集合管理器初始化成功")
+            except Exception as e:
+                logger.error(f"全局集合管理器初始化失败: {e}")
+                logger.warning("降级到传统方式")
+                self._fallback_initialization()
+                return
+        
+        # 使用全局集合管理器获取向量存储
+        try:
+            self.vectorstore = collection_manager.get_vectorstore(self.collection_name)
+            logger.info(f"从全局集合管理器获取向量存储成功: {self.collection_name}")
+        except Exception as e:
+            logger.error(f"从全局集合管理器获取向量存储失败: {e}")
+            logger.warning("降级到传统方式")
+            self._fallback_initialization()
+    
+    def _fallback_initialization(self):
+        """降级到传统初始化方式"""
+        logger.info("使用传统方式初始化...")
+        
+        # 检查全局模型管理器状态
+        is_model_init = model_manager.is_initialized()
+        logger.info(f"全局模型管理器初始化状态: {is_model_init}")
+        
+        if not is_model_init:
             logger.warning("全局模型管理器未初始化，使用传统方式加载模型")
             # 降级到传统方式
             logger.info(f"加载 Embedding 模型: {self.embedding_model_path}")
@@ -93,28 +126,23 @@ class LangRAG:
         self._connect_or_create_collection()
 
     def _connect_or_create_collection(self):
-        """创建或连接到 collection"""
-        # 如果使用全局模型管理器，直接获取 vectorstore
-        if model_manager.is_initialized():
-            self.vectorstore = model_manager.get_vectorstore(self.collection_name)
-            logger.info(f"从全局模型管理器获取向量存储: {self.collection_name}")
-        else:
-            # 传统方式创建 vectorstore
-            try:
-                self.client.get_collection(self.collection_name)
-                logger.info(f"已连接到集合: {self.collection_name}")
-            except:
-                logger.info(f"创建新集合: {self.collection_name}")
-                self.client.create_collection(
-                    collection_name=self.collection_name,
-                    vectors_config=VectorParams(size=self.vector_size, distance=Distance.COSINE)
-                )
-
-            self.vectorstore = QdrantVectorStore(
-                client=self.client,
+        """创建或连接到 collection（传统方式）"""
+        # 传统方式创建 vectorstore
+        try:
+            self.client.get_collection(self.collection_name)
+            logger.info(f"已连接到集合: {self.collection_name}")
+        except:
+            logger.info(f"创建新集合: {self.collection_name}")
+            self.client.create_collection(
                 collection_name=self.collection_name,
-                embedding=self.embeddings,
+                vectors_config=VectorParams(size=self.vector_size, distance=Distance.COSINE)
             )
+
+        self.vectorstore = QdrantVectorStore(
+            client=self.client,
+            collection_name=self.collection_name,
+            embedding=self.embeddings,
+        )
 
     def initialize_from_folder(self, folder_path: str):
         """首次构建知识库：从文件夹加载所有文档"""
@@ -133,12 +161,23 @@ class LangRAG:
         
     def delete_collection(self, raw_data_path: str):
         """删除知识库,包括删除向量知识库以及原文件夹"""
-        self.client.delete_collection(self.collection_name)
-        logger.info(f"知识库{self.collection_name}删除完成")
+        # 使用全局集合管理器删除集合
+        if collection_manager.is_initialized():
+            success = collection_manager.delete_collection(self.collection_name)
+            if success:
+                logger.info(f"通过全局集合管理器删除知识库成功: {self.collection_name}")
+            else:
+                logger.error(f"通过全局集合管理器删除知识库失败: {self.collection_name}")
+                return False
+        else:
+            # 传统方式删除
+            self.client.delete_collection(self.collection_name)
+            logger.info(f"知识库{self.collection_name}删除完成")
+        
+        # 删除原始文件夹
         shutil.rmtree(f"{raw_data_path}")
-        logger.info(f"文件夹{raw_data_path}")
-        model_manager.vectorstores.pop(self.collection_name)
-        logger.info(f"model_manager中的向量存储实例已删除: {self.collection_name}")
+        logger.info(f"文件夹{raw_data_path}删除完成")
+        
         return True
     
     #=================可添加到知识库的文档类型 txt pdf xlsx docx csv ========
@@ -160,7 +199,7 @@ class LangRAG:
 
     def add_file(self, file_name: str):
         # 获取文件名
-        loader = UnstructuredFileLoader(file_path)
+        loader = UnstructuredFileLoader(file_name)
         docs = loader.load()
         logger.info(f"使用loader的docs{docs}")
         splitter = TokenTextSplitter(
@@ -194,7 +233,7 @@ class LangRAG:
 
         # 批量删除
         self.vectorstore.delete(ids=chunk_ids_to_delete)
-        logger.info(f"文件{file_path}在向量知识库中删除完成")
+        logger.info(f"文件{file_name}在向量知识库中删除完成")
 
     def rerank(self, query: str, results: List[Document], k: int = 5) -> List[Document]:
         """

@@ -11,6 +11,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 import logging
+from models.collection_manager import collection_manager
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -26,6 +27,14 @@ def create(kb_name: str):
     kb_path = os.path.join("data/raw_data",kb_name)
     if not os.path.exists(kb_path):
         os.makedirs(kb_path, exist_ok=True)
+    
+    # 使用全局集合管理器创建集合
+    if collection_manager.is_initialized():
+        success = collection_manager.create_collection(kb_name)
+        if not success:
+            logger.error(f"通过全局集合管理器创建集合失败: {kb_name}")
+            return None
+    
     kb = LangRAG(
         persist_path="data/vector_data",
         collection_name=kb_name
@@ -90,6 +99,33 @@ def ask(question: str, k: int = 5, kb_name: str="all_data", model: str="gpt-4o-m
     answer = response.content
     logger.info(f"回答: {answer}")
     return answer
+
+def retrieve(collection_name: str, question: str, k: int = 5):
+    """
+    直接检索 top-k 语义片段（不经 LLM）。
+    返回结构化结果，包含片段文本与来源文件名及 chunk_id。
+    """
+    kb = LangRAG(
+        persist_path="data/vector_data",
+        collection_name=collection_name,
+    )
+    docs = kb.retrieve(question, k=k)
+
+    def _extract_source(meta: dict):
+        try:
+            return os.path.basename(meta.get("source", "未知文件"))
+        except Exception:
+            return "未知文件"
+
+    chunks = []
+    for d in docs:
+        meta = getattr(d, "metadata", {}) or {}
+        chunks.append({
+            "text": getattr(d, "page_content", str(d)),
+            "source": _extract_source(meta),
+            "chunk_id": meta.get("chunk_id"),
+        })
+    return {"chunks": chunks}
 
 def get_kb_list():
     kb_list = LangRAG(
