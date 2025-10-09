@@ -1,9 +1,9 @@
 from __future__ import annotations
-from utils.logger import get_logger
 import asyncio
 from typing import Any, Dict, Generator, Optional
 from pydantic import BaseModel, Field
 from agents import DataAgent
+from utils.logger import get_logger
 logger = get_logger(__name__)
 
 class RAGConfig(BaseModel):
@@ -34,97 +34,86 @@ class OrchestrationConfig(BaseModel):
 
 
 
-def _run_single(query: str, cfg: OrchestrationConfig) -> Generator[Dict[str, Any], None, str]:
+import asyncio
+from typing import Dict, Any, Generator
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
+
+def _run_single(query: str, cfg) -> Generator[Dict[str, Any], None, str]:
     """
-    使用新的 DataAgent（MCP ToolCall）执行任务，仅在结束时返回最终答案。
-    不依赖 AgentState，固定小步数执行，避免无限循环。
+    执行 DataAgent 并逐步记录所有输出内容。
+    不进行任何逻辑判断或提前终止，所有 step() 的输出都被记录与 yield。
     """
+    from agents.data_agent import DataAgent  # 按需修改为你项目中的导入路径
+
+    logger.info("=== 启动 DataAgent 单轮运行 ===")
+    logger.info(f"用户输入: {query}")
+
+    # 初始化 Agent
     agent = DataAgent(system_prompt=cfg.single.system_prompt)
     agent.update_memory("user", query)
 
-    last_step_text: Optional[str] = None
-    # 固定最多执行8步，防止任何情况下的无限循环，给足够时间生成最终答案
-    tool_call_count = 0
-    for step_index in range(1, 8 + 1):
+    max_steps = getattr(cfg.single, "max_steps", 4)
+
+    for step_index in range(1, max_steps + 1):
+        logger.info(f"\n------ Step {step_index} 开始 ------")
         try:
-            last_step_text = asyncio.run(agent.step())
+            # 执行一步
+            result = asyncio.run(agent.step())
 
-            # 计算工具调用次数
-            current_tool_calls = len([m for m in agent.messages if m.role == "tool"])
-            if current_tool_calls > tool_call_count:
-                tool_call_count = current_tool_calls
-                logger.info(f"完成第{tool_call_count}次工具调用")
+            # 打印和记录
+            logger.info(f"[Step {step_index} 输出]\n{result}\n")
 
-            # 仅当返回的内容不是占位提示时才认为得到最终答案
-            if last_step_text:
-                normalized = (last_step_text or "").strip()
-                if normalized == "[tools_executed]":
-                    logger.info("检测到工具执行完成标记，继续让LLM生成总结")
-                    continue
-                elif normalized and normalized not in ("Thinking complete - no action needed", "[tools] executing"):
-                    # 检查是否是工具调用结果的JSON，如果是则继续执行让LLM总结
-                    try:
-                        import json
-                        parsed = json.loads(normalized)
-                        if isinstance(parsed, dict):
-                            # 检测各种类型的工具调用结果
-                            if "chunks" in parsed:
-                                logger.info("检测到检索工具调用返回的结果，继续执行让LLM进行总结")
-                                continue
-                            elif "status" in parsed or "result" in parsed or "tables" in parsed:
-                                logger.info("检测到其他工具调用返回的结果，继续执行让LLM进行总结")
-                                continue
-                    except (json.JSONDecodeError, TypeError):
-                        pass
-                    # 如果不是JSON格式的工具结果，认为是最终答案
-                    logger.info("检测到LLM生成的自然语言回答")
-                    break
+            yield {
+                "step": step_index,
+                "output": result
+            }
+
         except Exception as e:
-            logger.exception("Agent step 执行失败")
-            yield {"status": "error", "reason": str(e)}
+            logger.exception(f"[Step {step_index}] 执行异常: {e}")
+            yield {
+                "step": step_index,
+                "status": "error",
+                "reason": str(e)
+            }
             break
 
-    # 查找最终回答
-    final_answer: Optional[str] = None
-    try:
-        for m in reversed(agent.messages):
-            if (m.role == "assistant" and m.content and
-                m.content.strip() not in ("[tools] executing", "Thinking complete - no action needed")):
-                content = m.content.strip()
-                # 确保不是工具调用的JSON结果
-                try:
-                    import json
-                    parsed = json.loads(content)
-                    if isinstance(parsed, dict) and "chunks" in parsed:
-                        continue  # 跳过工具调用结果
-                except (json.JSONDecodeError, TypeError):
-                    pass
-                final_answer = content
-                break
-    except Exception:
-        pass
-
-    # 如果仍然没有合适答案，强制模型生成最终回答
-    if not final_answer or final_answer.startswith("{"):
-        try:
-            # 添加明确的总结请求
-            agent.update_memory("user", "请根据上述检索到的信息，用中文给出专业的最终回答。不要返回JSON格式，直接给出自然语言回答。")
-            summary_result = asyncio.run(agent.step())
-            if summary_result and summary_result.strip() not in ("[tools] executing", "Thinking complete - no action needed"):
-                final_answer = summary_result.strip()
-            else:
-                final_answer = "根据检索的信息，我已获得相关数据，但无法生成明确的回答。请查看检索结果或重新提问。"
-        except Exception as e:
-            logger.exception("生成最终总结失败")
-            final_answer = f"处理完成，但生成最终回答时出错：{e}"
-
-    if not final_answer:
-        final_answer = "查询已处理完成，但未能生成明确回答。"
-
-    # 仅在结束时返回一次最终答案
-    yield {"status": "final", "answer": final_answer}
+    logger.info("=== DataAgent 单轮运行结束 ===")
+    yield {"status": "done"}
     return "completed"
 
+def _debug_run_single(query: str, cfg) -> Generator[Dict[str, Any], None, str]:
+    """
+    调试版：打印模型每一步 step() 的完整输出，不做任何过滤或提前终止。
+    """
+
+    logger.info("=== 调试模式启动：打印模型所有 step() 输出 ===")
+
+    agent = DataAgent(system_prompt=cfg.single.system_prompt)
+    agent.update_memory("user", query)
+
+    # 最多执行10步（防止无限循环）
+    for step_index in range(1, 6):
+        logger.info(f"\n------ Step {step_index} 开始 ------")
+        try:
+            result = asyncio.run(agent.step())
+            print(f"\n[Step {step_index} 输出]\n{result}\n")
+            logger.info(f"[Step {step_index} 输出]\n{result}\n")
+
+            # 每一步都 yield 出去，方便外部记录
+            yield {"step": step_index, "output": result}
+
+        except Exception as e:
+            logger.exception(f"Step {step_index} 执行出错: {e}")
+            print(f"[Step {step_index}] 执行出错: {e}")
+            yield {"status": "error", "step": step_index, "reason": str(e)}
+            break
+
+    logger.info("=== 调试模式结束 ===")
+    print("\n=== 调试模式结束 ===\n")
+    yield {"status": "done"}
+    return "completed"
 
 def main(query: str, config: Dict[str, Any] | None = None) -> Generator[Dict[str, Any], None, str]:
     """
@@ -137,3 +126,20 @@ def main(query: str, config: Dict[str, Any] | None = None) -> Generator[Dict[str
     else:
         raise ValueError(f"Invalid mode: {cfg.mode}")
 
+def test():
+    cfg = OrchestrationConfig.model_validate({
+        "mode": "single",
+        "rag": {
+            "collection_name": "japan_shrimp",
+            "topk_single": 5,
+        },
+        "single": {
+            "temperature": 0.4,
+            "max_tokens": 4096
+        }
+    })
+    for info in _run_single("请解释一下循环水养殖系统的原理", cfg):
+        print(info)
+
+if __name__ == "__main__":
+    test()
