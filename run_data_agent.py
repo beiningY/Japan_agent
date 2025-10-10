@@ -4,8 +4,6 @@ DataAgent 主程序模块。
 该脚本用于通过 `agent_orchestrator` 调用 DataAgent，实现基于react调用封装成工具的rag和sql查询功能。程序会在启动时初始化模型与向量集合管理器，
 并可通过命令行执行样例查询（例如分析南美白对虾养殖中的 pH 数据）。
 
-示例用法:
-    $ python data_agent.py
 """
 
 import json
@@ -109,7 +107,7 @@ def initialize_managers() -> None:
             collection_manager.initialize_collections(
                 persist_path="data/vector_data",
                 vector_size=1024,
-                preload_collections=["japan_shrimp", "bank", "all_data", "knowledge_base"]
+                preload_collections=["japan_shrimp", "bank"]
             )
             logger.info("集合管理器初始化完成。")
 

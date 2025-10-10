@@ -98,7 +98,6 @@ def _debug_run_single(query: str, cfg) -> Generator[Dict[str, Any], None, str]:
         logger.info(f"\n------ Step {step_index} 开始 ------")
         try:
             result = asyncio.run(agent.step())
-            print(f"\n[Step {step_index} 输出]\n{result}\n")
             logger.info(f"[Step {step_index} 输出]\n{result}\n")
 
             # 每一步都 yield 出去，方便外部记录
@@ -106,12 +105,10 @@ def _debug_run_single(query: str, cfg) -> Generator[Dict[str, Any], None, str]:
 
         except Exception as e:
             logger.exception(f"Step {step_index} 执行出错: {e}")
-            print(f"[Step {step_index}] 执行出错: {e}")
             yield {"status": "error", "step": step_index, "reason": str(e)}
             break
 
     logger.info("=== 调试模式结束 ===")
-    print("\n=== 调试模式结束 ===\n")
     yield {"status": "done"}
     return "completed"
 
