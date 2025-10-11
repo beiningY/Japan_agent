@@ -3,7 +3,7 @@ import time
 import json
 from flask import Response, request, jsonify, Blueprint
 import logging
-from run_qa.orchestrator import main as run_orchestrator
+from agent_orchestrator import main as run_orchestrator
 import uuid
 from models.model_manager import model_manager
 from queue_rag.queue_server import start_rag_service, is_running
@@ -24,7 +24,7 @@ def cleanup_old_sessions():
         COMPLETED_SESSIONS = set(list(COMPLETED_SESSIONS)[-500:])  # 清理到500个
 
 
-@sse.before_app_first_request
+@sse.before_app_request
 def _ensure_global_models_initialized():
     """确保全局 Embedding 模型与向量库在首个请求前初始化。"""
     try:
@@ -129,13 +129,51 @@ def stream():
         }
         agent_function = agent_functions.get(agent_type, agent_functions['default'])
 
-        # 开始处理消息，仅发送最终答案
+        # 开始处理消息，发送过程信息和最终答案
         try:    
             config = agent_config
 
             for i, data in enumerate(agent_function(query, config)):
                 if not isinstance(data, dict):
                     continue
+                
+                # 处理工具调用信息
+                """if data.get("type") == "tool_call":
+                    tool_message = {
+                        "session_id": session_id,
+                        "timestamp": time.strftime('%H:%M:%S'),
+                        "agent_type": agent_type,
+                        "message_id": str(uuid.uuid4()),
+                        "content": data.get("content", ""),
+                        "data": {
+                            "type": "tool_call",
+                            "step": data.get("step"),
+                            "tool_name": data.get("tool_name")
+                        }
+                    }
+                    json_data = json.dumps(tool_message, ensure_ascii=False)
+                    yield sse_format(json_data)
+                    logger.info(f"发送工具调用: {data.get('tool_name')}")
+                    continue
+                
+                # 处理思考信息
+                if data.get("type") == "thinking":
+                    thinking_message = {
+                        "session_id": session_id,
+                        "timestamp": time.strftime('%H:%M:%S'),
+                        "agent_type": agent_type,
+                        "message_id": str(uuid.uuid4()),
+                        "content": data.get("content", ""),
+                        "data": {
+                            "type": "thinking",
+                            "step": data.get("step")
+                        }
+                    }
+                    json_data = json.dumps(thinking_message, ensure_ascii=False)
+                    yield sse_format(json_data)
+                    logger.info(f"发送思考信息: {data.get('content', '')[:50]}...")
+                    continue"""
+                
                 # 处理最终答案
                 if data.get("status") == "final":
                     final_message = {
@@ -151,11 +189,12 @@ def stream():
                     }
                     json_data = json.dumps(final_message, ensure_ascii=False)
                     yield sse_format(json_data)
-                    logger.info(f"发送最终答案: {json_data}")
+                    logger.info(f"发送最终答案: {json_data[:200]}...")
                     final_sent = True
                     break
+                
                 # 处理错误
-                if data.get("status") == "error":
+                if data.get("status") == "error" or data.get("type") == "error":
                     error_data = json.dumps({"error": data.get("reason", "unknown error")}, ensure_ascii=False)
                     yield sse_format(error_data)
                     logger.info(f"发送错误: {error_data}")
@@ -192,9 +231,8 @@ def stream():
             logger.exception("发送结束消息失败")
             error_data = json.dumps({"error": f"发送结束消息失败: {e}"}, ensure_ascii=False)
             yield sse_format(error_data)
-        
-        # 清理会话状态
         finally:
+            # 清理会话状态
             COMPLETED_SESSIONS.add(session_id)
             if session_id in ACTIVE_SESSIONS:
                 ACTIVE_SESSIONS.remove(session_id)

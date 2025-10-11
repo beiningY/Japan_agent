@@ -35,6 +35,8 @@ class MCPToolCallAgent(ReActAgent):
     max_retries: int = 3  # 最大重试次数（含首次共 1+max_retries 次尝试）
     request_timeout_seconds: float = 40.0  # 单次请求超时时间
     initial_retry_backoff_seconds: float = 0.8  # 指数退避初始等待
+    max_tool_calls: int = 10  # 最大工具调用次数，避免过度检索
+    info_sufficient_threshold: int = 5  # 判断信息充足的工具调用次数阈值
     
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -154,8 +156,8 @@ class MCPToolCallAgent(ReActAgent):
         recent_user_messages = [m for m in self.messages[-3:] if m.role == "user"]
         has_summary_request = any("请根据上述检索到的信息" in (m.content or "") for m in recent_user_messages)
 
-        if tool_call_count >= 3:  # 最多允许3轮工具调用，避免过度检索
-            self._log.info(f"已达到最大工具调用次数({tool_call_count})，停止思考并生成最终回答")
+        if tool_call_count >= self.max_tool_calls:  # 使用可配置的最大工具调用次数
+            self._log.info(f"已达到最大工具调用次数({tool_call_count}/{self.max_tool_calls})，停止思考并生成最终回答")
 
             if has_summary_request:
                 # 如果已经有总结请求，不再检查工具调用限制，直接让LLM处理
@@ -493,8 +495,8 @@ class MCPToolCallAgent(ReActAgent):
             
             # 检查是否已经进行了多轮工具调用（防止无限循环）
             tool_call_count = len([m for m in self.messages if m.role == "tool"])
-            if tool_call_count >= 5:  # 增加工具调用次数限制
-                self._log.info(f"已进行{tool_call_count}次工具调用，认为信息充足")
+            if tool_call_count >= self.info_sufficient_threshold:  # 使用可配置的信息充足阈值
+                self._log.info(f"已进行{tool_call_count}次工具调用（阈值={self.info_sufficient_threshold}），认为信息充足")
                 return True
                 
             return False

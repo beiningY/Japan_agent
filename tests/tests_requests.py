@@ -158,7 +158,7 @@ def test_agent_config():
     print(response.json())
 
 def test_stream_qa():
-    url = "http://localhost:5001/sse/stream_qa"
+    url = "http://127.0.0.1:5001/sse/stream_qa"
     config = {
             'rag': {
             'collection_name': 'japan_shrimp',
@@ -168,14 +168,14 @@ def test_stream_qa():
             'mode': 'single',
             'single': {
             'temperature': 0.4,
-            'system_prompt': '你是一个领域专家，你的任务是根据用户的问题，结合增强检索后的相关知识，给出专业的回答。',
+            'system_prompt': '你是数据获取与分析助手。你可以使用 retrieve 工具从知识库检索相关信息，或者按照顺序从数据库中获取相关数据，若使用read_sql_query，需要首先根据需求使用list_sql_tables，get_tables_schema对于数据库的表进行了解，然后再执行查询命令。最后根据检索到的真实数据来回答用户的问题。不要直接使用你自己的知识回答，必须基于工具返回的数据。回答中请明确引用来源（文件名/表名），并避免臆断。',
             'max_tokens': 10000,
             }
         }
     params = {
         "session_id": str(uuid.uuid4()),
         "agent_type": "japan",
-        "query": "当前监测显示：DO=3.4 mg/L，比昨日下降了 0.8 单位，pH=8.0，水温 28.5°C。请问是否需要立即调整供氧或循环策略？如果需要，应优先采取哪些操作？",
+        "query": "当前监测显示：DO=3.4 mg/L，比昨日下降了 0.8 单位，pH=8.0，水温 28.5°C。请问是否需要立即调整供氧或循环策略？如果需要，应优先采取哪些操作？顺便帮我检查一下数据库里的最新数据是不是这样的",
         "config": json.dumps(config, ensure_ascii=False)  
     }
     if params:
@@ -184,12 +184,13 @@ def test_stream_qa():
     print(f"连接URL: {url}")
     
     try:
-        # 发起请求，禁用自动重连
-        client = sseclient.SSEClient(url, retry=0)
+        # 发起请求
+        response = requests.get(url, stream=True)
+        client = sseclient.SSEClient(response)
 
         print("已连接到 SSE 流，等待消息...")
         message_count = 0
-        for event in client:
+        for event in client.events():
             message_count += 1
             print(f"收到消息 {message_count}: {event.data}")
             

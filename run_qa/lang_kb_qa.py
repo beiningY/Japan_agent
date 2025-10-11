@@ -1,9 +1,13 @@
 """
+注意：此文件为旧版知识库问答实现，已被 DataAgent 的 MCP 工具方式替代。
+建议使用 agents/data_agent.py 进行知识库检索和问答。
+此文件仅保留用于向后兼容、测试和知识库管理功能。
+
 支持用户管理新的知识库
 支持功能
 1. 创建知识库（知识库名称）
 2. 删除知识库（知识库名称）
-3. 链接默认agent进行对话
+3. 链接默认agent进行对话（已废弃，建议使用DataAgent）
 """
 from rag.lang_rag import LangRAG
 from langchain_openai import ChatOpenAI

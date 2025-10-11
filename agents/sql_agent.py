@@ -1,3 +1,8 @@
+"""
+注意：此文件为旧版实现，已被 DataAgent 的 MCP 工具方式替代。
+建议使用 agents/data_agent.py 进行数据库查询。
+此文件仅保留用于向后兼容和测试。
+"""
 import logging
 from typing import List
 from dotenv import load_dotenv
