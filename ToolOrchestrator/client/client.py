@@ -38,9 +38,10 @@ class MultiServerMCPClient:
         self._tools_config_path = settings.TOOLS_CONFIG_PATH
 
         # 本地函数映射
-        from ToolOrchestrator.tools import kb_tools, db_tools  # type: ignore
+        from ToolOrchestrator.tools import kb_tools, db_tools, web_search_tools  # type: ignore
         self._kb = kb_tools
         self._db = db_tools
+        self._web_search = web_search_tools
 
     async def get_tools(self) -> List[BaseTool]:
         try:
@@ -97,6 +98,14 @@ class MultiServerMCPClient:
                 return {"status": "ok", "result": await _db_call(self._db.get_tables_schema(args.get("table_names", [])))}
             if tool_name == "read_sql_query":
                 return {"status": "ok", "result": await _db_call(self._db.read_sql_query(args.get("table_queries", [])))}
+
+            # 联网搜索工具
+            if tool_name == "web_search":
+                return {"status": "ok", "result": self._web_search.web_search(
+                    args.get("query"), 
+                    args.get("max_results", 3),
+                    args.get("search_depth", "basic")
+                )}
 
             return {"status": "error", "reason": f"Unknown tool: {tool_name}"}
         except Exception as e:

@@ -169,5 +169,35 @@
         "file_path"
       ]
     }
+  },
+  {
+    "name": "web_search",
+    "handler": "web_search_tools.web_search",
+    "description": "通过 Tavily API 进行联网搜索，获取最新信息",
+    "risk_level": "LOW",
+    "enabled": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "搜索查询字符串"
+        },
+        "max_results": {
+          "type": "integer",
+          "default": 3,
+          "description": "返回的最大结果数量，默认为3"
+        },
+        "search_depth": {
+          "type": "string",
+          "enum": ["basic", "advanced"],
+          "default": "basic",
+          "description": "搜索深度，可选值: basic 或 advanced"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
   }
 ]

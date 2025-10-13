@@ -11,7 +11,8 @@
         "create_file",
         "delete_file",
         "ask",
-        "retrieve"
+        "retrieve",
+        "web_search"
       ],
       "restricted_tools": [],
       "clearance_level": "MEDIUM"
@@ -111,7 +112,8 @@
         "ask",
         "retrieve",
         "list_sql_tables",
-        "get_tables_schema"
+        "get_tables_schema",
+        "web_search"
       ],
       "restricted_tools": [],
       "clearance_level": "MEDIUM",
@@ -174,6 +176,11 @@
     "delete_file_kb": {
       "description": "删除文件从知识库",
       "requires_review": true
+    },
+    "web_search": {
+      "description": "联网搜索工具，通过 Tavily API 获取最新信息",
+      "requires_review": false,
+      "risk_level": "LOW"
     }
   },
   "security_settings": {
