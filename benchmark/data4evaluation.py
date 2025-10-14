@@ -1,7 +1,4 @@
 from rag import RAG
-from camel.agents import ChatAgent
-from camel.models import ModelFactory
-from camel.types import ModelPlatformType, ModelType
 from dotenv import load_dotenv
 import os
 import json
@@ -39,7 +36,7 @@ def rag_qa(query):
     return retrieved, response.msg.content
 
 
-"""
+
 rag_data = []
 query_data = ["当前监测显示：DO=3.4 mg/L，比昨日下降了 0.8 单位，pH=8.0，水温 28.5°C。请问是否需要立即调整供氧或循环策略？如果需要，应优先采取哪些操作？", 
             "溶解氧保持在 6.5 mg/L，但池内摄食量下降、水体发白且 DO 夜间波动范围达2.2 mg/L，该情况可能是什么原因导致？下一步应如何应对？还是说这属于正常情况无需采取措施？", 
@@ -82,7 +79,7 @@ for i, data in enumerate(rag_data):
     ws.cell(row=i+2, column=4, value=data["output_with_rag"])
 
 wb.save("result4evaluation2.xlsx")
-"""
+
 
 query = "当前氨氮=0.32 mg/L，亚硝酸盐=0.27 mg/L，硝酸盐=4 mg/L，pH 为 7.5，DO=5.2mg/L，投喂正常。请问系统应采取哪些操作调整水质？"
 retrieved, response_rag = rag_qa(query)
