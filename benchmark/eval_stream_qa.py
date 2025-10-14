@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import statistics
 import time
@@ -22,6 +23,13 @@ OUTPUT_JSON = os.path.join(OUTPUT_DIR, "stream_qa_eval.json")
 AGENT_TYPE = "japan"
 CONNECT_TIMEOUT_S = 10.0
 HARD_TIMEOUT_S = 180.0
+
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 def read_json_file(file_path: str) -> Any:
@@ -104,6 +112,7 @@ def eval_one_query(
     hard_timeout_s: float,
 ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
     session_id = str(uuid.uuid4())
+    logger.info(f"开始评估查询 | session_id={session_id} | query={query[:50]}...")
     params = build_params(session_id=session_id, agent_type=agent_type, query=query, config=config)
 
     # 时间指标采集
@@ -120,6 +129,7 @@ def eval_one_query(
         with requests.get(url, params=params, stream=True, timeout=(connect_timeout_s, None)) as resp:
             status_ok = resp.status_code == 200
             if not status_ok:
+                logger.error(f"HTTP错误 | session_id={session_id} | status={resp.status_code}")
                 raise RuntimeError(f"HTTP {resp.status_code}: {resp.text[:200]}")
 
             for data_str in _iter_sse_events(resp):
@@ -147,9 +157,11 @@ def eval_one_query(
                     if isinstance(data_field, dict) and data_field.get("status") == "completed":
                         answer_text = data_field.get("answer")
                         completed = True
+                        logger.info(f"查询完成 | session_id={session_id} | events={event_count}")
                         break
                     if "error" in payload:
                         error_message = str(payload.get("error"))
+                        logger.error(f"查询出错 | session_id={session_id} | error={error_message}")
                         break
                 except json.JSONDecodeError:
                     # 非 JSON 事件可忽略解析，仅做原样存储
@@ -158,9 +170,11 @@ def eval_one_query(
                 # 流式处理中执行硬超时检查
                 if hard_timeout_s and (now - batch_start) > hard_timeout_s:
                     error_message = f"Timed out after {hard_timeout_s} seconds"
+                    logger.warning(f"查询超时 | session_id={session_id} | timeout={hard_timeout_s}s")
                     break
     except Exception as e:
         error_message = str(e)
+        logger.error(f"查询异常 | session_id={session_id} | exception={error_message}")
 
     end_time = time.perf_counter()
     latency_s = end_time - batch_start
@@ -180,6 +194,11 @@ def eval_one_query(
         "bytes_per_second": round(bytes_per_second, 6),
         "timestamp": datetime.utcnow().isoformat() + "Z",
     }
+    
+    logger.info(
+        f"查询结果 | session_id={session_id} | success={result['success']} | "
+        f"latency={latency_s:.3f}s | ttfb={ttfb_s:.3f}s | events={event_count}"
+    )
 
     return result, raw_events
 
@@ -191,11 +210,20 @@ def write_json(path: str, payload: Any) -> None:
 
 def main() -> None:
     ensure_dir(OUTPUT_DIR)
+    ensure_dir(BASE_DIR)
+
+    logger.info("=" * 80)
+    logger.info("开始流式问答评估")
+    logger.info(f"URL: {URL}")
+    logger.info(f"Agent类型: {AGENT_TYPE}")
+    logger.info(f"基准文件: {BENCHMARK_PATH}")
 
     # 读取基准问题集
     data = read_json_file(BENCHMARK_PATH)
     if not isinstance(data, list):
         raise ValueError("Benchmark file must contain a JSON array of items")
+
+    logger.info(f"加载了 {len(data)} 个问题")
 
     # 读取/生成运行配置
     cfg = default_config()
@@ -204,11 +232,14 @@ def main() -> None:
     per_query_results: List[Dict[str, Any]] = []
 
     # 默认按顺序执行以保证可复现性
-    for item in data:
+    for idx, item in enumerate(data, 1):
         query_text = normalize_query_key(item)
         if not query_text:
+            logger.warning(f"跳过无效问题 | index={idx}")
             continue
         qid = item.get("id")
+        
+        logger.info(f"进度: [{idx}/{len(data)}] | id={qid}")
 
         result, raw_events = eval_one_query(
             url=URL,
@@ -233,6 +264,18 @@ def main() -> None:
     p50_latency = statistics.median(latencies) if latencies else None
     p90_latency = (statistics.quantiles(latencies, n=10)[8] if len(latencies) >= 10 else None) if latencies else None
     qps = (total / wall_time_s) if wall_time_s > 0 else None
+    
+    logger.info("=" * 80)
+    logger.info("评估完成 - 汇总统计")
+    logger.info(f"总耗时: {wall_time_s:.2f}s")
+    logger.info(f"问题总数: {total}")
+    logger.info(f"成功: {successes} | 失败: {total - successes}")
+    logger.info(f"成功率: {(successes/total*100):.1f}%" if total > 0 else "N/A")
+    logger.info(f"QPS: {qps:.3f}" if qps else "N/A")
+    logger.info(f"平均延迟: {avg_latency:.3f}s" if avg_latency else "N/A")
+    logger.info(f"P50延迟: {p50_latency:.3f}s" if p50_latency else "N/A")
+    logger.info(f"P90延迟: {p90_latency:.3f}s" if p90_latency else "N/A")
+    logger.info("=" * 80)
 
     output_payload = {
         "run": {
@@ -253,6 +296,7 @@ def main() -> None:
     }
 
     write_json(OUTPUT_JSON, output_payload)
+    logger.info(f"结果已保存: {OUTPUT_JSON}")
     print(f"Saved: {OUTPUT_JSON}")
 
 
