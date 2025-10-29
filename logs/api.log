@@ -1,59 +1,229 @@
 nohup: ignoring input
-2025-10-20 13:14:31,450 - CollectionManager - INFO - 全局集合管理器初始化完成
-2025-10-20 13:14:31,635 - API_Server - INFO - 主进程启动，初始化Embedding模型...
-2025-10-20 13:14:31,635 - API_Server - INFO - 开始初始化全局Embedding模型管理器...
-2025-10-20 13:14:31,635 - EmbeddingModelManager - INFO - 开始初始化全局Embedding模型管理器...
-2025-10-20 13:14:31,703 - EmbeddingModelManager - INFO - 已清理GPU显存缓存
-2025-10-20 13:14:31,704 - EmbeddingModelManager - INFO - 加载 Embedding 模型: models/multilingual-e5-large
-2025-10-20 13:14:31,704 - EmbeddingModelManager - INFO - 检测到GPU，尝试使用GPU运行embedding模型
-2025-10-20 13:14:32,520 - datasets - INFO - PyTorch version 1.12.1+cu113 available.
-2025-10-20 13:14:32,521 - datasets - INFO - Duckdb version 1.3.1 available.
-2025-10-20 13:14:32,629 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: models/multilingual-e5-large
-2025-10-20 13:14:35,734 - EmbeddingModelManager - INFO - Embedding 模型加载成功，运行设备: cuda
-2025-10-20 13:14:35,734 - EmbeddingModelManager - INFO - 初始化向量数据库连接: data/vector_data
-2025-10-20 13:14:36,983 - EmbeddingModelManager - INFO - 向量数据库连接初始化成功
-2025-10-20 13:14:36,984 - EmbeddingModelManager - INFO - 全局Embedding模型管理器初始化完成！
-2025-10-20 13:14:36,984 - API_Server - INFO - 全局Embedding模型管理器初始化完成！
-2025-10-20 13:14:36,984 - API_Server - INFO - 开始初始化全局集合管理器...
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 开始初始化全局集合管理器...
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 使用全局模型管理器的客户端和embedding模型
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 集合已存在: japan_shrimp
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 预加载集合: japan_shrimp
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 集合已存在: bank
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 预加载集合: bank
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 集合已存在: all_data
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 预加载集合: all_data
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 集合已存在: knowledge_base
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 预加载集合: knowledge_base
-2025-10-20 13:14:36,984 - CollectionManager - INFO - 全局集合管理器初始化完成！
-2025-10-20 13:14:36,984 - API_Server - INFO - 全局集合管理器初始化完成！
-2025-10-20 13:14:36,984 - API_Server - INFO - 开始初始化全局MCP工具注册器...
-2025-10-20 13:14:36,984 - GlobalToolManager - INFO - 开始初始化全局MCP工具注册器...
-2025-10-20 13:14:37,392 - MultiServerMCPClient - INFO - Discovered local tools: ['list_sql_tables', 'get_tables_schema', 'read_sql_query', 'create_collection', 'delete_collection', 'retrieve', 'create_file', 'delete_file', 'web_search']
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 获取到 9 个工具
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 工具 list_sql_tables 注册成功
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 工具 get_tables_schema 注册成功
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 工具 read_sql_query 注册成功
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 工具 create_collection 注册成功
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 工具 delete_collection 注册成功
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 工具 retrieve 注册成功
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 工具 create_file 注册成功
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 工具 delete_file 注册成功
-2025-10-20 13:14:37,392 - ToolRegistry - INFO - 工具 web_search 注册成功
-2025-10-20 13:14:37,392 - GlobalToolManager - INFO - 全局MCP工具注册器初始化完成！已注册 9 个工具
-2025-10-20 13:14:37,392 - GlobalToolManager - INFO - 已注册的工具: list_sql_tables, get_tables_schema, read_sql_query, create_collection, delete_collection, retrieve, create_file, delete_file, web_search
-2025-10-20 13:14:37,392 - API_Server - INFO - 全局MCP工具注册器初始化完成！
-2025-10-20 13:14:37,392 - API_Server - INFO - 启动RAG队列服务（单线程，FIFO）...
-2025-10-20 13:14:37,392 - queue_server - INFO - 正在启动 RAG 服务，将创建 1 个工作线程...
-2025-10-20 13:14:37,392 - queue_server - INFO - 初始化 RAG-Worker-1
-2025-10-20 13:14:37,393 - queue_server - INFO - RAG-Worker-1 启动。
-2025-10-20 13:14:37,393 - queue_server - INFO - RAG 服务启动完毕。
-2025-10-20 13:14:37,393 - API_Server - INFO - RAG队列服务启动完成
-2025-10-20 13:14:37,393 - API_Server - INFO - 启动Flask服务...
+2025-10-27 17:46:08,897 - CollectionManager - INFO - 全局集合管理器初始化完成
+2025-10-27 17:46:09,180 - API_Server - INFO - 主进程启动，初始化Embedding模型...
+2025-10-27 17:46:09,180 - API_Server - INFO - 开始初始化全局Embedding模型管理器...
+2025-10-27 17:46:09,180 - EmbeddingModelManager - INFO - 开始初始化全局Embedding模型管理器...
+2025-10-27 17:46:09,242 - EmbeddingModelManager - INFO - 已清理GPU显存缓存
+2025-10-27 17:46:09,242 - EmbeddingModelManager - INFO - 加载 Embedding 模型: models/multilingual-e5-large
+2025-10-27 17:46:09,242 - EmbeddingModelManager - INFO - 检测到GPU，尝试使用GPU运行embedding模型
+The cache for model files in Transformers v4.22.0 has been updated. Migrating your old cache. This is a one-time only operation. You can interrupt this and resume the migration later on by calling `transformers.utils.move_cache()`.
+0it [00:00, ?it/s]0it [00:00, ?it/s]
+2025-10-27 17:46:11,314 - datasets - INFO - PyTorch version 1.12.1+cu113 available.
+2025-10-27 17:46:11,315 - datasets - INFO - Duckdb version 1.3.1 available.
+2025-10-27 17:46:11,614 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: models/multilingual-e5-large
+2025-10-27 17:46:29,681 - EmbeddingModelManager - INFO - Embedding 模型加载成功，运行设备: cuda
+2025-10-27 17:46:29,681 - EmbeddingModelManager - INFO - 初始化向量数据库连接: data/vector_data
+2025-10-27 17:46:31,004 - EmbeddingModelManager - INFO - 向量数据库连接初始化成功
+2025-10-27 17:46:31,004 - EmbeddingModelManager - INFO - 全局Embedding模型管理器初始化完成！
+2025-10-27 17:46:31,004 - API_Server - INFO - 全局Embedding模型管理器初始化完成！
+2025-10-27 17:46:31,004 - API_Server - INFO - 开始初始化全局集合管理器...
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 开始初始化全局集合管理器...
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 使用全局模型管理器的客户端和embedding模型
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 集合已存在: japan_shrimp
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 预加载集合: japan_shrimp
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 集合已存在: bank
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 预加载集合: bank
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 集合已存在: all_data
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 预加载集合: all_data
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 集合已存在: knowledge_base
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 预加载集合: knowledge_base
+2025-10-27 17:46:31,004 - CollectionManager - INFO - 全局集合管理器初始化完成！
+2025-10-27 17:46:31,004 - API_Server - INFO - 全局集合管理器初始化完成！
+2025-10-27 17:46:31,004 - API_Server - INFO - 开始初始化全局MCP工具注册器...
+2025-10-27 17:46:31,005 - GlobalToolManager - INFO - 开始初始化全局MCP工具注册器...
+2025-10-27 17:46:31,450 - MultiServerMCPClient - INFO - Discovered local tools: ['list_sql_tables', 'get_tables_schema', 'read_sql_query', 'create_collection', 'delete_collection', 'retrieve', 'create_file', 'delete_file', 'web_search']
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 获取到 9 个工具
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 工具 list_sql_tables 注册成功
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 工具 get_tables_schema 注册成功
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 工具 read_sql_query 注册成功
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 工具 create_collection 注册成功
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 工具 delete_collection 注册成功
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 工具 retrieve 注册成功
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 工具 create_file 注册成功
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 工具 delete_file 注册成功
+2025-10-27 17:46:31,450 - ToolRegistry - INFO - 工具 web_search 注册成功
+2025-10-27 17:46:31,451 - GlobalToolManager - INFO - 全局MCP工具注册器初始化完成！已注册 9 个工具
+2025-10-27 17:46:31,451 - GlobalToolManager - INFO - 已注册的工具: list_sql_tables, get_tables_schema, read_sql_query, create_collection, delete_collection, retrieve, create_file, delete_file, web_search
+2025-10-27 17:46:31,451 - API_Server - INFO - 全局MCP工具注册器初始化完成！
+2025-10-27 17:46:31,451 - API_Server - INFO - 启动RAG队列服务（单线程，FIFO）...
+2025-10-27 17:46:31,451 - queue_server - INFO - 正在启动 RAG 服务，将创建 1 个工作线程...
+2025-10-27 17:46:31,451 - queue_server - INFO - 初始化 RAG-Worker-1
+2025-10-27 17:46:31,451 - queue_server - INFO - RAG-Worker-1 启动。
+2025-10-27 17:46:31,451 - queue_server - INFO - RAG 服务启动完毕。
+2025-10-27 17:46:31,451 - API_Server - INFO - RAG队列服务启动完成
+2025-10-27 17:46:31,451 - API_Server - INFO - 启动Flask服务...
  * Serving Flask app 'main'
  * Debug mode: on
-2025-10-20 13:14:37,397 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+2025-10-27 17:46:31,459 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:5001
  * Running on http://172.16.171.111:5001
-2025-10-20 13:14:37,397 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-27 17:46:31,459 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-27 18:26:10,489 - werkzeug - ERROR - 198.235.24.2 - - [27/Oct/2025 18:26:10] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x91²Èi')
+2025-10-27 18:26:10,490 - werkzeug - INFO - 198.235.24.2 - - [27/Oct/2025 18:26:10] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x91²Èi\x09 ÎDïp°[0m" HTTPStatus.BAD_REQUEST -
+2025-10-27 18:26:10,686 - werkzeug - ERROR - 198.235.24.2 - - [27/Oct/2025 18:26:10] code 400, message Bad request version ('À(À$À\x14À')
+2025-10-27 18:26:10,686 - werkzeug - INFO - 198.235.24.2 - - [27/Oct/2025 18:26:10] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03+ÈÁRå¥'ß&ÅÆ\x10{O\x07\x8aS³âÈCç\x99ÊÍ$éJ s\x1aÁ\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-27 18:58:04,381 - werkzeug - ERROR - 162.142.125.202 - - [27/Oct/2025 18:58:04] code 400, message Bad request version ('À\x14À')
+2025-10-27 18:58:04,382 - werkzeug - INFO - 162.142.125.202 - - [27/Oct/2025 18:58:04] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x823ïIä\x9b3Ò\x8cÃy\\\x05ÌÜ9\x13\x8c\x94\x9aÝí:³¨\x11¼'ÊÎÎ£ Èùu}¡Ï=\x9f¾Y\x0byÝVøwÁöÀë'Y¦§\x81^\x8e\x90Ë]\x0c7\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-27 18:58:08,141 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-27 18:58:08,141 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-27 18:58:08,141 - werkzeug - INFO - 162.142.125.202 - - [27/Oct/2025 18:58:08] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-27 18:58:18,697 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-27 18:58:18,697 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-27 18:58:18,697 - werkzeug - INFO - 162.142.125.202 - - [27/Oct/2025 18:58:18] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-27 18:58:19,412 - werkzeug - ERROR - 162.142.125.202 - - [27/Oct/2025 18:58:19] code 505, message Invalid HTTP version (2.0)
+2025-10-27 18:58:19,412 - werkzeug - INFO - 162.142.125.202 - - [27/Oct/2025 18:58:19] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2025-10-27 18:58:50,792 - werkzeug - ERROR - 162.142.125.202 - - [27/Oct/2025 18:58:50] code 505, message Invalid HTTP version (2.0)
+2025-10-27 18:58:50,792 - werkzeug - INFO - 162.142.125.202 - - [27/Oct/2025 18:58:50] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2025-10-27 18:58:51,669 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-27 18:58:51,669 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-27 18:58:51,669 - werkzeug - INFO - 162.142.125.202 - - [27/Oct/2025 18:58:51] "[33mGET /robots.txt HTTP/1.1[0m" 404 -
+2025-10-27 23:14:00,074 - werkzeug - ERROR - 153.180.130.180 - - [27/Oct/2025 23:14:00] code 400, message Bad request version ('\x00\x01\x14Ì¨Ì©ÌªÀ,À0\x00\x9fÀ\xadÀ\x9fÀ$À(\x00kÀ')
+2025-10-27 23:14:00,074 - werkzeug - INFO - 153.180.130.180 - - [27/Oct/2025 23:14:00] "[35m[1m\x16\x03\x01\x01\x89\x01\x00\x01\x85\x03\x03hÿ\x8c6 Ï\x8f~m\x15üSð³°¸·\x93I\x813:Øåo5\x8ff\x85z\x1c\x09\x00\x01\x14Ì¨Ì©ÌªÀ,À0\x00\x9fÀ­À\x9fÀ$À(\x00kÀ[0m" HTTPStatus.BAD_REQUEST -
+2025-10-27 23:59:26,731 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-27 23:59:26,731 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-27 23:59:26,731 - werkzeug - INFO - 35.195.43.11 - - [27/Oct/2025 23:59:26] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-28 00:53:15,961 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 00:53:15,961 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 00:53:15,962 - werkzeug - INFO - 3.143.33.63 - - [28/Oct/2025 00:53:15] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-28 00:54:34,930 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 00:54:34,930 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 00:54:34,931 - werkzeug - INFO - 3.143.33.63 - - [28/Oct/2025 00:54:34] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-28 00:56:27,044 - werkzeug - ERROR - 3.143.33.63 - - [28/Oct/2025 00:56:27] code 400, message Bad request syntax ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x87¹«¯-')
+2025-10-28 00:56:27,044 - werkzeug - INFO - 3.143.33.63 - - [28/Oct/2025 00:56:27] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x87¹«¯-[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 00:58:10,820 - werkzeug - ERROR - 3.143.33.63 - - [28/Oct/2025 00:58:10] code 400, message Bad request syntax ('SSH-2.0-Go')
+2025-10-28 00:58:10,820 - werkzeug - INFO - 3.143.33.63 - - [28/Oct/2025 00:58:10] "[35m[1mSSH-2.0-Go[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 01:00:08,527 - werkzeug - ERROR - 3.143.33.63 - - [28/Oct/2025 01:00:08] code 400, message Bad HTTP/0.9 request type ("\x16\x03\x01\x00{\x01\x00\x00w\x03\x03C;Þ\x88ÜF'¢s\x04\x8cD²V\x90\x96v\x869\x06=\x9fJ\x81\x07\x88\x97G\x8e\x82\x8dv\x00\x00\x1aÀ/À+À\x11À\x07À\x13À")
+2025-10-28 01:00:08,527 - werkzeug - INFO - 3.143.33.63 - - [28/Oct/2025 01:00:08] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03C;Þ\x88ÜF'¢s\x04\x8cD²V\x90\x96v\x869\x06=\x9fJ\x81\x07\x88\x97G\x8e\x82\x8dv\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 02:56:36,402 - werkzeug - ERROR - 198.235.24.11 - - [28/Oct/2025 02:56:36] code 400, message Bad request version ('À\x13À')
+2025-10-28 02:56:36,402 - werkzeug - INFO - 198.235.24.11 - - [28/Oct/2025 02:56:36] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x14\x1e`ÈÍÒ\x91Ç0¹Øg\x8bã\x89\x9d\x7f²\x9a\x94\x01åæÐ\x8bµÜ\x0d\x91[»q >\x99ý\x04K´Ò\x91\x81\x04\x9d\x0b¿'.··\x9ett­>Ü]{+°O\x92¦öÝ\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 02:56:36,503 - werkzeug - ERROR - 198.235.24.11 - - [28/Oct/2025 02:56:36] code 400, message Bad request version ('À(À$À\x14À')
+2025-10-28 02:56:36,503 - werkzeug - INFO - 198.235.24.11 - - [28/Oct/2025 02:56:36] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03}Ç²û÷\x8f÷ÛGW/\x06f¤NW\x07ÈKg\x02jö ¼ Ûz_=\x8a\x1f\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 04:40:11,563 - werkzeug - ERROR - 205.210.31.236 - - [28/Oct/2025 04:40:11] code 400, message Bad request version ('À\x13À')
+2025-10-28 04:40:11,564 - werkzeug - INFO - 205.210.31.236 - - [28/Oct/2025 04:40:11] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x0fwéÑ\x1c°9]\x85\x86U3,+ï\x15þ\x9d3høV\x87×#9uÐ\x90\x19\\M ÏÞ,ËõÕå9¾\x86aën½õS^\x8e9-\x04÷võ\x15Wg×`\x15°-\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 04:40:12,222 - werkzeug - ERROR - 205.210.31.236 - - [28/Oct/2025 04:40:12] code 400, message Bad request version ('À(À$À\x14À')
+2025-10-28 04:40:12,222 - werkzeug - INFO - 205.210.31.236 - - [28/Oct/2025 04:40:12] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03\x0bÀ¤É\x94õ\x09\x8am\x09ä\x059-J¢õÒ\x95\x1frgOZàÕÕé\x8d*çí\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 04:40:52,721 - werkzeug - ERROR - 216.180.246.31 - - [28/Oct/2025 04:40:52] code 400, message Bad request version ('$×¡5r3\x96¯\x17,Ñ\x1at¯\x0e')
+2025-10-28 04:40:52,721 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:40:52] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03:M\x9f\x81\x99\x14ÒG \x00\x10³\x8dBWj\x17¶ÌÃ\x1aX\x15-J.\x17eE\x9a}% \x80\x98\\\x84)>\x0b$×¡5r3\x96¯\x17,Ñ\x1at¯\x0e[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 04:41:19,062 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:41:19,062 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:41:19,062 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:41:19] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-28 04:41:41,431 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:41:41,432 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:41:41,432 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:41:41] "[33mGET /manage/account/login HTTP/1.1[0m" 404 -
+2025-10-28 04:42:01,001 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:42:01,001 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:42:01,001 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:42:01] "[33mGET /admin/index.html HTTP/1.1[0m" 404 -
+2025-10-28 04:42:16,426 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:42:16,426 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:42:16,427 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:42:16] "[33mGET /index.html HTTP/1.1[0m" 404 -
+2025-10-28 04:42:31,437 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:42:31,437 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:42:31,437 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:42:31] "[33mGET /+CSCOE+/logon.html HTTP/1.1[0m" 404 -
+2025-10-28 04:42:44,463 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:42:44,463 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:42:44,464 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:42:44] "[33mGET /cgi-bin/login.cgi HTTP/1.1[0m" 404 -
+2025-10-28 04:42:59,003 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:42:59,003 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:42:59,003 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:42:59] "[33mGET /login.htm HTTP/1.1[0m" 404 -
+2025-10-28 04:43:10,548 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:43:10,549 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:43:10,549 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:43:10] "[33mGET /login.html HTTP/1.1[0m" 404 -
+2025-10-28 04:43:29,404 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:43:29,404 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:43:29,404 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:43:29] "[33mGET /login.jsp HTTP/1.1[0m" 404 -
+2025-10-28 04:43:40,865 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:43:40,865 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:43:40,865 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:43:40] "[33mGET /login HTTP/1.1[0m" 404 -
+2025-10-28 04:43:52,339 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:43:52,339 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:43:52,339 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:43:52] "[33mGET /doc/index.html HTTP/1.1[0m" 404 -
+2025-10-28 04:44:03,847 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:44:03,847 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:44:03,847 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:44:03] "[33mGET /remote/login HTTP/1.1[0m" 404 -
+2025-10-28 04:44:16,868 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:44:16,868 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:44:16,868 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:44:16] "[33mGET /admin/login.asp HTTP/1.1[0m" 404 -
+2025-10-28 04:44:28,561 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:44:28,562 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:44:28,562 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:44:28] "[33mGET /web/ HTTP/1.1[0m" 404 -
+2025-10-28 04:44:49,824 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 04:44:49,824 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 04:44:49,824 - werkzeug - INFO - 216.180.246.31 - - [28/Oct/2025 04:44:49] "[33mGET /webpages/login.html HTTP/1.1[0m" 404 -
+2025-10-28 08:27:14,351 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 08:27:14,351 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 08:27:14,351 - werkzeug - INFO - 205.210.31.13 - - [28/Oct/2025 08:27:14] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-28 12:00:09,170 - werkzeug - ERROR - 64.62.156.122 - - [28/Oct/2025 12:00:09] code 400, message Bad request version ('À\x14À')
+2025-10-28 12:00:09,170 - werkzeug - INFO - 64.62.156.122 - - [28/Oct/2025 12:00:09] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x93C@O\x84éÖì\x8f5MÊ OÀv\x03\x80\x0dDA·'Ù¬Ês\x8ax92[\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 15:32:49,367 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 15:32:49,367 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 15:32:49,368 - werkzeug - INFO - 45.33.109.18 - - [28/Oct/2025 15:32:49] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-28 16:10:30,162 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 16:10:30,162 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 16:10:30,162 - werkzeug - INFO - 20.83.150.53 - - [28/Oct/2025 16:10:30] "[33mGET /v2/ HTTP/1.1[0m" 404 -
+2025-10-28 19:53:16,620 - werkzeug - ERROR - 87.236.176.243 - - [28/Oct/2025 19:53:16] code 400, message Bad request syntax ('\x16\x03\x01\x01')
+2025-10-28 19:53:16,621 - werkzeug - INFO - 87.236.176.243 - - [28/Oct/2025 19:53:16] "[35m[1m\x16\x03\x01\x01[0m" HTTPStatus.BAD_REQUEST -
+2025-10-28 19:53:32,057 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 19:53:32,057 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 19:53:32,057 - werkzeug - INFO - 185.247.137.240 - - [28/Oct/2025 19:53:32] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-28 21:41:17,568 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-28 21:41:17,568 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-28 21:41:17,568 - werkzeug - INFO - 198.235.24.38 - - [28/Oct/2025 21:41:17] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-29 02:57:02,433 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 02:57:02,433 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 02:57:02,433 - werkzeug - INFO - 3.130.96.91 - - [29/Oct/2025 02:57:02] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-29 02:58:50,265 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 02:58:50,265 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 02:58:50,266 - werkzeug - INFO - 3.130.96.91 - - [29/Oct/2025 02:58:50] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-29 03:00:19,598 - werkzeug - ERROR - 3.130.96.91 - - [29/Oct/2025 03:00:19] code 400, message Bad request syntax ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x97\x01Ê\x14\x96Ú×')
+2025-10-29 03:00:19,598 - werkzeug - INFO - 3.130.96.91 - - [29/Oct/2025 03:00:19] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x97\x01Ê\x14\x96Ú×[0m" HTTPStatus.BAD_REQUEST -
+2025-10-29 03:01:46,981 - werkzeug - ERROR - 3.130.96.91 - - [29/Oct/2025 03:01:46] code 400, message Bad request syntax ('SSH-2.0-Go')
+2025-10-29 03:01:46,981 - werkzeug - INFO - 3.130.96.91 - - [29/Oct/2025 03:01:46] "[35m[1mSSH-2.0-Go[0m" HTTPStatus.BAD_REQUEST -
+2025-10-29 03:03:30,390 - werkzeug - ERROR - 3.130.96.91 - - [29/Oct/2025 03:03:30] code 400, message Bad request syntax ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03¿úzAB}\x80J¬U.ÜÔQù"iIâk')
+2025-10-29 03:03:30,390 - werkzeug - INFO - 3.130.96.91 - - [29/Oct/2025 03:03:30] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03¿úzAB}\x80J¬U.ÜÔQù"iIâk[0m" HTTPStatus.BAD_REQUEST -
+2025-10-29 04:56:57,920 - werkzeug - ERROR - 66.132.153.128 - - [29/Oct/2025 04:56:57] code 400, message Bad request version ('À\x14À')
+2025-10-29 04:56:57,920 - werkzeug - INFO - 66.132.153.128 - - [29/Oct/2025 04:56:57] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03Ä;ÍÌ\x93\x9f\x90|\x87\x96¨-=æ\x84Ä)%\x7f¥þªo·î\x98¯6R\x1aór Wº-Zjð@Y\x8däO\\n[<\x86¡}\x96ÙVY·#Ê\x0fIÌ\x02í¡¡\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-29 04:57:01,914 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 04:57:01,914 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 04:57:01,914 - werkzeug - INFO - 66.132.153.128 - - [29/Oct/2025 04:57:01] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-29 04:57:06,168 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 04:57:06,168 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 04:57:06,169 - werkzeug - INFO - 66.132.153.128 - - [29/Oct/2025 04:57:06] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-29 04:57:07,767 - werkzeug - ERROR - 66.132.153.128 - - [29/Oct/2025 04:57:07] code 505, message Invalid HTTP version (2.0)
+2025-10-29 04:57:07,767 - werkzeug - INFO - 66.132.153.128 - - [29/Oct/2025 04:57:07] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2025-10-29 04:57:13,307 - werkzeug - ERROR - 66.132.153.128 - - [29/Oct/2025 04:57:13] code 505, message Invalid HTTP version (2.0)
+2025-10-29 04:57:13,307 - werkzeug - INFO - 66.132.153.128 - - [29/Oct/2025 04:57:13] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2025-10-29 04:57:14,118 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 04:57:14,118 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 04:57:14,118 - werkzeug - INFO - 66.132.153.128 - - [29/Oct/2025 04:57:14] "[33mGET /security.txt HTTP/1.1[0m" 404 -
+2025-10-29 07:49:04,784 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 07:49:04,784 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 07:49:04,784 - werkzeug - INFO - 66.132.153.130 - - [29/Oct/2025 07:49:04] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-29 07:49:05,868 - werkzeug - ERROR - 66.132.153.130 - - [29/Oct/2025 07:49:05] code 505, message Invalid HTTP version (2.0)
+2025-10-29 07:49:05,868 - werkzeug - INFO - 66.132.153.130 - - [29/Oct/2025 07:49:05] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2025-10-29 07:49:09,994 - werkzeug - ERROR - 66.132.153.130 - - [29/Oct/2025 07:49:09] code 505, message Invalid HTTP version (2.0)
+2025-10-29 07:49:09,994 - werkzeug - INFO - 66.132.153.130 - - [29/Oct/2025 07:49:09] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2025-10-29 07:49:11,551 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 07:49:11,551 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 07:49:11,551 - werkzeug - INFO - 66.132.153.130 - - [29/Oct/2025 07:49:11] "[33mGET /sitemap.xml HTTP/1.1[0m" 404 -
+2025-10-29 08:17:44,346 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 08:17:44,346 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 08:17:44,347 - werkzeug - INFO - 3.132.23.201 - - [29/Oct/2025 08:17:44] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-29 08:18:04,752 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 08:18:04,752 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 08:18:04,753 - werkzeug - INFO - 3.132.23.201 - - [29/Oct/2025 08:18:04] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-29 08:18:46,374 - werkzeug - ERROR - 3.132.23.201 - - [29/Oct/2025 08:18:46] code 400, message Bad request version ('À\x14À')
+2025-10-29 08:18:46,374 - werkzeug - INFO - 3.132.23.201 - - [29/Oct/2025 08:18:46] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03N\x1fe}Çl\x9c!Ë§%È\x94ÚpK\x81;Ã©½¯ýßTY¶Ëæ\x87L¢\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-29 08:19:17,419 - werkzeug - ERROR - 3.132.23.201 - - [29/Oct/2025 08:19:17] code 400, message Bad request syntax ('SSH-2.0-Go')
+2025-10-29 08:19:17,419 - werkzeug - INFO - 3.132.23.201 - - [29/Oct/2025 08:19:17] "[35m[1mSSH-2.0-Go[0m" HTTPStatus.BAD_REQUEST -
+2025-10-29 08:19:45,160 - werkzeug - ERROR - 3.132.23.201 - - [29/Oct/2025 08:19:45] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03«N^\x9cÀìhà\x0fó¤ð\x88Ê[')
+2025-10-29 08:19:45,160 - werkzeug - INFO - 3.132.23.201 - - [29/Oct/2025 08:19:45] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03«N^\x9cÀìhà\x0fó¤ð\x88Ê[\x09jµj\x83b[0m" HTTPStatus.BAD_REQUEST -
+2025-10-29 08:56:19,922 - werkzeug - ERROR - 64.62.156.162 - - [29/Oct/2025 08:56:19] code 400, message Bad request version ('À\x14À')
+2025-10-29 08:56:19,922 - werkzeug - INFO - 64.62.156.162 - - [29/Oct/2025 08:56:19] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03Åé÷\x06\x1c$/Ú£ã#@<â\x05LjÔ\x8b®oR6z\x08[B \x00\x04¸»\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-29 11:16:40,200 - api_qa_sse - INFO - 全局模型已初始化，跳过模型加载。
+2025-10-29 11:16:40,200 - api_qa_sse - INFO - RAG队列服务已在运行，跳过启动
+2025-10-29 11:16:40,200 - werkzeug - INFO - 205.210.31.95 - - [29/Oct/2025 11:16:40] "[33mGET / HTTP/1.1[0m" 404 -
+2025-10-29 11:36:15,701 - werkzeug - ERROR - 185.226.197.70 - - [29/Oct/2025 11:36:15] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00\x9d\x01\x00\x00\x99\x03\x03÷\x05´\x99$aû)&&@`ii\x11($%\x99\x91£|¢8Ì÷ú2\x88\x83à\x03\x00\x00BÀ\x11À\x07À\x13À')
+2025-10-29 11:36:15,701 - werkzeug - INFO - 185.226.197.70 - - [29/Oct/2025 11:36:15] "[35m[1m\x16\x03\x01\x00\x9d\x01\x00\x00\x99\x03\x03÷\x05´\x99$aû)&&@`ii\x11($%\x99\x91£|¢8Ì÷ú2\x88\x83à\x03\x00\x00BÀ\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2025-10-29 11:36:24,617 - werkzeug - ERROR - 185.226.197.67 - - [29/Oct/2025 11:36:24] code 400, message Bad request version ('À\x14À')
+2025-10-29 11:36:24,617 - werkzeug - INFO - 185.226.197.67 - - [29/Oct/2025 11:36:24] "[35m[1m\x16\x03\x01\x00\x9d\x01\x00\x00\x99\x03\x030\x90©x\x0bð\x84eÑúAÇp§»DN\x9d\x09Y\x12\x84\x93,N¬Ô\x95Ïv®\x07\x00\x00BÀ\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -

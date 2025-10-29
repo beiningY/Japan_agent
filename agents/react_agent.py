@@ -12,7 +12,6 @@ class ReActAgent(CoreBaseAgent, ABC):
     子类实现 think() 判定是否需要执行动作；实现 act() 执行动作。
     """
 
-    # LLM 依赖由具体实现类自行管理（以避免与现有 openai/camel 代码冲突）
     llm: Optional[object] = None
 
     max_steps: int = 10
