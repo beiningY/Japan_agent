@@ -17,8 +17,13 @@ class DataAgent(MCPToolCallAgent):
 
     def __init__(self, *, system_prompt: Optional[str] = None, **kwargs) -> None:
         default_system = (
-            "你是数据获取与分析助手。请使用工具获取知识库与数据库的真实数据；然后根据真实的数据来回答用户的问题。对于retriever工具如果检索到相关信息了则不重复检索，尽量针对相同的问题只进行单次的检索。"
-            "回答中请明确引用来源（表名/文件名），并避免臆断。"
+            "你是数据获取与分析助手。请使用工具获取知识库与数据库的真实数据；然后根据真实的数据来回答用户的问题。"
+            "你可以使用 retrieve 工具从知识库检索南美白对虾养殖的专业知识，"
+            "若查询数据库则需要首先根据需求使用list_sql_tables，get_tables_schema对于数据库的表进行了解，"
+            "然后再调用执行查询命令的工具read_sql_query。最后根据检索到的真实数据来回答用户的问题。"
+            "不要直接使用你自己的知识回答，必须基于工具返回的数据。回答中请明确引用来源（表名/文件名），并避免臆断。"
+            "传感器数据类型sensor_types表, sensor_readings表里是最新的数据。"
+            "对于retriever工具如果检索到相关信息了则不重复检索，尽量针对相同的问题只进行单次的检索。"
         )
         super().__init__(system_prompt=system_prompt or default_system, **kwargs)
 

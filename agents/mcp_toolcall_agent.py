@@ -31,12 +31,12 @@ class MCPToolCallAgent(ReActAgent):
     name: str = "mcp-toolcall-agent"
     description: Optional[str] = "Agent with MCP toolcalls"
 
-    model: str = "gpt-4o-mini"
+    model: str = "gpt-5"
     max_retries: int = 3  # 最大重试次数（含首次共 1+max_retries 次尝试）
-    request_timeout_seconds: float = 40.0  # 单次请求超时时间
+    request_timeout_seconds: float = 120.0  # 单次请求超时时间
     initial_retry_backoff_seconds: float = 0.8  # 指数退避初始等待
-    max_tool_calls: int = 10  # 最大工具调用次数，避免过度检索
-    info_sufficient_threshold: int = 5  # 判断信息充足的工具调用次数阈值
+    max_tool_calls: int = 6  # 最大工具调用次数，避免过度检索
+    info_sufficient_threshold: int = 3  # 判断信息充足的工具调用次数阈值
     
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
