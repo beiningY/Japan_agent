@@ -9,7 +9,7 @@ from transformers import AutoTokenizer
 import logging
 import torch
 import gc
-
+from models.model_manager import ModelManager
 logger = logging.getLogger("Camel_RAG")
 logger.setLevel(logging.INFO)
 
@@ -17,20 +17,10 @@ class CamelRAG:
     def __init__(self, collection_name):
         self.collection_name = collection_name
         self.model_manager = ModelManager()
-        self.config = self.model_manager.get_config()
-        self.init_vector_store()
-        os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
-    def init_vector_store(self):
-        """初始化或者加载向量存储"""
-        # 只在需要时加载embedding模型
-        embedding_model = self.model_manager.get_embedding_model()
-        self.vector_storage = QdrantStorage(
-            vector_dim=embedding_model.get_output_dim(),
-            path="data/vector_data",  
-            collection_name=self.collection_name,
-        )
-        self.vr = VectorRetriever(embedding_model=embedding_model, storage=self.vector_storage)
+        self.is_model_init = self.model_manager.is_initialized()
+        if not self.is_model_init:
+            self.model_manager.initialize_models()
+        self.vectorstore = self.model_manager.get_vectorstore(self.collection_name)
 
     def embedding(self, data_path = None, data = None, chunk_type = chunk_data_by_title, max_tokens = 500):
         """向量化"""

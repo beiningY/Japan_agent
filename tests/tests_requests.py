@@ -175,7 +175,7 @@ def test_stream_qa():
     params = {
         "session_id": str(uuid.uuid4()),
         "agent_type": "japan",
-        "query": "请检查南美白对虾养殖池的各个数据有没有异常",
+        "query": "请检查南美白对虾养殖池的传感器显示的数据有没有异常",
         # "query": "当前监测显示：DO=3.4 mg/L，比昨日下降了 0.8 单位，pH=8.0，水温 28.5°C。请问是否需要立即调整供氧或循环策略？如果需要，应优先采取哪些操作？顺便帮我检查一下数据库里的最新数据是不是这样的",
         "config": json.dumps(config, ensure_ascii=False)  
     }
