@@ -105,9 +105,9 @@ def get_kb_list():
 def add_file(file_name: str, kb_name: str="all_data"):
     kb = LangRAG(
         persist_path = "data/vector_data",
-        collection_name = kb_name
+        collection_name = kb_name 
     )
-    kb.add_file(file_name)
+    kb.add_file(file_name)# 文件路径
     return True
 def deletefile(file_name: str, kb_name: str="all_data"):
     kb = LangRAG(
@@ -117,8 +117,8 @@ def deletefile(file_name: str, kb_name: str="all_data"):
     kb.delete_file(file_name)
     return True
 if __name__ == "__main__":
-    kb_name = "all_data"
-    query="今天天气怎么样"
+    kb_name = "test"
+    # query="今天天气怎么样"
     # 创建知识库
     #kb = create_kb(kb_name)
 
@@ -126,6 +126,5 @@ if __name__ == "__main__":
     #delete_kb(kb_name)
 
     # 提问
-    result = ask(query,kb_name=kb_name)
-
-    print(result)
+    #result = ask(query,kb_name=kb_name)
+    add_file("data/raw_data/test/8024P-1 综合工程管理 session 1.pdf",kb_name=kb_name)
