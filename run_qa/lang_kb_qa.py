@@ -139,8 +139,8 @@ if __name__ == "__main__":
     #kb = create_kb(kb_name)
 
     # 删除知识库
-    # delete(kb_name)
+    delete(kb_name)
 
     # 提问
-    #result = ask(query,kb_name=kb_name)
-    add_file("data/raw_data/test/8024P-1 综合工程管理 session 1.pdf",kb_name=kb_name)
+    # result = ask(query,kb_name=kb_name)
+    # add_file("data/raw_data/test/8024P-1 综合工程管理 session 1.pdf",kb_name=kb_name)
