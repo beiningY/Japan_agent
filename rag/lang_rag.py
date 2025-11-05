@@ -43,7 +43,7 @@ class LangRAG:
         collection_name: str = "all_data",
         embedding_model_path: str = "models/multilingual-e5-large",
         vector_size: int = 1024,
-        chunk_size: int = 200,
+        chunk_size: int = 500,
         chunk_overlap: int = 50,
     ):
         self.persist_path = persist_path
@@ -58,13 +58,13 @@ class LangRAG:
         self._initialize()
 
     def _initialize(self):
-        """使用全局集合管理器初始化"""
-        logger.info("使用全局集合管理器初始化...")
+        """全局知识库集合管理器初始化"""
+        logger.info("全局知识库集合管理器初始化...")
         
         # 检查全局集合管理器状态
-        logger.info(f"集合管理器状态检查: {id(collection_manager)}")
+        logger.info(f"全局知识库集合管理器状态检查: {id(collection_manager)}")
         is_init = collection_manager.is_initialized()
-        logger.info(f"全局集合管理器初始化状态: {is_init}")
+        logger.info(f"全局知识库集合管理器初始化状态: {is_init}")
         
         if not is_init:
             logger.warning("全局集合管理器未初始化，尝试初始化")
@@ -175,8 +175,11 @@ class LangRAG:
             logger.info(f"知识库{self.collection_name}删除完成")
         
         # 删除原始文件夹
-        shutil.rmtree(f"{raw_data_path}")
-        logger.info(f"文件夹{raw_data_path}删除完成")
+        if os.path.exists(raw_data_path):
+            shutil.rmtree(f"{raw_data_path}")
+            logger.info(f"文件夹{raw_data_path}删除完成")
+        else:
+            logger.info(f"文件夹{raw_data_path}不存在")
         
         return True
     

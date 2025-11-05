@@ -11,6 +11,8 @@
 """
 from rag.lang_rag import LangRAG
 from langchain_openai import ChatOpenAI
+from models.model_manager import model_manager
+from models.collection_manager import collection_manager
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -118,12 +120,26 @@ def deletefile(file_name: str, kb_name: str="all_data"):
     return True
 if __name__ == "__main__":
     kb_name = "test"
+    # 初始化全局模型与集合管理器，确保后续操作可用
+    try:
+        model_manager.initialize_models(
+            embedding_model_path="models/multilingual-e5-large",
+            vector_persist_path="data/vector_data",
+            vector_size=1024
+        )
+        collection_manager.initialize_collections(
+            persist_path="data/vector_data",
+            vector_size=1024,
+            preload_collections=[kb_name]
+        )
+    except Exception as e:
+        logger.warning(f"初始化全局管理器失败，将尝试降级模式：{e}")
     # query="今天天气怎么样"
     # 创建知识库
     #kb = create_kb(kb_name)
 
     # 删除知识库
-    #delete_kb(kb_name)
+    # delete(kb_name)
 
     # 提问
     #result = ask(query,kb_name=kb_name)

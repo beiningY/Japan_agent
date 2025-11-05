@@ -55,16 +55,16 @@ print("=== Collections 列表 ===")
 print(client.get_collections())
 
 # 2. 指定要对比的 collection 名称
-camel_collection = "japan_shrimp"
+name_collection = "test1"
 # 3. 查看 collection 配置 (vector size / distance 等)
 print("\n=== ALL Collection Info ===")
-print(client.get_collection(camel_collection))
+print(client.get_collection(name_collection))
 
 # 4. 查看前几条数据（包含向量）
 print("\n=== CAMEL 数据样例 ===")
 camel_points, next_page = client.scroll(
-    collection_name=camel_collection,
-    limit=10,
+    collection_name=name_collection,
+    limit=100,
     with_payload=True,   # 默认 True，可以省略
     with_vectors=True    # 关键参数：把向量也取出来
 )
