@@ -1,5 +1,5 @@
 {
-    "mode": "auto",
+    "mode": "single",
     "rag": {
     "collection_name": "all_data",
     "topk_single": 5,

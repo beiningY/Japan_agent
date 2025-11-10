@@ -1,9 +1,9 @@
 {
     "mode": {
         "type": "string",
-        "description": "选择专家智能体的模式single单智能体模式、roleplay多轮场景对话模式、auto专家自动模式",
-        "default": "auto",
-        "enum": ["single", "roleplay", "auto"]
+        "description": "默认single模式",
+        "default": "single",
+        "enum": ["single"]
     },
     "rag": {
         "description": "启动增强检索模式，必须启用",
@@ -16,16 +16,7 @@
             },
             "topk_single": {    
                 "type": "int",
-                "description": "单次对话的RAG的topk，如果mode是single或auto则必填",
-                "default": 5,
-                "range": {
-                    "min": 1,
-                    "max": 15
-                }
-            },
-            "topk_multi": {
-                "type": "int",
-                "description": "多轮对话RAG的topk，如果mode是roleplay或auto则必填",
+                "description": "单次对话的RAG的topk，mode是single必填",
                 "default": 5,
                 "range": {
                     "min": 1,

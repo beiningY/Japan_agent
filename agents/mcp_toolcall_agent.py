@@ -22,7 +22,7 @@ class ToolCall:
 
 
 class MCPToolCallAgent(ReActAgent):
-    """使用自研 ReAct 架构 + OpenAI tools + MCP 网关，统一数据获取。
+    """使用 ReAct 架构 + OpenAI tools + MCP 网关，统一数据获取。
 
     - think(): 使用 Chat Completions 的 tools 模式，让 LLM 自动选择 MCP 工具
     - act(): 通过 ToolRegistry 调用 MCP 工具，写入 tool 消息
