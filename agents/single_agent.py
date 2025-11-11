@@ -11,7 +11,7 @@ from __future__ import annotations
 import os
 import json
 import asyncio
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Generator
 from openai import OpenAI
 from ToolOrchestrator.client.client import MultiServerMCPClient
 from ToolOrchestrator.core.config import settings
@@ -33,7 +33,7 @@ class SingleAgent:
     def __init__(
         self,
         system_prompt: Optional[str] = None,
-        model: str = "gpt-5",
+        model: str = "gpt-4o",
         max_steps: int = 3
     ):
         """
@@ -113,7 +113,6 @@ SQL语句："""
             response = self.client.chat.completions.create(
                 model="gpt-5", 
                 messages=[{"role": "user", "content": sql_prompt}],
-                temperature=0.1,  
                 max_completion_tokens=5000
             )
             
@@ -128,57 +127,45 @@ SQL语句："""
             logger.error(f"SQL生成失败: {e}，使用默认查询")
             return "SELECT * FROM sensor_readings ORDER BY recorded_at DESC LIMIT 10"
     
-    async def run(self, user_query: str, collection_name: str = "japan_shrimp", k: int = 5) -> str:
+    def run(self, user_query: str, collection_name: str = "japan_shrimp", k: int = 5) -> Generator[Dict[str, Any], None, None]:
         """
-        执行查询任务 - 固定执行两个工具，然后拼接结果生成答案
-        
-        Args:
-            user_query: 用户查询
-            collection_name: 知识库名称
-            k: 检索返回的结果数量
-            
-        Returns:
-            最终答案
+        执行查询任务（同步生成器）- 固定执行两个工具，然后拼接结果生成答案，流式返回。
         """
-        # 记录开始时间
         import time
         start_time = time.time()
-        
-        # 确保工具已初始化
-        await self.initialize()
-        
-        logger.info(f"开始处理查询: {user_query}")
-        
-        # 步骤1&2: 并行执行SQL生成和知识库检索（互不依赖，可同时进行）
-        logger.info("=== 步骤1&2: 并行执行SQL生成和知识库检索 ===")
-        sql_query, retrieve_result = await asyncio.gather(
-            self._generate_sql(user_query),
-            self.mcp_client.invoke("retrieve", {
-                "collection_name": collection_name,
-                "question": user_query,
-                "k": k
+
+        async def _prepare() -> Dict[str, Any]:
+            # 确保工具已初始化
+            await self.initialize()
+
+            logger.info(f"开始处理查询: {user_query}")
+
+            # 步骤1&2: 并行执行SQL生成和知识库检索
+            logger.info("=== 步骤1&2: 并行执行SQL生成和知识库检索 ===")
+            sql_query, retrieve_result = await asyncio.gather(
+                self._generate_sql(user_query),
+                self.mcp_client.invoke("retrieve", {
+                    "collection_name": collection_name,
+                    "question": user_query,
+                    "k": k
+                })
+            )
+            logger.info(f"SQL生成完成: {sql_query}")
+            logger.info("知识库检索完成")
+
+            # 步骤3: 执行传感器数据查询
+            logger.info("=== 步骤3: 传感器数据查询 ===")
+            sensor_result = await self.mcp_client.invoke("read_query_for_sensor_readings", {
+                "table_queries": [
+                    {
+                        "query": sql_query
+                    }
+                ]
             })
-        )
-        logger.info(f"SQL生成完成: {sql_query}")
-        logger.info(f"知识库检索完成")
-        
-        # 步骤3: 执行传感器数据查询（依赖SQL语句，必须等待步骤1完成）
-        logger.info("=== 步骤3: 传感器数据查询 ===")
-        sensor_result = await self.mcp_client.invoke("read_query_for_sensor_readings", {
-            "table_queries": [
-                {
-                    "query": sql_query
-                }
-            ]
-        })
-        logger.info(f"传感器数据查询结果: {sensor_result}")
-        logger.info(f"传感器数据查询完成")
-        
-        # 步骤4: 将结果拼接到prompt中
-        logger.info("=== 步骤4: 生成最终答案 ===")
-        
-        # 构造包含数据的增强prompt
-        enhanced_prompt = f"""请基于以下数据回答用户问题。
+            logger.info("传感器数据查询完成")
+
+            # 构造包含数据的增强prompt
+            enhanced_prompt = f"""请基于以下数据回答用户问题。
 
 【用户问题】
 {user_query}
@@ -190,51 +177,62 @@ SQL语句："""
 查询结果: {json.dumps(sensor_result, ensure_ascii=False, indent=2)}
 
 请综合以上数据，给出简洁准确的回答。如果无关则忽略数据信息，直接回答用户问题。"""
-        
-        # 计算输入token数量（粗略估计：中文按2字符/token，英文按4字符/token）
+
+            return {
+                "enhanced_prompt": enhanced_prompt
+            }
+
+        # 运行准备阶段（一次事件循环）
+        try:
+            prep = asyncio.run(_prepare())
+        except Exception as e:
+            logger.error(f"准备阶段失败: {e}")
+            yield {
+                "type": "error",
+                "content": f"准备阶段失败: {e}"
+            }
+            return
+
+        enhanced_prompt = prep["enhanced_prompt"]
+
+        # 计算输入token数量（粗略估计）
         def estimate_tokens(text: str) -> int:
-            """粗略估计token数量"""
             chinese_chars = sum(1 for c in text if '\u4e00' <= c <= '\u9fff')
             other_chars = len(text) - chinese_chars
             return int(chinese_chars / 2 + other_chars / 4)
-        
+
         system_tokens = estimate_tokens(self.system_prompt)
         user_tokens = estimate_tokens(enhanced_prompt)
         total_input_tokens = system_tokens + user_tokens
-        
         logger.info(f"最终答案生成 - 输入token估计: system={system_tokens}, user={user_tokens}, total={total_input_tokens}")
-        
-        # 调用OpenAI生成最终答案
+
+        # 步骤4: 调用OpenAI生成最终答案（流式）
         try:
-            response = self.client.chat.completions.create(
+            response = self.client.responses.create(
                 model=self.model,
-                messages=[
+                input=[
                     {"role": "system", "content": self.system_prompt},
                     {"role": "user", "content": enhanced_prompt}
-                ]
+                ],
+                stream=True
             )
-            
-            final_answer = response.choices[0].message.content
-            
-            # 获取实际的token使用情况
-            usage = response.usage
-            if usage:
-                logger.info(f"实际token使用 - 输入: {usage.prompt_tokens}, 输出: {usage.completion_tokens}, 总计: {usage.total_tokens}")
-            
-            # 计算总响应时间
-            end_time = time.time()
-            total_time = end_time - start_time
-            logger.info(f"✅ 查询完成 - 总响应时间: {total_time:.2f}秒")
-            
-            return final_answer
-            
+
+            for event in response:
+                yield {
+                    "status": "stream",
+                    "content": event
+                }
+
+            yield {
+                "status": "final",
+                "content": "查询处理结束"
+            }
         except Exception as e:
             logger.error(f"OpenAI API 调用失败: {e}")
-            # 即使失败也记录总时间
-            end_time = time.time()
-            total_time = end_time - start_time
-            logger.error(f"❌ 查询失败 - 总响应时间: {total_time:.2f}秒")
-            return f"抱歉，生成答案时出错: {e}"
+            yield {
+                "type": "error",
+                "content": f"抱歉，生成答案时出错: {e}"
+            }
     
     async def cleanup(self):
         """清理资源"""

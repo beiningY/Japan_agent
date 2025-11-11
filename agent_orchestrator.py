@@ -19,8 +19,8 @@ class SingleTurnConfig(BaseModel):
     对于single agent进行配置和选择
     """
     system_prompt: Optional[str] = "你是一个查询助手。你可以通过工具查询循环水南美白对虾养殖系统设计及操作手册张驰和ESG综合工程管理文档的内容，也可以通过工具查询sensor_readings表获取传感器数据。请基于工具返回的真实数据回答用户问题，并明确引用来源。"
-    model: Optional[str] = "gpt-5"
-    max_steps: Optional[int] = 2
+    model: Optional[str] = "gpt-4o"
+    max_steps: Optional[int] = 4
 
 
 class OrchestrationConfig(BaseModel):
@@ -47,44 +47,9 @@ def _run_single(query: str, cfg) -> Generator[Dict[str, Any], None, str]:
         max_steps=cfg.single.max_steps
     )
 
-    try:
-        # 发送开始信号
-        yield {
-            "type": "start",
-            "content": "开始处理查询..."
-        }
-        
-        # 执行agent（直接使用asyncio.run）
-        final_answer = asyncio.run(agent.run(query))        
-        # 返回最终答案
-        if final_answer:
-            logger.info(f"=== SingleAgent 完成，最终答案: {final_answer}... ===")
-            yield {
-                "status": "final",
-                "answer": final_answer
-            }
-        else:
-            logger.warning("=== SingleAgent 执行完毕但未获得明确答案 ===")
-            yield {
-                "status": "final",
-                "answer": "抱歉，未能生成有效回答。"
-            }
-            
-    except Exception as e:
-        logger.exception(f"SingleAgent 运行异常: {e}")
-        yield {
-            "status": "error",
-            "reason": str(e)
-        }
-    
-    finally:
-        # 清理资源
-        try:
-            asyncio.run(agent.cleanup())
-        except:
-            pass
-    
-    return "completed"
+    result = agent.run(query)        
+    for event in result:
+        yield event
 
 
 def main(query: str, config: Dict[str, Any] | None = None) -> Generator[Dict[str, Any], None, str]:

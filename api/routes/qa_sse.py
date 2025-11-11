@@ -160,28 +160,40 @@ def stream():
                     logger.info(f"发送思考信息: {data.get('content', '')[:50]}...")
                     continue"""
                 
-                # 处理最终答案
-                if data.get("status") == "final":
+                # 处理答案
+                if data.get("status") == "stream":
+                    stream_message = {
+                        "session_id": session_id,
+                        "timestamp": time.strftime('%H:%M:%S'),
+                        "agent_type": agent_type,
+                        "message_id": message_id,
+                        "content": data.get("content", ""),
+                        "data": {
+                            "status": "stream"
+                        }
+                    }
+                    logger.info(f"json_data的数据和类型: {json_data}, {type(json_data)}")
+                    json_data = json.dumps(stream_message, ensure_ascii=False)
+                    yield sse_format(json_data)
+                    logger.info(f"发送流式答案: {json_data}")
+                elif data.get("status") == "final":
                     final_message = {
                         "session_id": session_id,
                         "timestamp": time.strftime('%H:%M:%S'),
                         "agent_type": agent_type,
                         "message_id": message_id,
-                        "content": "查询处理完成，返回最终答案",
+                        "content": data.get("content", ""),
                         "data": {
-                            "status": "completed",
-                            "answer": data.get("answer", "")
+                            "status": "completed"
                         }
                     }
                     json_data = json.dumps(final_message, ensure_ascii=False)
                     yield sse_format(json_data)
-                    logger.info(f"发送最终答案: {json_data[:200]}...")
+                    logger.info(f"发送最终答案: {json_data}")
                     final_sent = True
                     break
-                
-                # 处理错误
-                if data.get("status") == "error" or data.get("type") == "error":
-                    error_data = json.dumps({"error": data.get("reason", "unknown error")}, ensure_ascii=False)
+                elif data.get("status") == "error" or data.get("type") == "error":
+                    error_data = json.dumps({"error": data.get("content", "unknown error")}, ensure_ascii=False)
                     yield sse_format(error_data)
                     logger.info(f"发送错误: {error_data}")
                     final_sent = True
