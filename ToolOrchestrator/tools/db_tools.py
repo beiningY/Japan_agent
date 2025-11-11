@@ -76,10 +76,10 @@ async def get_tables_schema(table_names: list) -> dict:
             conn.close()
             logger.debug("数据库连接已关闭。")
 
-async def read_sql_query(table_queries: list) -> dict:
+async def read_query_for_sensor_readings(table_queries: list) -> dict:
     """执行多条 SQL 查询语句并返回结果"""
     conn = None
-    logger.info(f"调用工具: read_sql_query(table_queries={table_queries})")
+    logger.info(f"调用工具: read_query_for_sensor_readings(table_queries={table_queries})")
     try:
         conn = await aiomysql.connect(**DB_CONFIG)
         async with conn.cursor(aiomysql.DictCursor) as cursor:
@@ -107,7 +107,7 @@ async def read_sql_query(table_queries: list) -> dict:
             logger.info(f"📦 查询结果汇总: {results}")
             return {"results": results}
     except Exception as e:
-        logger.error(f"❌ read_sql_query 出错: {e}", exc_info=True)
+        logger.error(f"❌ read_query_for_sensor_readings 出错: {e}", exc_info=True)
         return {"error": f"数据库连接失败: {str(e)}"}
     finally:
         if conn:

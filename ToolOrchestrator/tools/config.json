@@ -29,9 +29,9 @@
     }
   },
   {
-    "name": "read_sql_query",
-    "handler": "db_tools.read_sql_query",
-    "description": "执行只读的SQL查询来从数据库获取信息",
+    "name": "read_query_for_sensor_readings",
+    "handler": "db_tools.read_query_for_sensor_readings",
+    "description": "执行只读的SQL查询来从数据库获取传感器数据sensor_readings表里的数据",
     "risk_level": "HIGH",
     "enabled": true,
     "parameters": {
@@ -39,7 +39,7 @@
       "properties": {
         "table_queries": {
           "type": "array",
-          "description": "要执行的SQL查询列表，每项为包含 query 字段的对象",
+          "description": "要执行的SQL查询列表，每项为包含 query 字段的对象，query为要执行的SQL查询语句，查询传感器数据sensor_readings表里的数据",
           "items": {
             "type": "object",
             "properties": {
@@ -107,7 +107,7 @@
       "properties": {
         "collection_name": {
           "type": "string",
-          "enum": ["japan_shrimp", "bank"],
+          "enum": ["japan_shrimp"],
           "description": "已有知识库的名称"
         },
         "question": {

@@ -133,3 +133,13 @@ class ToolRegistry:
     def get_tool_config(self, name: str) -> dict:
         """获取工具配置"""
         return self._tools.get(name)
+
+    async def call_tool(self, name: str, arguments: Dict[str, Any]) -> Any:
+        """调用已注册工具（带安全包装的处理器）"""
+        tool = self._tools.get(name)
+        if not tool:
+            raise ValueError(f"未注册的工具: {name}")
+        handler = tool.get("handler")
+        if not handler:
+            raise RuntimeError(f"工具 {name} 未初始化处理器")
+        return await handler(**arguments)

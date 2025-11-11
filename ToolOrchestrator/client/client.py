@@ -98,6 +98,8 @@ class MultiServerMCPClient:
                 return {"status": "ok", "result": await _db_call(self._db.get_tables_schema(args.get("table_names", [])))}
             if tool_name == "read_sql_query":
                 return {"status": "ok", "result": await _db_call(self._db.read_sql_query(args.get("table_queries", [])))}
+            if tool_name == "read_query_for_sensor_readings":
+                return {"status": "ok", "result": await _db_call(self._db.read_query_for_sensor_readings(args.get("table_queries", [])))}
 
             # 联网搜索工具
             if tool_name == "web_search":

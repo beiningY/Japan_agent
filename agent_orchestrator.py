@@ -2,7 +2,7 @@ from __future__ import annotations
 import asyncio
 from typing import Any, Dict, Generator, Optional
 from pydantic import BaseModel, Field
-from agents import DataAgent
+from agents.single_agent import SingleAgent
 from utils.logger import get_logger
 logger = get_logger(__name__)
 
@@ -11,16 +11,16 @@ class RAGConfig(BaseModel):
     RAGConfig 配置类，用于配置 RAG 相关参数
     """
     collection_name: Optional[str] = "japan_shrimp"
-    topk_single: Optional[int] = 5
+    topk_single: Optional[int] = 3
 
 
 class SingleTurnConfig(BaseModel):
     """
     对于single agent进行配置和选择
     """
-    system_prompt: Optional[str] = "你是数据获取与分析助手。请使用工具获取知识库与数据库的真实数据；然后根据真实的数据来回答用户的问题。回答中请明确引用来源（表名/文件名），并避免臆断。"
-    temperature: Optional[float] = 0.4
-    max_tokens: Optional[int] = 4096
+    system_prompt: Optional[str] = "你是一个查询助手。你可以通过工具查询循环水南美白对虾养殖系统设计及操作手册张驰和ESG综合工程管理文档的内容，也可以通过工具查询sensor_readings表获取传感器数据。请基于工具返回的真实数据回答用户问题，并明确引用来源。"
+    model: Optional[str] = "gpt-5"
+    max_steps: Optional[int] = 2
 
 
 class OrchestrationConfig(BaseModel):
@@ -34,107 +34,44 @@ class OrchestrationConfig(BaseModel):
 
 def _run_single(query: str, cfg) -> Generator[Dict[str, Any], None, str]:
     """
-    执行 DataAgent 并逐步记录所有输出内容。
-    传输过程中的工具调用、思考等有效信息，最终返回答案。
+    执行 SingleAgent 并返回结果。
+    使用简化的方式直接调用agent.run()获取最终答案。
     """
-    logger.info("=== 启动 DataAgent 单轮运行 ===")
+    logger.info("=== 启动 SingleAgent 单轮运行 ===")
     logger.info(f"用户输入: {query}")
 
     # 初始化 Agent
-    agent = DataAgent(system_prompt=cfg.single.system_prompt)
-    agent.update_memory("user", query)
-
-    step_index = 0
-    max_steps = 10
-    final_answer = None
+    agent = SingleAgent(
+        system_prompt=cfg.single.system_prompt,
+        model=cfg.single.model,
+        max_steps=cfg.single.max_steps
+    )
 
     try:
-        from agents.core_schema import AgentState
+        # 发送开始信号
+        yield {
+            "type": "start",
+            "content": "开始处理查询..."
+        }
         
-        while step_index < max_steps and agent.state != AgentState.FINISHED:
-            step_index += 1
-            logger.info(f"[Step {step_index}] 开始执行")
-            
-            try:
-                # 执行一步
-                result = asyncio.run(agent.step())
-                logger.info(f"[Step {step_index}] 完成: {result[:200] if result else 'None'}")
-                
-                # 获取最新的消息，提取有用信息
-                if agent.messages:
-                    last_msg = agent.messages[-1]
-                    
-                    # 如果是工具调用
-                    if last_msg.role == "tool":
-                        tool_name = last_msg.name or "unknown"
-                        yield {
-                            "type": "tool_call",
-                            "step": step_index,
-                            "tool_name": tool_name,
-                            "content": f"调用工具: {tool_name}"
-                        }
-                    
-                    # 如果是assistant的思考或回答
-                    elif last_msg.role == "assistant" and last_msg.content:
-                        content = last_msg.content
-                        # 过滤掉内部标记
-                        if content not in ("[tools] executing", "[tools_executed]", "Thinking complete - no action needed"):
-                            # 检查是否是最终答案
-                            if agent.state == AgentState.FINISHED:
-                                final_answer = content
-                                yield {
-                                    "type": "final_answer",
-                                    "step": step_index,
-                                    "content": content
-                                }
-                            else:
-                                yield {
-                                    "type": "thinking",
-                                    "step": step_index,
-                                    "content": content[:300]  # 限制长度
-                                }
-                
-            except Exception as e:
-                logger.exception(f"[Step {step_index}] 执行出错: {e}")
-                yield {
-                    "type": "error",
-                    "step": step_index,
-                    "status": "error",
-                    "reason": str(e)
-                }
-                break
-        
-        # 如果达到最大步数但还没有答案，尝试获取最后的回答
-        if not final_answer and agent.messages:
-            for msg in reversed(agent.messages):
-                if msg.role == "assistant" and msg.content:
-                    content = msg.content
-                    if content not in ("[tools] executing", "[tools_executed]", "Thinking complete - no action needed"):
-                        try:
-                            # 检查是否是JSON格式的工具结果
-                            import json
-                            json.loads(content)
-                        except:
-                            # 不是JSON，是自然语言回答
-                            final_answer = content
-                            break
-        
+        # 执行agent（直接使用asyncio.run）
+        final_answer = asyncio.run(agent.run(query))        
         # 返回最终答案
         if final_answer:
-            logger.info(f"=== DataAgent 完成，最终答案: {final_answer[:100]}... ===")
+            logger.info(f"=== SingleAgent 完成，最终答案: {final_answer}... ===")
             yield {
                 "status": "final",
                 "answer": final_answer
             }
         else:
-            logger.warning("=== DataAgent 执行完毕但未获得明确答案 ===")
+            logger.warning("=== SingleAgent 执行完毕但未获得明确答案 ===")
             yield {
                 "status": "final",
                 "answer": "抱歉，未能生成有效回答。"
             }
             
     except Exception as e:
-        logger.exception(f"DataAgent 运行异常: {e}")
+        logger.exception(f"SingleAgent 运行异常: {e}")
         yield {
             "status": "error",
             "reason": str(e)
@@ -164,26 +101,8 @@ def main(query: str, config: Dict[str, Any] | None = None) -> Generator[Dict[str
     cfg = OrchestrationConfig.model_validate(config or {})
     logger.info(f"Orchestration mode={cfg.mode}")
     
-    # 支持 "single" 和 "auto" 模式（都使用single agent）
-    if cfg.mode in ("single", "auto"):
+    # 支持 "single" 、 "auto" 和 "roleplay" 模式（都使用single agent）
+    if cfg.mode in ("single", "auto", "roleplay"):
         return (yield from _run_single(query, cfg))
     else:
-        raise ValueError(f"Invalid mode: {cfg.mode}. Supported modes: 'single', 'auto'")
-
-def test():
-    cfg = OrchestrationConfig.model_validate({
-        "mode": "single",
-        "rag": {
-            "collection_name": "japan_shrimp",
-            "topk_single": 5,
-        },
-        "single": {
-            "temperature": 0.4,
-            "max_tokens": 4096
-        }
-    })
-    for info in _run_single("请解释一下循环水养殖系统的原理", cfg):
-        print(info)
-
-if __name__ == "__main__":
-    test()
+        raise ValueError(f"Invalid mode: {cfg.mode}. Supported modes: 'single', 'auto', 'roleplay'")

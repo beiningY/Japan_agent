@@ -13,15 +13,8 @@ logger.setLevel(logging.INFO)
 
 sse = Blueprint("sse", __name__, url_prefix="/sse")
 
-# 会话状态：防止客户端自动重连造成重复执行
+# 会话状态：防止同一会话并发执行
 ACTIVE_SESSIONS = set()
-COMPLETED_SESSIONS = set()
-
-def cleanup_old_sessions():
-    """定期清理已完成的会话，大于一千条时清理到五百条"""
-    global COMPLETED_SESSIONS
-    if len(COMPLETED_SESSIONS) > 1000:  # 保留最近1000个
-        COMPLETED_SESSIONS = set(list(COMPLETED_SESSIONS)[-500:])  # 清理到500个
 
 
 @sse.before_app_request
@@ -66,6 +59,7 @@ def stream():
     try:
         if request.method == 'GET':
             logger.info(f"收到SSE请求{request}")
+            message_id = request.args.get('message_id', str(uuid.uuid4()))
             session_id = request.args.get('session_id', str(uuid.uuid4()))
             query = request.args.get('query', '请介绍日本陆上养殖项目')
             agent_type = request.args.get('agent_type', 'japan')
@@ -74,6 +68,7 @@ def stream():
         else:  # POST
             logger.info(f"收到SSE请求{request.get_json()}")
             data = request.get_json() or {}
+            message_id = data.get('message_id', str(uuid.uuid4()))
             session_id = data.get('session_id', str(uuid.uuid4()))
             query = data.get('query', '请介绍日本陆上养殖项目')
             agent_type = data.get('agent_type', 'japan')
@@ -83,16 +78,7 @@ def stream():
         return jsonify({"error": "收到SSE请求失败"}), 400
     logger.info(f"收到SSE请求 - Session ID: {session_id}, Query: {query}, Agent Type: {agent_type}")
     
-    # 清理旧会话
-    cleanup_old_sessions()
-
-    # 若会话已完成或正在进行，避免重复执行
-    if session_id in COMPLETED_SESSIONS:
-        logger.info(f"会话已完成，拒绝请求: {session_id}")
-        def empty_gen():
-            yield sse_format('{"error": "会话已完成"}')
-        return Response(empty_gen(), mimetype="text/event-stream",
-                        headers={'Cache-Control': 'no-cache', 'Connection': 'close', 'Access-Control-Allow-Origin': '*'})
+    # 检查会话是否正在进行中，避免并发执行
     if session_id in ACTIVE_SESSIONS:
         logger.info(f"会话进行中，拒绝重复请求: {session_id}")
         def empty_gen():
@@ -109,7 +95,7 @@ def stream():
                 "session_id": session_id,
                 "timestamp": time.strftime('%H:%M:%S'),
                 "agent_type": agent_type,
-                "message_id": str(uuid.uuid4()),
+                "message_id": message_id,
                 "content": f"开始处理查询: '{query}'",
                 "data": {
                     "status": "started"
@@ -143,7 +129,7 @@ def stream():
                         "session_id": session_id,
                         "timestamp": time.strftime('%H:%M:%S'),
                         "agent_type": agent_type,
-                        "message_id": str(uuid.uuid4()),
+                        "message_id": message_id,
                         "content": data.get("content", ""),
                         "data": {
                             "type": "tool_call",
@@ -162,7 +148,7 @@ def stream():
                         "session_id": session_id,
                         "timestamp": time.strftime('%H:%M:%S'),
                         "agent_type": agent_type,
-                        "message_id": str(uuid.uuid4()),
+                        "message_id": message_id,
                         "content": data.get("content", ""),
                         "data": {
                             "type": "thinking",
@@ -180,7 +166,7 @@ def stream():
                         "session_id": session_id,
                         "timestamp": time.strftime('%H:%M:%S'),
                         "agent_type": agent_type,
-                        "message_id": str(uuid.uuid4()),
+                        "message_id": message_id,
                         "content": "查询处理完成，返回最终答案",
                         "data": {
                             "status": "completed",
@@ -206,7 +192,6 @@ def stream():
             yield sse_format(error_data)
         # 若已发送最终答案，则直接结束连接，不再发送任何消息
         if final_sent:
-            COMPLETED_SESSIONS.add(session_id)
             if session_id in ACTIVE_SESSIONS:
                 ACTIVE_SESSIONS.remove(session_id)
             return
@@ -217,7 +202,7 @@ def stream():
                 "session_id": session_id,
                 "timestamp": time.strftime('%H:%M:%S'),
                 "agent_type": agent_type,
-                "message_id": str(uuid.uuid4()),
+                "message_id": message_id,
                 "content": "查询处理结束",
                 "data": {
                     "status": "completed",
@@ -233,7 +218,6 @@ def stream():
             yield sse_format(error_data)
         finally:
             # 清理会话状态
-            COMPLETED_SESSIONS.add(session_id)
             if session_id in ACTIVE_SESSIONS:
                 ACTIVE_SESSIONS.remove(session_id)
 
