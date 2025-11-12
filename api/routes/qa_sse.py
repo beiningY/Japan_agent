@@ -211,7 +211,7 @@ def stream():
                     }
                     json_data = json.dumps(final_message, ensure_ascii=False)
                     yield sse_format(json_data)
-                    logger.info(f"发送最终答案: {json_data}")
+                    logger.info(f"结束发送")
                     final_sent = True
                     break
                 elif data.get("status") == "error" or data.get("type") == "error":
