@@ -19,7 +19,7 @@ class SingleTurnConfig(BaseModel):
     对于single agent进行配置和选择
     """
     system_prompt: Optional[str] = "你是一个查询助手。你可以通过工具查询循环水南美白对虾养殖系统设计及操作手册张驰和ESG综合工程管理文档的内容，也可以通过工具查询sensor_readings表获取传感器数据。请基于工具返回的真实数据回答用户问题，并明确引用来源。"
-    model: Optional[str] = "gpt-4o"
+    model: Optional[str] = "gpt-4.1"
     max_steps: Optional[int] = 4
 
 

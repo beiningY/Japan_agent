@@ -190,6 +190,7 @@ def test_stream_qa():
 
         print("已连接到 SSE 流，等待消息...")
         message_count = 0
+        answer_parts = []
         for event in client.events():
             message_count += 1
             print(f"收到消息 {message_count}: {event.data}")
@@ -197,7 +198,21 @@ def test_stream_qa():
             # 解析消息检查是否完成
             try:
                 data = json.loads(event.data)
-                if data.get("data", {}).get("status") == "completed":
+                status = data.get("data", {}).get("status")
+                if status == "stream":
+                    content = data.get("content", "")
+                    # 累积文本增量，确保为字符串；若为对象则转成JSON字符串
+                    if isinstance(content, str):
+                        answer_parts.append(content)
+                    else:
+                        try:
+                            answer_parts.append(json.dumps(content, ensure_ascii=False))
+                        except Exception:
+                            answer_parts.append(str(content))
+                if status == "completed":
+                    final_answer = "".join(answer_parts)
+                    print("拼接后的最终回答：")
+                    print(final_answer)
                     print("收到完成消息，主动断开连接")
                     break
                 if "error" in data:

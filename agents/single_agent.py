@@ -33,7 +33,7 @@ class SingleAgent:
     def __init__(
         self,
         system_prompt: Optional[str] = None,
-        model: str = "gpt-4o",
+        model: str = "gpt-4.1",
         max_steps: int = 3
     ):
         """
@@ -111,7 +111,7 @@ SQL语句："""
 
         try:
             response = self.client.chat.completions.create(
-                model="gpt-5", 
+                model=self.model, 
                 messages=[{"role": "user", "content": sql_prompt}],
                 max_completion_tokens=5000
             )
@@ -218,10 +218,13 @@ SQL语句："""
             )
 
             for event in response:
-                yield {
-                    "status": "stream",
-                    "content": event
-                }
+                if hasattr(event, "delta"):
+                    content = event.delta
+                    logger.info(f"流式答案: {content}")
+                    yield {
+                        "status": "stream",
+                        "content": content
+                    }
 
             yield {
                 "status": "final",

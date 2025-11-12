@@ -162,17 +162,39 @@ def stream():
                 
                 # 处理答案
                 if data.get("status") == "stream":
+                    # 规范化 content，确保可被 json 序列化
+                    content = data.get("content", "")
+                    if not isinstance(content, (str, int, float, bool, type(None), dict, list)):
+                        try:
+                            # 优先提取文本增量或文本字段（OpenAI Responses 流事件）
+                            if hasattr(content, "delta"):
+                                content = getattr(content, "delta")
+                            elif hasattr(content, "text"):
+                                content = getattr(content, "text")
+                            # 尝试模型对象转字典/JSON
+                            elif hasattr(content, "model_dump"):
+                                content = content.model_dump()
+                            elif hasattr(content, "model_dump_json"):
+                                try:
+                                    content = json.loads(content.model_dump_json())
+                                except Exception:
+                                    content = str(content)
+                            elif hasattr(content, "to_dict"):
+                                content = content.to_dict()
+                            else:
+                                content = str(content)
+                        except Exception:
+                            content = str(content)
                     stream_message = {
                         "session_id": session_id,
                         "timestamp": time.strftime('%H:%M:%S'),
                         "agent_type": agent_type,
                         "message_id": message_id,
-                        "content": data.get("content", ""),
+                        "content": content,
                         "data": {
                             "status": "stream"
                         }
                     }
-                    logger.info(f"json_data的数据和类型: {json_data}, {type(json_data)}")
                     json_data = json.dumps(stream_message, ensure_ascii=False)
                     yield sse_format(json_data)
                     logger.info(f"发送流式答案: {json_data}")
